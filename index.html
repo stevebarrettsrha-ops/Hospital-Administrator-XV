@@ -432,6 +432,202 @@
     ::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(135deg, #059669, #0284c7);
     }
+
+    /* Login Page Styles */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #6ee7b7 0%, #7dd3fc 100%);
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      animation: slideUp 0.5s ease;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      padding: 40px 30px;
+      text-align: center;
+      color: white;
+    }
+
+    .login-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 36px;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .login-header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .login-form {
+      padding: 40px 30px;
+    }
+
+    .login-input-group {
+      margin-bottom: 20px;
+    }
+
+    .login-input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    .login-input.error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideDown 0.3s ease;
+    }
+
+    .login-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .login-footer {
+      text-align: center;
+      padding: 20px 30px 30px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    .login-footer p {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #10b981;
+    }
+
+    /* Dark mode login styles */
+    .dark .login-box {
+      background: #1f2937;
+    }
+
+    .dark .login-input-group label {
+      color: #d1d5db;
+    }
+
+    .dark .login-input {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f3f4f6;
+    }
+
+    .dark .login-footer {
+      border-top-color: #374151;
+    }
+
+    .dark .login-footer p {
+      color: #9ca3af;
+    }
+
+    .dark .remember-me {
+      color: #d1d5db;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -508,12 +704,19 @@
 
   /***** Main App *****/
   function App(){
+    // Login state
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+    const [loginError, setLoginError] = useState('');
+    const [loginLoading, setLoginLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+
     // UI state
     const [activeTab, setActiveTab] = useState('overview');
     const [searchTerm, setSearchTerm] = useState('');
     const [darkMode, setDarkMode] = useState(false);
     const [notifications, setNotifications] = useState(3);
-    const [username] = useState('Administrator');
+    const [username, setUsername] = useState('Administrator');
     const [loading, setLoading] = useState(false);
     const [lastSync, setLastSync] = useState(null);
 
@@ -544,6 +747,22 @@
     const priorityChartRef = useRef(null);
     const tripsChartRef = useRef(null);
     const fleetCompareRef = useRef(null);
+
+    // Check for saved login session
+    useEffect(() => {
+      try {
+        const savedSession = localStorage.getItem('hospital_session');
+        if (savedSession) {
+          const session = JSON.parse(savedSession);
+          if (session.isLoggedIn && session.username) {
+            setIsLoggedIn(true);
+            setUsername(session.username);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load session', e);
+      }
+    }, []);
 
     // Load from localStorage if available
     useEffect(() => {
@@ -970,11 +1189,150 @@
       showToast('Data exported to hospital_report.csv', 'success');
     };
 
+    /***** Login/Logout handlers *****/
+    const handleLogin = (e) => {
+      e.preventDefault();
+      setLoginError('');
+      setLoginLoading(true);
+
+      // Simulate authentication delay
+      setTimeout(() => {
+        // Simple credential check (in production, this would be server-side)
+        const validCredentials = [
+          { username: 'admin', password: 'admin123' },
+          { username: 'administrator', password: 'hospital2025' },
+          { username: 'demo', password: 'demo' }
+        ];
+
+        const isValid = validCredentials.some(
+          cred => cred.username.toLowerCase() === loginForm.username.toLowerCase() &&
+                  cred.password === loginForm.password
+        );
+
+        if (isValid) {
+          setIsLoggedIn(true);
+          setUsername(loginForm.username);
+          setLoginForm({ username: '', password: '' });
+
+          // Save session if remember me is checked
+          if (rememberMe) {
+            localStorage.setItem('hospital_session', JSON.stringify({
+              isLoggedIn: true,
+              username: loginForm.username
+            }));
+          }
+
+          showToast('Login successful! Welcome back.', 'success');
+        } else {
+          setLoginError('Invalid username or password. Please try again.');
+        }
+
+        setLoginLoading(false);
+      }, 800);
+    };
+
     const handleLogout = () => {
-      alert('Logging out...');
+      setIsLoggedIn(false);
+      setUsername('Administrator');
+      setLoginForm({ username: '', password: '' });
+      localStorage.removeItem('hospital_session');
+      showToast('You have been logged out successfully.', 'info');
     };
 
     /***** UI render *****/
+
+    // Login Page Component
+    if (!isLoggedIn) {
+      return (
+        <div className={`login-container ${darkMode ? 'dark' : ''}`}>
+          <div className={`login-box ${darkMode ? 'bg-gray-800' : ''}`}>
+            <div className="login-header">
+              <div className="login-icon">🏥</div>
+              <h1>Hospital Administrator</h1>
+              <p>Dashboard Management System</p>
+            </div>
+
+            <form className="login-form" onSubmit={handleLogin}>
+              {loginError && (
+                <div className="login-error">
+                  <span>⚠️</span>
+                  <span>{loginError}</span>
+                </div>
+              )}
+
+              <div className="login-info">
+                <span>ℹ️</span>
+                <span>Demo: admin / admin123</span>
+              </div>
+
+              <div className="login-input-group">
+                <label htmlFor="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  className={`login-input ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : ''}`}
+                  placeholder="Enter your username"
+                  value={loginForm.username}
+                  onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="login-input-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  className={`login-input ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : ''}`}
+                  placeholder="Enter your password"
+                  value={loginForm.password}
+                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                  required
+                />
+              </div>
+
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span>Remember me</span>
+              </label>
+
+              <button type="submit" className="login-btn" disabled={loginLoading}>
+                {loginLoading ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>🔐</span>
+                    <span>Sign In</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="login-footer">
+              <p>Hospital Administrator Dashboard v2.0</p>
+              <p style={{ marginTop: '8px' }}>
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
+                >
+                  {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Main Dashboard
     return (
       <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900 text-white' : ''}`}>
         {/* Navigation Header - Chief Orderly Style */}
