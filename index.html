@@ -119,6 +119,18 @@
     const [newFleet, setNewFleet] = useState({ ambulance: '', inter: 0, intra: 0, fuel: 0, remarks: '' });
     const [newPersonnel, setNewPersonnel] = useState({ title: '', description: '' });
 
+    // Edit modal states
+    const [editModal, setEditModal] = useState({ open: false, type: null, index: null, data: null });
+
+    // Toast notification state
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+    // Form validation errors
+    const [errors, setErrors] = useState({ dept: {}, fleet: {}, personnel: {} });
+
+    // Undo stack for deletions
+    const [undoStack, setUndoStack] = useState([]);
+
     // Charts refs
     const priorityChartRef = useRef(null);
     const tripsChartRef = useRef(null);
@@ -259,10 +271,10 @@
         }
 
         setLastSync(new Date());
-        alert('Data loaded from Google Sheet and merged with local data (local takes precedence).');
+        showToast('Data synchronized with Google Sheet successfully', 'success');
       } catch (err) {
         console.warn('Sheet load failed, using local/defaults', err);
-        alert('Could not load data from Google Sheet — using local or default data.');
+        showToast('Could not load data from Google Sheet - using local data', 'warning');
       } finally {
         setLoading(false);
       }
@@ -334,41 +346,202 @@
       });
     }, [fleetData]);
 
+    /***** Toast notification helper *****/
+    const showToast = (message, type = 'success') => {
+      setToast({ show: true, message, type });
+      setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+    };
+
+    /***** Validation helpers *****/
+    const validateDepartment = (dept, excludeIndex = -1) => {
+      const errs = {};
+      if (!dept.name || dept.name.trim() === '') errs.name = 'Department name is required';
+      if (!dept.issues || dept.issues.trim() === '') errs.issues = 'Current issues is required';
+      // Check for duplicates
+      const duplicate = departments.find((d, i) => i !== excludeIndex && d.name.toLowerCase() === dept.name.toLowerCase());
+      if (duplicate) errs.name = 'A department with this name already exists';
+      return errs;
+    };
+
+    const validateFleet = (fleet, excludeIndex = -1) => {
+      const errs = {};
+      if (!fleet.ambulance || fleet.ambulance.trim() === '') errs.ambulance = 'Ambulance license is required';
+      if (fleet.inter < 0) errs.inter = 'Inter-facility trips cannot be negative';
+      if (fleet.intra < 0) errs.intra = 'Intra-facility trips cannot be negative';
+      if (fleet.fuel < 0) errs.fuel = 'Fuel cost cannot be negative';
+      // Check for duplicates
+      const duplicate = fleetData.find((f, i) => i !== excludeIndex && f.ambulance === fleet.ambulance);
+      if (duplicate) errs.ambulance = 'This ambulance license already exists';
+      return errs;
+    };
+
+    const validatePersonnel = (personnel) => {
+      const errs = {};
+      if (!personnel.title || personnel.title.trim() === '') errs.title = 'Title is required';
+      if (!personnel.description || personnel.description.trim() === '') errs.description = 'Description is required';
+      return errs;
+    };
+
+    /***** Form reset helpers *****/
+    const resetDeptForm = () => {
+      setNewDept({ name: '', issues: '', barriers: '', recommendations: '', priority: 'Medium' });
+      setErrors(prev => ({ ...prev, dept: {} }));
+    };
+
+    const resetFleetForm = () => {
+      setNewFleet({ ambulance: '', inter: 0, intra: 0, fuel: 0, remarks: '' });
+      setErrors(prev => ({ ...prev, fleet: {} }));
+    };
+
+    const resetPersonnelForm = () => {
+      setNewPersonnel({ title: '', description: '' });
+      setErrors(prev => ({ ...prev, personnel: {} }));
+    };
+
+    /***** Edit modal helpers *****/
+    const openEditModal = (type, index, data) => {
+      setEditModal({ open: true, type, index, data: { ...data } });
+    };
+
+    const closeEditModal = () => {
+      setEditModal({ open: false, type: null, index: null, data: null });
+    };
+
+    const saveEdit = () => {
+      const { type, index, data } = editModal;
+
+      if (type === 'department') {
+        const errs = validateDepartment(data, index);
+        if (Object.keys(errs).length > 0) {
+          showToast('Please fix validation errors', 'error');
+          return;
+        }
+        setDepartments(prev => prev.map((d, i) => i === index ? { ...data } : d));
+        showToast('Department updated successfully', 'success');
+      } else if (type === 'fleet') {
+        const errs = validateFleet(data, index);
+        if (Object.keys(errs).length > 0) {
+          showToast('Please fix validation errors', 'error');
+          return;
+        }
+        setFleetData(prev => prev.map((f, i) => i === index ? {
+          ...data,
+          inter: parseInt(data.inter) || 0,
+          intra: parseInt(data.intra) || 0,
+          fuel: parseFloat(data.fuel) || 0
+        } : f));
+        showToast('Fleet vehicle updated successfully', 'success');
+      } else if (type === 'personnel') {
+        const errs = validatePersonnel(data);
+        if (Object.keys(errs).length > 0) {
+          showToast('Please fix validation errors', 'error');
+          return;
+        }
+        setPersonnelUpdates(prev => prev.map((p, i) => i === index ? { ...data } : p));
+        showToast('Personnel update saved successfully', 'success');
+      }
+
+      closeEditModal();
+    };
+
+    const updateEditData = (field, value) => {
+      setEditModal(prev => ({
+        ...prev,
+        data: { ...prev.data, [field]: value }
+      }));
+    };
+
+    /***** Undo functionality *****/
+    const undoDelete = () => {
+      if (undoStack.length === 0) return;
+      const lastAction = undoStack[undoStack.length - 1];
+
+      if (lastAction.type === 'department') {
+        setDepartments(prev => {
+          const newArr = [...prev];
+          newArr.splice(lastAction.index, 0, lastAction.data);
+          return newArr;
+        });
+      } else if (lastAction.type === 'fleet') {
+        setFleetData(prev => {
+          const newArr = [...prev];
+          newArr.splice(lastAction.index, 0, lastAction.data);
+          return newArr;
+        });
+      } else if (lastAction.type === 'personnel') {
+        setPersonnelUpdates(prev => {
+          const newArr = [...prev];
+          newArr.splice(lastAction.index, 0, lastAction.data);
+          return newArr;
+        });
+      }
+
+      setUndoStack(prev => prev.slice(0, -1));
+      showToast('Deletion undone', 'info');
+    };
+
     /***** CRUD operations (auto-saved because of effect hooking into state) *****/
     const addDepartment = () => {
-      if (!newDept.name || !newDept.issues) { alert('Please provide department name and issues'); return; }
+      const errs = validateDepartment(newDept);
+      setErrors(prev => ({ ...prev, dept: errs }));
+      if (Object.keys(errs).length > 0) {
+        showToast('Please fix validation errors', 'error');
+        return;
+      }
       setDepartments(prev => [...prev, {...newDept}]);
-      setNewDept({ name:'', issues:'', barriers:'', recommendations:'', priority:'Medium' });
+      resetDeptForm();
+      showToast('Department added successfully', 'success');
       setActiveTab('departments');
     };
 
     const removeDepartment = (idx) => {
       if (!confirm('Remove this department?')) return;
+      const deleted = departments[idx];
+      setUndoStack(prev => [...prev, { type: 'department', index: idx, data: deleted }]);
       setDepartments(prev => prev.filter((_,i)=>i!==idx));
+      showToast('Department removed. Click Undo to restore.', 'warning');
     };
 
     const addFleet = () => {
-      if (!newFleet.ambulance) { alert('Enter ambulance license'); return; }
+      const errs = validateFleet(newFleet);
+      setErrors(prev => ({ ...prev, fleet: errs }));
+      if (Object.keys(errs).length > 0) {
+        showToast('Please fix validation errors', 'error');
+        return;
+      }
       setFleetData(prev => [...prev, {...newFleet, inter: parseInt(newFleet.inter)||0, intra: parseInt(newFleet.intra)||0, fuel: parseFloat(newFleet.fuel)||0 }]);
-      setNewFleet({ ambulance:'', inter:0, intra:0, fuel:0, remarks:'' });
+      resetFleetForm();
+      showToast('Fleet vehicle added successfully', 'success');
       setActiveTab('fleet');
     };
 
     const removeFleet = (idx) => {
       if (!confirm('Remove this vehicle?')) return;
+      const deleted = fleetData[idx];
+      setUndoStack(prev => [...prev, { type: 'fleet', index: idx, data: deleted }]);
       setFleetData(prev => prev.filter((_,i)=>i!==idx));
+      showToast('Fleet vehicle removed. Click Undo to restore.', 'warning');
     };
 
     const addPersonnel = () => {
-      if (!newPersonnel.title || !newPersonnel.description) { alert('Fill title and description'); return; }
+      const errs = validatePersonnel(newPersonnel);
+      setErrors(prev => ({ ...prev, personnel: errs }));
+      if (Object.keys(errs).length > 0) {
+        showToast('Please fix validation errors', 'error');
+        return;
+      }
       setPersonnelUpdates(prev => [...prev, {...newPersonnel}]);
-      setNewPersonnel({ title:'', description:'' });
+      resetPersonnelForm();
+      showToast('Personnel update added successfully', 'success');
       setActiveTab('personnel');
     };
 
     const removePersonnel = (idx) => {
       if (!confirm('Remove this personnel update?')) return;
+      const deleted = personnelUpdates[idx];
+      setUndoStack(prev => [...prev, { type: 'personnel', index: idx, data: deleted }]);
       setPersonnelUpdates(prev => prev.filter((_,i)=>i!==idx));
+      showToast('Personnel update removed. Click Undo to restore.', 'warning');
     };
 
     const exportToCSV = () => {
@@ -385,6 +558,7 @@
         csv += `"${(p.title||'').replace(/"/g,'""')}","${(p.description||'').replace(/"/g,'""')}"\n`;
       });
       downloadCSV('hospital_report.csv', csv);
+      showToast('Data exported to hospital_report.csv', 'success');
     };
 
     const handleLogout = () => {
@@ -455,6 +629,130 @@
           {loading && (
             <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
               <div className="bg-white p-6 rounded shadow">Loading data...</div>
+            </div>
+          )}
+
+          {/* Toast notification */}
+          {toast.show && (
+            <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 transition-all ${
+              toast.type === 'success' ? 'bg-green-500 text-white' :
+              toast.type === 'error' ? 'bg-red-500 text-white' :
+              toast.type === 'warning' ? 'bg-yellow-500 text-white' :
+              'bg-blue-500 text-white'
+            }`}>
+              <span>{toast.message}</span>
+              {undoStack.length > 0 && toast.type === 'warning' && (
+                <button onClick={undoDelete} className="ml-2 px-3 py-1 bg-white text-gray-800 rounded text-sm font-semibold hover:bg-gray-100">
+                  Undo
+                </button>
+              )}
+              <button onClick={() => setToast({ show: false, message: '', type: 'success' })} className="ml-2 text-xl font-bold hover:opacity-70">&times;</button>
+            </div>
+          )}
+
+          {/* Edit Modal */}
+          {editModal.open && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto`}>
+                <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex justify-between items-center`}>
+                  <h2 className="text-xl font-semibold">
+                    Edit {editModal.type === 'department' ? 'Department' : editModal.type === 'fleet' ? 'Fleet Vehicle' : 'Personnel Update'}
+                  </h2>
+                  <button onClick={closeEditModal} className="text-2xl font-bold hover:opacity-70">&times;</button>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  {editModal.type === 'department' && editModal.data && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Department Name *</label>
+                        <input type="text" value={editModal.data.name || ''} onChange={(e) => updateEditData('name', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Current Issues *</label>
+                        <textarea rows="3" value={editModal.data.issues || ''} onChange={(e) => updateEditData('issues', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}></textarea>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Barriers</label>
+                        <textarea rows="2" value={editModal.data.barriers || ''} onChange={(e) => updateEditData('barriers', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}></textarea>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Recommendations</label>
+                        <textarea rows="2" value={editModal.data.recommendations || ''} onChange={(e) => updateEditData('recommendations', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}></textarea>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Priority</label>
+                        <select value={editModal.data.priority || 'Medium'} onChange={(e) => updateEditData('priority', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}>
+                          <option value="Low">Low Priority</option>
+                          <option value="Medium">Medium Priority</option>
+                          <option value="High">High Priority</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  {editModal.type === 'fleet' && editModal.data && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Ambulance License Number *</label>
+                        <input type="text" value={editModal.data.ambulance || ''} onChange={(e) => updateEditData('ambulance', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Inter-facility Trips</label>
+                          <input type="number" min="0" value={editModal.data.inter || 0} onChange={(e) => updateEditData('inter', parseInt(e.target.value) || 0)}
+                            className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Intra-facility Trips</label>
+                          <input type="number" min="0" value={editModal.data.intra || 0} onChange={(e) => updateEditData('intra', parseInt(e.target.value) || 0)}
+                            className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Fuel Cost ($)</label>
+                          <input type="number" min="0" step="0.01" value={editModal.data.fuel || 0} onChange={(e) => updateEditData('fuel', parseFloat(e.target.value) || 0)}
+                            className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Remarks</label>
+                        <textarea rows="2" value={editModal.data.remarks || ''} onChange={(e) => updateEditData('remarks', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}></textarea>
+                      </div>
+                    </>
+                  )}
+
+                  {editModal.type === 'personnel' && editModal.data && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Update Title *</label>
+                        <input type="text" value={editModal.data.title || ''} onChange={(e) => updateEditData('title', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`} />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Description *</label>
+                        <textarea rows="4" value={editModal.data.description || ''} onChange={(e) => updateEditData('description', e.target.value)}
+                          className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : 'border-gray-300'}`}></textarea>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className={`p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex justify-end gap-3`}>
+                  <button onClick={closeEditModal} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>
+                    Cancel
+                  </button>
+                  <button onClick={saveEdit} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -569,8 +867,9 @@
                         <h4 className="font-semibold">Recommendations</h4>
                         <p className="text-sm">{dept.recommendations}</p>
                       </div>
-                      <div className="flex justify-end">
-                        <button onClick={()=>removeDepartment(idx)} className="px-3 py-2 text-red-500">Remove</button>
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => openEditModal('department', departments.indexOf(dept), dept)} className="px-3 py-2 text-blue-500 hover:bg-blue-50 rounded">Edit</button>
+                        <button onClick={()=>removeDepartment(departments.indexOf(dept))} className="px-3 py-2 text-red-500 hover:bg-red-50 rounded">Remove</button>
                       </div>
                     </div>
                   </div>
@@ -623,7 +922,10 @@
                             <td className="px-4 py-2 font-semibold">{(parseInt(v.inter)||0)+(parseInt(v.intra)||0)}</td>
                             <td className="px-4 py-2">${(parseFloat(v.fuel)||0).toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                             <td className="px-4 py-2">{v.remarks||'-'}</td>
-                            <td className="px-4 py-2"><button onClick={()=>removeFleet(i)} className="text-red-500">Remove</button></td>
+                            <td className="px-4 py-2">
+                              <button onClick={() => openEditModal('fleet', i, v)} className="text-blue-500 mr-2 hover:underline">Edit</button>
+                              <button onClick={()=>removeFleet(i)} className="text-red-500 hover:underline">Remove</button>
+                            </td>
                           </tr>
                         ))}
                         <tr className="font-semibold bg-blue-50">
@@ -661,7 +963,10 @@
                       <h3 className="font-semibold">{u.title}</h3>
                       <p className="text-sm">{u.description}</p>
                     </div>
-                    <div><button onClick={()=>removePersonnel(i)} className="text-red-500">Remove</button></div>
+                    <div className="flex gap-2">
+                      <button onClick={() => openEditModal('personnel', i, u)} className="text-blue-500 hover:underline">Edit</button>
+                      <button onClick={()=>removePersonnel(i)} className="text-red-500 hover:underline">Remove</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -677,17 +982,29 @@
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
                 <h3 className="font-semibold mb-4">Add Department</h3>
                 <div className="space-y-3">
-                  <input type="text" placeholder="Department Name" value={newDept.name} onChange={(e)=>setNewDept({...newDept,name:e.target.value})} className="w-full px-4 py-2 border rounded"/>
-                  <textarea rows="3" placeholder="Current Issues" value={newDept.issues} onChange={(e)=>setNewDept({...newDept,issues:e.target.value})} className="w-full px-4 py-2 border rounded"></textarea>
-                  <textarea rows="2" placeholder="Barriers" value={newDept.barriers} onChange={(e)=>setNewDept({...newDept,barriers:e.target.value})} className="w-full px-4 py-2 border rounded"></textarea>
-                  <textarea rows="2" placeholder="Recommendations" value={newDept.recommendations} onChange={(e)=>setNewDept({...newDept,recommendations:e.target.value})} className="w-full px-4 py-2 border rounded"></textarea>
-                  <select value={newDept.priority} onChange={(e)=>setNewDept({...newDept,priority:e.target.value})} className="w-full px-4 py-2 border rounded">
+                  <div>
+                    <input type="text" placeholder="Department Name *" value={newDept.name} onChange={(e)=>setNewDept({...newDept,name:e.target.value})}
+                      className={`w-full px-4 py-2 border rounded ${errors.dept.name ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.dept.name && <p className="text-red-500 text-sm mt-1">{errors.dept.name}</p>}
+                  </div>
+                  <div>
+                    <textarea rows="3" placeholder="Current Issues *" value={newDept.issues} onChange={(e)=>setNewDept({...newDept,issues:e.target.value})}
+                      className={`w-full px-4 py-2 border rounded ${errors.dept.issues ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                    {errors.dept.issues && <p className="text-red-500 text-sm mt-1">{errors.dept.issues}</p>}
+                  </div>
+                  <textarea rows="2" placeholder="Barriers" value={newDept.barriers} onChange={(e)=>setNewDept({...newDept,barriers:e.target.value})}
+                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                  <textarea rows="2" placeholder="Recommendations" value={newDept.recommendations} onChange={(e)=>setNewDept({...newDept,recommendations:e.target.value})}
+                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                  <select value={newDept.priority} onChange={(e)=>setNewDept({...newDept,priority:e.target.value})}
+                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}>
                     <option value="Low">Low Priority</option>
                     <option value="Medium">Medium Priority</option>
                     <option value="High">High Priority</option>
                   </select>
                   <div className="flex gap-3">
-                    <button onClick={addDepartment} className="px-4 py-2 bg-blue-500 text-white rounded">Save Department</button>
+                    <button onClick={addDepartment} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save Department</button>
+                    <button onClick={resetDeptForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
                   </div>
                 </div>
 
@@ -696,8 +1013,14 @@
                   <div className="space-y-2 mt-2">
                     {departments.map((d,i)=>(
                       <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <span>{d.name}</span>
-                        <button onClick={()=>removeDepartment(i)} className="text-red-500">Remove</button>
+                        <div className="flex-1">
+                          <span className="font-medium">{d.name}</span>
+                          <span className={`ml-2 text-xs px-2 py-1 rounded ${d.priority === 'High' ? 'bg-red-100 text-red-700' : d.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>{d.priority}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => openEditModal('department', i, d)} className="text-blue-500 hover:underline">Edit</button>
+                          <button onClick={()=>removeDepartment(i)} className="text-red-500 hover:underline">Remove</button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -708,14 +1031,34 @@
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
                 <h3 className="font-semibold mb-4">Add Fleet Vehicle</h3>
                 <div className="space-y-3">
-                  <input type="text" placeholder="Ambulance License Number" value={newFleet.ambulance} onChange={(e)=>setNewFleet({...newFleet,ambulance:e.target.value})} className="w-full px-4 py-2 border rounded"/>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <input type="number" placeholder="Inter-facility Trips" value={newFleet.inter} onChange={(e)=>setNewFleet({...newFleet,inter:parseInt(e.target.value)||0})} className="px-4 py-2 border rounded"/>
-                    <input type="number" placeholder="Intra-facility Trips" value={newFleet.intra} onChange={(e)=>setNewFleet({...newFleet,intra:parseInt(e.target.value)||0})} className="px-4 py-2 border rounded"/>
-                    <input type="number" placeholder="Fuel Cost" value={newFleet.fuel} onChange={(e)=>setNewFleet({...newFleet,fuel:parseFloat(e.target.value)||0})} className="px-4 py-2 border rounded"/>
+                  <div>
+                    <input type="text" placeholder="Ambulance License Number *" value={newFleet.ambulance} onChange={(e)=>setNewFleet({...newFleet,ambulance:e.target.value})}
+                      className={`w-full px-4 py-2 border rounded ${errors.fleet.ambulance ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.fleet.ambulance && <p className="text-red-500 text-sm mt-1">{errors.fleet.ambulance}</p>}
                   </div>
-                  <textarea rows="2" placeholder="Remarks" value={newFleet.remarks} onChange={(e)=>setNewFleet({...newFleet,remarks:e.target.value})} className="w-full px-4 py-2 border rounded"></textarea>
-                  <button onClick={addFleet} className="px-4 py-2 bg-green-500 text-white rounded">Save Fleet Vehicle</button>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <input type="number" min="0" placeholder="Inter-facility Trips" value={newFleet.inter} onChange={(e)=>setNewFleet({...newFleet,inter:parseInt(e.target.value)||0})}
+                        className={`w-full px-4 py-2 border rounded ${errors.fleet.inter ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                      {errors.fleet.inter && <p className="text-red-500 text-sm mt-1">{errors.fleet.inter}</p>}
+                    </div>
+                    <div>
+                      <input type="number" min="0" placeholder="Intra-facility Trips" value={newFleet.intra} onChange={(e)=>setNewFleet({...newFleet,intra:parseInt(e.target.value)||0})}
+                        className={`w-full px-4 py-2 border rounded ${errors.fleet.intra ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                      {errors.fleet.intra && <p className="text-red-500 text-sm mt-1">{errors.fleet.intra}</p>}
+                    </div>
+                    <div>
+                      <input type="number" min="0" step="0.01" placeholder="Fuel Cost ($)" value={newFleet.fuel} onChange={(e)=>setNewFleet({...newFleet,fuel:parseFloat(e.target.value)||0})}
+                        className={`w-full px-4 py-2 border rounded ${errors.fleet.fuel ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                      {errors.fleet.fuel && <p className="text-red-500 text-sm mt-1">{errors.fleet.fuel}</p>}
+                    </div>
+                  </div>
+                  <textarea rows="2" placeholder="Remarks" value={newFleet.remarks} onChange={(e)=>setNewFleet({...newFleet,remarks:e.target.value})}
+                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                  <div className="flex gap-3">
+                    <button onClick={addFleet} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save Fleet Vehicle</button>
+                    <button onClick={resetFleetForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+                  </div>
                 </div>
 
                 <div className="mt-6">
@@ -723,8 +1066,14 @@
                   <div className="space-y-2 mt-2">
                     {fleetData.map((f,i)=>(
                       <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <span>Ambulance {f.ambulance} - {(parseInt(f.inter)||0)+(parseInt(f.intra)||0)} trips</span>
-                        <button onClick={()=>removeFleet(i)} className="text-red-500">Remove</button>
+                        <div className="flex-1">
+                          <span className="font-medium">Ambulance {f.ambulance}</span>
+                          <span className="ml-2 text-sm text-gray-500">{(parseInt(f.inter)||0)+(parseInt(f.intra)||0)} trips | ${(parseFloat(f.fuel)||0).toLocaleString()}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => openEditModal('fleet', i, f)} className="text-blue-500 hover:underline">Edit</button>
+                          <button onClick={()=>removeFleet(i)} className="text-red-500 hover:underline">Remove</button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -735,9 +1084,20 @@
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
                 <h3 className="font-semibold mb-4">Add Personnel Update</h3>
                 <div className="space-y-3">
-                  <input type="text" placeholder="Update Title" value={newPersonnel.title} onChange={(e)=>setNewPersonnel({...newPersonnel,title:e.target.value})} className="w-full px-4 py-2 border rounded"/>
-                  <textarea rows="4" placeholder="Description" value={newPersonnel.description} onChange={(e)=>setNewPersonnel({...newPersonnel,description:e.target.value})} className="w-full px-4 py-2 border rounded"></textarea>
-                  <button onClick={addPersonnel} className="px-4 py-2 bg-purple-500 text-white rounded">Save Personnel Update</button>
+                  <div>
+                    <input type="text" placeholder="Update Title *" value={newPersonnel.title} onChange={(e)=>setNewPersonnel({...newPersonnel,title:e.target.value})}
+                      className={`w-full px-4 py-2 border rounded ${errors.personnel.title ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.personnel.title && <p className="text-red-500 text-sm mt-1">{errors.personnel.title}</p>}
+                  </div>
+                  <div>
+                    <textarea rows="4" placeholder="Description *" value={newPersonnel.description} onChange={(e)=>setNewPersonnel({...newPersonnel,description:e.target.value})}
+                      className={`w-full px-4 py-2 border rounded ${errors.personnel.description ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                    {errors.personnel.description && <p className="text-red-500 text-sm mt-1">{errors.personnel.description}</p>}
+                  </div>
+                  <div className="flex gap-3">
+                    <button onClick={addPersonnel} className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">Save Personnel Update</button>
+                    <button onClick={resetPersonnelForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+                  </div>
                 </div>
 
                 <div className="mt-6">
@@ -745,8 +1105,11 @@
                   <div className="space-y-2 mt-2">
                     {personnelUpdates.map((p,i)=>(
                       <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <span>{p.title}</span>
-                        <button onClick={()=>removePersonnel(i)} className="text-red-500">Remove</button>
+                        <span className="font-medium">{p.title}</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => openEditModal('personnel', i, p)} className="text-blue-500 hover:underline">Edit</button>
+                          <button onClick={()=>removePersonnel(i)} className="text-red-500 hover:underline">Remove</button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -757,9 +1120,35 @@
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
                 <h3 className="font-semibold mb-4">Update Total Patients Transported</h3>
                 <div className="flex gap-3">
-                  <input type="number" value={totalPatients} onChange={(e)=>setTotalPatients(parseInt(e.target.value)||0)} className="px-4 py-2 border rounded flex-1"/>
-                  <button onClick={()=>alert('Patient count updated!')} className="px-4 py-2 bg-indigo-500 text-white rounded">Update</button>
+                  <input type="number" min="0" value={totalPatients} onChange={(e)=>setTotalPatients(parseInt(e.target.value)||0)}
+                    className={`px-4 py-2 border rounded flex-1 ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                  <button onClick={()=>showToast('Patient count updated successfully!', 'success')} className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">Update</button>
                 </div>
+                <p className="text-sm text-gray-500 mt-2">Changes are saved automatically to local storage.</p>
+              </div>
+
+              {/* Data Management Actions */}
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
+                <h3 className="font-semibold mb-4">Data Management</h3>
+                <div className="flex flex-wrap gap-3">
+                  <button onClick={exportToCSV} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Export All Data to CSV</button>
+                  <button onClick={loadFromGoogleSheet} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>
+                    {loading ? 'Refreshing...' : 'Refresh from Google Sheet'}
+                  </button>
+                  <button onClick={() => {
+                    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+                      localStorage.removeItem(LS_KEY);
+                      setDepartments(DEFAULT_DEPARTMENTS);
+                      setFleetData(DEFAULT_FLEET);
+                      setPersonnelUpdates(DEFAULT_PERSONNEL);
+                      setTotalPatients(116);
+                      showToast('Local data cleared. Defaults restored.', 'info');
+                    }
+                  }} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Reset to Defaults</button>
+                </div>
+                <p className="text-sm text-gray-500 mt-3">
+                  {lastSync ? `Last synchronized: ${lastSync.toLocaleString()}` : 'Not yet synchronized with Google Sheet'}
+                </p>
               </div>
             </section>
           )}
