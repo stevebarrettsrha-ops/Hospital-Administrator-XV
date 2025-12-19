@@ -18,6 +18,9 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+
   <style>
     /* Chief Orderly Dashboard Inspired Styles */
     * {
@@ -628,6 +631,329 @@
     .dark .remember-me {
       color: #d1d5db;
     }
+
+    /* Calendar Styles */
+    .calendar-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      color: white;
+    }
+
+    .calendar-nav-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .calendar-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #e2e8f0;
+    }
+
+    .calendar-day-header {
+      background: #f7fafc;
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      color: #718096;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      background: white;
+      min-height: 100px;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: #f7fafc;
+    }
+
+    .calendar-day.other-month {
+      background: #f7fafc;
+      color: #a0aec0;
+    }
+
+    .calendar-day.today {
+      background: #ecfdf5;
+    }
+
+    .calendar-day.today::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .calendar-day-number {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .calendar-event {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .calendar-event.sick { background: #fee2e2; color: #dc2626; }
+    .calendar-event.vacation { background: #f3e8ff; color: #9333ea; }
+    .calendar-event.dayoff { background: #fef3c7; color: #d97706; }
+    .calendar-event.departmental { background: #dbeafe; color: #2563eb; }
+
+    /* Notification Dropdown */
+    .notification-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 360px;
+      max-height: 400px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      overflow: hidden;
+      animation: slideDown 0.3s ease;
+    }
+
+    .notification-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    }
+
+    .notification-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .notification-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f7fafc;
+      display: flex;
+      gap: 12px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .notification-item:hover {
+      background: #f7fafc;
+    }
+
+    .notification-item.urgent {
+      border-left: 3px solid #ef4444;
+      background: #fef2f2;
+    }
+
+    .notification-item.warning {
+      border-left: 3px solid #f59e0b;
+      background: #fffbeb;
+    }
+
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .notification-icon.urgent { background: #fee2e2; }
+    .notification-icon.warning { background: #fef3c7; }
+    .notification-icon.info { background: #dbeafe; }
+
+    /* Leave Badge */
+    .leave-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .leave-badge.sick { background: #fee2e2; color: #dc2626; }
+    .leave-badge.vacation { background: #f3e8ff; color: #9333ea; }
+    .leave-badge.dayoff { background: #fef3c7; color: #d97706; }
+    .leave-badge.departmental { background: #dbeafe; color: #2563eb; }
+
+    /* Time Tracking Card */
+    .time-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid;
+    }
+
+    .time-card.claims { border-left-color: #3b82f6; }
+    .time-card.late { border-left-color: #ef4444; }
+    .time-card.overtime { border-left-color: #10b981; }
+    .time-card.dayoff { border-left-color: #f59e0b; }
+
+    /* View Toggle Buttons */
+    .view-toggle {
+      display: inline-flex;
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .view-toggle button {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #718096;
+    }
+
+    .view-toggle button.active {
+      background: white;
+      color: #1a202c;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Staff Card */
+    .staff-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+    }
+
+    .staff-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .staff-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 18px;
+    }
+
+    /* Role Badge */
+    .role-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .role-badge.staff { background: #dbeafe; color: #2563eb; }
+    .role-badge.senior { background: #d1fae5; color: #059669; }
+    .role-badge.supervisor { background: #fef3c7; color: #d97706; }
+    .role-badge.lead { background: #f3e8ff; color: #9333ea; }
+
+    /* Dark mode for new components */
+    .dark .calendar-container,
+    .dark .notification-dropdown,
+    .dark .time-card,
+    .dark .staff-card {
+      background: #1f2937;
+    }
+
+    .dark .calendar-day {
+      background: #1f2937;
+    }
+
+    .dark .calendar-day:hover {
+      background: #374151;
+    }
+
+    .dark .calendar-day.other-month {
+      background: #111827;
+    }
+
+    .dark .calendar-day.today {
+      background: #064e3b;
+    }
+
+    .dark .calendar-day-header {
+      background: #374151;
+      color: #9ca3af;
+    }
+
+    .dark .notification-header {
+      background: #374151;
+      border-color: #4b5563;
+    }
+
+    .dark .notification-item {
+      border-color: #374151;
+    }
+
+    .dark .notification-item:hover {
+      background: #374151;
+    }
+
+    .dark .view-toggle {
+      background: #374151;
+    }
+
+    .dark .view-toggle button {
+      color: #9ca3af;
+    }
+
+    .dark .view-toggle button.active {
+      background: #1f2937;
+      color: #f3f4f6;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -676,6 +1002,31 @@
     { title: "Driver Replacement", description: "Mr. Leaughn Williams joined the Transport Team on September 23, 2025 as ambulance driver. This was a well-needed replacement and drivers are now relieved." },
     { title: "Commendation", description: "Special commendation to the transport Team for their dedication and resilience throughout the challenging period." },
     { title: "Training - Mandatory Defensive Driving Workshop", description: "Mr. Griffiths, Mr. Williams and Mr. Douglas: October 1-2, 2025, 8:30am-5pm. Mr. Chambers, Mr. Lewis and Mr. Campbell: October 8-9, 2025." }
+  ];
+
+  /***** Default Staff Data *****/
+  const DEFAULT_STAFF = [
+    { id: 1, name: "James Williams", trn: "123-456-789", department: "Transport", role: "Staff", phone: "876-555-0101", email: "j.williams@hospital.gov.jm", status: "active" },
+    { id: 2, name: "Sarah Brown", trn: "234-567-890", department: "Cleaning", role: "Supervisor", phone: "876-555-0102", email: "s.brown@hospital.gov.jm", status: "active" },
+    { id: 3, name: "Michael Douglas", trn: "345-678-901", department: "Transport", role: "Senior Staff", phone: "876-555-0103", email: "m.douglas@hospital.gov.jm", status: "active" },
+    { id: 4, name: "Patricia Campbell", trn: "456-789-012", department: "Security", role: "Team Lead", phone: "876-555-0104", email: "p.campbell@hospital.gov.jm", status: "active" },
+    { id: 5, name: "Robert Lewis", trn: "567-890-123", department: "Laundry", role: "Staff", phone: "876-555-0105", email: "r.lewis@hospital.gov.jm", status: "active" }
+  ];
+
+  /***** Default Leave Records *****/
+  const DEFAULT_LEAVE_RECORDS = [
+    { id: 1, staffId: 1, staffName: "James Williams", type: "sick", startDate: "2025-12-20", endDate: "2025-12-22", reason: "Medical appointment and recovery", status: "approved", department: "Transport" },
+    { id: 2, staffId: 2, staffName: "Sarah Brown", type: "vacation", startDate: "2025-12-24", endDate: "2025-12-31", reason: "Annual holiday leave", status: "approved", department: "Cleaning" },
+    { id: 3, staffId: 3, staffName: "Michael Douglas", type: "departmental", startDate: "2025-12-19", endDate: "2025-12-19", reason: "Training workshop attendance", status: "approved", department: "Transport" },
+    { id: 4, staffId: 4, staffName: "Patricia Campbell", type: "dayoff", startDate: "2025-12-21", endDate: "2025-12-21", reason: "Personal day", status: "pending", department: "Security" }
+  ];
+
+  /***** Default Time Tracking Records *****/
+  const DEFAULT_TIME_RECORDS = [
+    { id: 1, staffId: 1, staffName: "James Williams", type: "overtime", date: "2025-12-18", hours: 3, reason: "Extended ambulance coverage", department: "Transport" },
+    { id: 2, staffId: 2, staffName: "Sarah Brown", type: "late", date: "2025-12-17", hours: 0.5, reason: "Traffic delay", department: "Cleaning" },
+    { id: 3, staffId: 3, staffName: "Michael Douglas", type: "claims", date: "2025-12-16", hours: 2, reason: "Fuel reimbursement", department: "Transport" },
+    { id: 4, staffId: 4, staffName: "Patricia Campbell", type: "overtime", date: "2025-12-15", hours: 4, reason: "Night shift coverage", department: "Security" }
   ];
 
   /***** Utility: CSV parser (simple, handles quotes) *****/
@@ -748,6 +1099,29 @@
     const tripsChartRef = useRef(null);
     const fleetCompareRef = useRef(null);
 
+    // Staff Management
+    const [staffList, setStaffList] = useState([]);
+    const [staffSearchTerm, setStaffSearchTerm] = useState('');
+
+    // Leave Management
+    const [leaveRecords, setLeaveRecords] = useState([]);
+    const [leaveView, setLeaveView] = useState('list'); // 'list' or 'calendar'
+    const [leaveFilter, setLeaveFilter] = useState({ department: 'all', type: 'all' });
+    const [newLeave, setNewLeave] = useState({ staffId: '', staffName: '', type: 'sick', startDate: '', endDate: '', reason: '', department: '' });
+
+    // Time Tracking
+    const [timeRecords, setTimeRecords] = useState([]);
+    const [timeFilter, setTimeFilter] = useState({ type: 'all' });
+    const [newTimeRecord, setNewTimeRecord] = useState({ staffId: '', staffName: '', type: 'overtime', date: '', hours: 0, reason: '', department: '' });
+
+    // Calendar state
+    const [calendarDate, setCalendarDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    // Notification dropdown
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [notificationItems, setNotificationItems] = useState([]);
+
     // Check for saved login session
     useEffect(() => {
       try {
@@ -776,17 +1150,58 @@
           if (typeof parsed.totalPatients === 'number') setTotalPatients(parsed.totalPatients);
           if (typeof parsed.darkMode === 'boolean') setDarkMode(parsed.darkMode);
           if (typeof parsed.notifications === 'number') setNotifications(parsed.notifications);
+          // Load new data types
+          if (parsed.staffList) setStaffList(parsed.staffList);
+          if (parsed.leaveRecords) setLeaveRecords(parsed.leaveRecords);
+          if (parsed.timeRecords) setTimeRecords(parsed.timeRecords);
         } else {
           // initialize with defaults until sheet load
           setDepartments(DEFAULT_DEPARTMENTS);
           setFleetData(DEFAULT_FLEET);
           setPersonnelUpdates(DEFAULT_PERSONNEL);
           setTotalPatients(116);
+          setStaffList(DEFAULT_STAFF);
+          setLeaveRecords(DEFAULT_LEAVE_RECORDS);
+          setTimeRecords(DEFAULT_TIME_RECORDS);
         }
       } catch (e) {
         console.warn('Failed to load from localStorage', e);
       }
     }, []);
+
+    // Generate notifications based on leave records
+    useEffect(() => {
+      const today = new Date();
+      const in7Days = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      const upcomingLeaves = leaveRecords.filter(leave => {
+        const startDate = new Date(leave.startDate);
+        return startDate >= today && startDate <= in7Days;
+      });
+
+      const newNotifications = upcomingLeaves.map(leave => ({
+        id: leave.id,
+        type: leave.type === 'sick' ? 'urgent' : 'warning',
+        title: `Upcoming ${leave.type} leave`,
+        message: `${leave.staffName} - ${leave.startDate}`,
+        time: 'Upcoming'
+      }));
+
+      // Add high priority department issues
+      const urgentDepts = departments.filter(d => d.priority === 'High').slice(0, 2);
+      urgentDepts.forEach((dept, idx) => {
+        newNotifications.push({
+          id: `dept-${idx}`,
+          type: 'urgent',
+          title: 'High Priority Issue',
+          message: dept.name,
+          time: 'Active'
+        });
+      });
+
+      setNotificationItems(newNotifications);
+      setNotifications(newNotifications.length);
+    }, [leaveRecords, departments]);
 
     // Auto-save to localStorage whenever the core data changes
     useEffect(() => {
@@ -796,14 +1211,17 @@
         personnelUpdates,
         totalPatients,
         darkMode,
-        notifications
+        notifications,
+        staffList,
+        leaveRecords,
+        timeRecords
       };
       try {
         localStorage.setItem(LS_KEY, JSON.stringify(payload));
       } catch (e) {
         console.warn('Autosave failed', e);
       }
-    }, [departments, fleetData, personnelUpdates, totalPatients, darkMode, notifications]);
+    }, [departments, fleetData, personnelUpdates, totalPatients, darkMode, notifications, staffList, leaveRecords, timeRecords]);
 
     // Google Sheet loader (tries to fetch CSV, then merges with local data if present)
     const loadFromGoogleSheet = async () => {
@@ -1189,6 +1607,249 @@
       showToast('Data exported to hospital_report.csv', 'success');
     };
 
+    /***** Calendar Helpers *****/
+    const getCalendarDays = () => {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startDayOfWeek = firstDay.getDay();
+      const daysInMonth = lastDay.getDate();
+
+      const days = [];
+
+      // Previous month days
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
+      for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        days.push({ date: prevMonthLastDay - i, isCurrentMonth: false, fullDate: new Date(year, month - 1, prevMonthLastDay - i) });
+      }
+
+      // Current month days
+      for (let i = 1; i <= daysInMonth; i++) {
+        days.push({ date: i, isCurrentMonth: true, fullDate: new Date(year, month, i) });
+      }
+
+      // Next month days to complete the grid
+      const remaining = 42 - days.length;
+      for (let i = 1; i <= remaining; i++) {
+        days.push({ date: i, isCurrentMonth: false, fullDate: new Date(year, month + 1, i) });
+      }
+
+      return days;
+    };
+
+    const getEventsForDate = (date) => {
+      const dateStr = date.toISOString().split('T')[0];
+      return leaveRecords.filter(leave => {
+        const start = new Date(leave.startDate);
+        const end = new Date(leave.endDate);
+        const check = new Date(dateStr);
+        return check >= start && check <= end;
+      });
+    };
+
+    const isToday = (date) => {
+      const today = new Date();
+      return date.getDate() === today.getDate() &&
+             date.getMonth() === today.getMonth() &&
+             date.getFullYear() === today.getFullYear();
+    };
+
+    const navigateCalendar = (direction) => {
+      setCalendarDate(prev => {
+        const newDate = new Date(prev);
+        newDate.setMonth(newDate.getMonth() + direction);
+        return newDate;
+      });
+    };
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    /***** Leave Management *****/
+    const addLeaveRecord = () => {
+      if (!newLeave.staffName || !newLeave.startDate || !newLeave.endDate) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+      const record = {
+        ...newLeave,
+        id: Date.now(),
+        status: 'pending'
+      };
+      setLeaveRecords(prev => [...prev, record]);
+      setNewLeave({ staffId: '', staffName: '', type: 'sick', startDate: '', endDate: '', reason: '', department: '' });
+      showToast('Leave record added successfully', 'success');
+    };
+
+    const removeLeaveRecord = (id) => {
+      if (!confirm('Remove this leave record?')) return;
+      setLeaveRecords(prev => prev.filter(r => r.id !== id));
+      showToast('Leave record removed', 'warning');
+    };
+
+    const updateLeaveStatus = (id, status) => {
+      setLeaveRecords(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+      showToast(`Leave ${status}`, 'success');
+    };
+
+    const getLeaveTypeLabel = (type) => {
+      const labels = { sick: 'Sick Leave', vacation: 'Vacation', dayoff: 'Day Off', departmental: 'Departmental' };
+      return labels[type] || type;
+    };
+
+    const filteredLeaveRecords = leaveRecords.filter(record => {
+      if (leaveFilter.department !== 'all' && record.department !== leaveFilter.department) return false;
+      if (leaveFilter.type !== 'all' && record.type !== leaveFilter.type) return false;
+      return true;
+    });
+
+    /***** Time Tracking *****/
+    const addTimeRecord = () => {
+      if (!newTimeRecord.staffName || !newTimeRecord.date) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+      const record = {
+        ...newTimeRecord,
+        id: Date.now(),
+        hours: parseFloat(newTimeRecord.hours) || 0
+      };
+      setTimeRecords(prev => [...prev, record]);
+      setNewTimeRecord({ staffId: '', staffName: '', type: 'overtime', date: '', hours: 0, reason: '', department: '' });
+      showToast('Time record added successfully', 'success');
+    };
+
+    const removeTimeRecord = (id) => {
+      if (!confirm('Remove this time record?')) return;
+      setTimeRecords(prev => prev.filter(r => r.id !== id));
+      showToast('Time record removed', 'warning');
+    };
+
+    const getTimeTypeLabel = (type) => {
+      const labels = { claims: 'Claims', late: 'Late Arrival', overtime: 'Overtime', dayoff: 'Day Off' };
+      return labels[type] || type;
+    };
+
+    const filteredTimeRecords = timeRecords.filter(record => {
+      if (timeFilter.type !== 'all' && record.type !== timeFilter.type) return false;
+      return true;
+    });
+
+    const timeStats = {
+      claims: timeRecords.filter(r => r.type === 'claims').length,
+      late: timeRecords.filter(r => r.type === 'late').length,
+      overtime: timeRecords.filter(r => r.type === 'overtime').reduce((sum, r) => sum + (r.hours || 0), 0),
+      dayoff: timeRecords.filter(r => r.type === 'dayoff').length
+    };
+
+    /***** Reports & Export *****/
+    const exportToExcel = () => {
+      if (typeof XLSX === 'undefined') {
+        showToast('Excel export library not loaded', 'error');
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+
+      // Departments sheet
+      const deptData = departments.map(d => ({
+        'Department': d.name,
+        'Issues': d.issues,
+        'Barriers': d.barriers,
+        'Recommendations': d.recommendations,
+        'Priority': d.priority
+      }));
+      const deptSheet = XLSX.utils.json_to_sheet(deptData);
+      XLSX.utils.book_append_sheet(wb, deptSheet, 'Departments');
+
+      // Fleet sheet
+      const fleetSheetData = fleetData.map(f => ({
+        'Ambulance': f.ambulance,
+        'Inter-facility': f.inter,
+        'Intra-facility': f.intra,
+        'Total Trips': (f.inter || 0) + (f.intra || 0),
+        'Fuel Cost': f.fuel,
+        'Remarks': f.remarks
+      }));
+      const fleetSheet = XLSX.utils.json_to_sheet(fleetSheetData);
+      XLSX.utils.book_append_sheet(wb, fleetSheet, 'Fleet');
+
+      // Leave Records sheet
+      const leaveData = leaveRecords.map(l => ({
+        'Staff Name': l.staffName,
+        'Department': l.department,
+        'Type': getLeaveTypeLabel(l.type),
+        'Start Date': l.startDate,
+        'End Date': l.endDate,
+        'Reason': l.reason,
+        'Status': l.status
+      }));
+      const leaveSheet = XLSX.utils.json_to_sheet(leaveData);
+      XLSX.utils.book_append_sheet(wb, leaveSheet, 'Leave Records');
+
+      // Time Tracking sheet
+      const timeData = timeRecords.map(t => ({
+        'Staff Name': t.staffName,
+        'Department': t.department,
+        'Type': getTimeTypeLabel(t.type),
+        'Date': t.date,
+        'Hours': t.hours,
+        'Reason': t.reason
+      }));
+      const timeSheet = XLSX.utils.json_to_sheet(timeData);
+      XLSX.utils.book_append_sheet(wb, timeSheet, 'Time Tracking');
+
+      XLSX.writeFile(wb, 'hospital_report.xlsx');
+      showToast('Data exported to hospital_report.xlsx', 'success');
+    };
+
+    const exportAllDataJSON = () => {
+      const data = {
+        departments,
+        fleetData,
+        personnelUpdates,
+        staffList,
+        leaveRecords,
+        timeRecords,
+        totalPatients,
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'hospital_backup.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Backup exported successfully', 'success');
+    };
+
+    const importDataJSON = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.departments) setDepartments(data.departments);
+          if (data.fleetData) setFleetData(data.fleetData);
+          if (data.personnelUpdates) setPersonnelUpdates(data.personnelUpdates);
+          if (data.staffList) setStaffList(data.staffList);
+          if (data.leaveRecords) setLeaveRecords(data.leaveRecords);
+          if (data.timeRecords) setTimeRecords(data.timeRecords);
+          if (typeof data.totalPatients === 'number') setTotalPatients(data.totalPatients);
+          showToast('Data imported successfully', 'success');
+        } catch (err) {
+          showToast('Failed to import data: Invalid format', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+
     /***** Login/Logout handlers *****/
     const handleLogin = (e) => {
       e.preventDefault();
@@ -1362,10 +2023,48 @@
                   {darkMode ? '☀ Light' : '☾ Dark'}
                 </button>
                 <div className="relative">
-                  <button className="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-xl hover:scale-110 transition-transform">
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-xl hover:scale-110 transition-transform"
+                  >
                     🔔
                   </button>
                   {notifications > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{notifications}</span>}
+
+                  {/* Notification Dropdown */}
+                  {showNotifications && (
+                    <div className={`notification-dropdown ${darkMode ? 'bg-gray-800' : ''}`}>
+                      <div className={`notification-header ${darkMode ? 'bg-gray-700' : ''}`}>
+                        <h3 className="font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Notifications</h3>
+                        <button
+                          onClick={() => { setNotificationItems([]); setNotifications(0); }}
+                          className="text-sm text-blue-500 hover:underline"
+                        >
+                          Clear All
+                        </button>
+                      </div>
+                      <div className="notification-list">
+                        {notificationItems.length === 0 ? (
+                          <div className="p-6 text-center text-gray-500">
+                            No notifications
+                          </div>
+                        ) : (
+                          notificationItems.map((item, idx) => (
+                            <div key={idx} className={`notification-item ${item.type}`}>
+                              <div className={`notification-icon ${item.type}`}>
+                                {item.type === 'urgent' ? '🚨' : item.type === 'warning' ? '⚠️' : 'ℹ️'}
+                              </div>
+                              <div className="flex-1">
+                                <p className="font-semibold text-sm" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>{item.title}</p>
+                                <p className="text-xs text-gray-500">{item.message}</p>
+                                <p className="text-xs text-gray-400 mt-1">{item.time}</p>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="user-info">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
@@ -1386,6 +2085,10 @@
                 { id: 'departments', label: '🏢 Departments', icon: '🏢' },
                 { id: 'fleet', label: '🚑 Fleet Report', icon: '🚑' },
                 { id: 'personnel', label: '👥 Personnel', icon: '👥' },
+                { id: 'calendar', label: '📅 Calendar', icon: '📅' },
+                { id: 'leave', label: '🏖️ Leave', icon: '🏖️' },
+                { id: 'time-tracking', label: '⏱️ Time Tracking', icon: '⏱️' },
+                { id: 'reports', label: '📋 Reports', icon: '📋' },
                 { id: 'data-entry', label: '📝 Data Entry', icon: '📝' }
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -1762,6 +2465,539 @@
                   </div>
                 </div>
               ))}
+            </section>
+          )}
+
+          {/* Calendar */}
+          {activeTab === 'calendar' && (
+            <section className="space-y-6 animate-fadeIn">
+              <div className={`calendar-container ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="calendar-header">
+                  <button onClick={() => navigateCalendar(-1)} className="calendar-nav-btn">◀</button>
+                  <h2 className="text-xl font-bold">
+                    {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
+                  </h2>
+                  <button onClick={() => navigateCalendar(1)} className="calendar-nav-btn">▶</button>
+                </div>
+
+                <div className="calendar-grid">
+                  {/* Day headers */}
+                  {dayNames.map(day => (
+                    <div key={day} className={`calendar-day-header ${darkMode ? 'bg-gray-700' : ''}`}>{day}</div>
+                  ))}
+
+                  {/* Calendar days */}
+                  {getCalendarDays().map((day, idx) => {
+                    const events = getEventsForDate(day.fullDate);
+                    return (
+                      <div
+                        key={idx}
+                        className={`calendar-day ${!day.isCurrentMonth ? 'other-month' : ''} ${isToday(day.fullDate) ? 'today' : ''}`}
+                        onClick={() => setSelectedDate(day.fullDate)}
+                      >
+                        <div className="calendar-day-number">{day.date}</div>
+                        {events.slice(0, 3).map((event, eIdx) => (
+                          <div key={eIdx} className={`calendar-event ${event.type}`}>
+                            {event.staffName}
+                          </div>
+                        ))}
+                        {events.length > 3 && (
+                          <div className="text-xs text-gray-500">+{events.length - 3} more</div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selected Date Details */}
+              {selectedDate && (
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    📅 {selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                  </h3>
+                  {getEventsForDate(selectedDate).length === 0 ? (
+                    <p className="text-gray-500">No events scheduled for this date.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {getEventsForDate(selectedDate).map((event, idx) => (
+                        <div key={idx} className={`p-4 rounded-lg border-l-4 ${
+                          event.type === 'sick' ? 'border-red-500 bg-red-50' :
+                          event.type === 'vacation' ? 'border-purple-500 bg-purple-50' :
+                          event.type === 'dayoff' ? 'border-yellow-500 bg-yellow-50' :
+                          'border-blue-500 bg-blue-50'
+                        }`}>
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-semibold">{event.staffName}</p>
+                              <p className="text-sm text-gray-600">{event.department}</p>
+                            </div>
+                            <span className={`leave-badge ${event.type}`}>{getLeaveTypeLabel(event.type)}</span>
+                          </div>
+                          <p className="text-sm mt-2">{event.reason}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Calendar Legend */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Legend</h3>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-red-200"></span> Sick Leave</div>
+                  <div className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-purple-200"></span> Vacation</div>
+                  <div className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-yellow-200"></span> Day Off</div>
+                  <div className="flex items-center gap-2"><span className="w-4 h-4 rounded bg-blue-200"></span> Departmental</div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Leave Management */}
+          {activeTab === 'leave' && (
+            <section className="space-y-6 animate-fadeIn">
+              {/* View Toggle & Filters */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div className={`view-toggle ${darkMode ? 'bg-gray-700' : ''}`}>
+                    <button className={leaveView === 'list' ? 'active' : ''} onClick={() => setLeaveView('list')}>📋 List View</button>
+                    <button className={leaveView === 'calendar' ? 'active' : ''} onClick={() => setLeaveView('calendar')}>📅 Calendar View</button>
+                  </div>
+                  <div className="flex gap-3">
+                    <select
+                      value={leaveFilter.type}
+                      onChange={(e) => setLeaveFilter({...leaveFilter, type: e.target.value})}
+                      className={`px-3 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                    >
+                      <option value="all">All Types</option>
+                      <option value="sick">Sick Leave</option>
+                      <option value="vacation">Vacation</option>
+                      <option value="dayoff">Day Off</option>
+                      <option value="departmental">Departmental</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className={`stat-card red ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <p className="text-sm text-gray-500">Sick Leave</p>
+                  <p className="text-3xl font-bold" style={{color: '#ef4444'}}>{leaveRecords.filter(r => r.type === 'sick').length}</p>
+                </div>
+                <div className={`stat-card purple ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <p className="text-sm text-gray-500">Vacation</p>
+                  <p className="text-3xl font-bold" style={{color: '#a855f7'}}>{leaveRecords.filter(r => r.type === 'vacation').length}</p>
+                </div>
+                <div className={`stat-card blue ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <p className="text-sm text-gray-500">Day Off</p>
+                  <p className="text-3xl font-bold" style={{color: '#f59e0b'}}>{leaveRecords.filter(r => r.type === 'dayoff').length}</p>
+                </div>
+                <div className={`stat-card green ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <p className="text-sm text-gray-500">Departmental</p>
+                  <p className="text-3xl font-bold" style={{color: '#0ea5e9'}}>{leaveRecords.filter(r => r.type === 'departmental').length}</p>
+                </div>
+              </div>
+
+              {/* Add Leave Form */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Add Leave Record</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Staff Name *"
+                    value={newLeave.staffName}
+                    onChange={(e) => setNewLeave({...newLeave, staffName: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Department"
+                    value={newLeave.department}
+                    onChange={(e) => setNewLeave({...newLeave, department: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <select
+                    value={newLeave.type}
+                    onChange={(e) => setNewLeave({...newLeave, type: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  >
+                    <option value="sick">Sick Leave</option>
+                    <option value="vacation">Vacation</option>
+                    <option value="dayoff">Day Off</option>
+                    <option value="departmental">Departmental</option>
+                  </select>
+                  <input
+                    type="date"
+                    value={newLeave.startDate}
+                    onChange={(e) => setNewLeave({...newLeave, startDate: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="date"
+                    value={newLeave.endDate}
+                    onChange={(e) => setNewLeave({...newLeave, endDate: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Reason"
+                    value={newLeave.reason}
+                    onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                </div>
+                <button onClick={addLeaveRecord} className="btn-primary mt-4">Add Leave Record</button>
+              </div>
+
+              {/* Leave List View */}
+              {leaveView === 'list' && (
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Leave Records ({filteredLeaveRecords.length})</h3>
+                  {filteredLeaveRecords.length === 0 ? (
+                    <p className="text-gray-500 text-center py-8">No leave records found.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredLeaveRecords.map((record) => (
+                        <div key={record.id} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} flex flex-wrap justify-between items-center gap-4`}>
+                          <div className="flex items-center gap-4">
+                            <div className={`staff-avatar`} style={{background: 'linear-gradient(135deg, #10b981, #0ea5e9)'}}>
+                              {record.staffName.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-semibold">{record.staffName}</p>
+                              <p className="text-sm text-gray-500">{record.department}</p>
+                            </div>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm font-medium">{record.startDate} to {record.endDate}</p>
+                            <p className="text-xs text-gray-500">{record.reason}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className={`leave-badge ${record.type}`}>{getLeaveTypeLabel(record.type)}</span>
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                              record.status === 'approved' ? 'bg-green-100 text-green-700' :
+                              record.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-red-100 text-red-700'
+                            }`}>{record.status}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            {record.status === 'pending' && (
+                              <>
+                                <button onClick={() => updateLeaveStatus(record.id, 'approved')} className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Approve</button>
+                                <button onClick={() => updateLeaveStatus(record.id, 'rejected')} className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600">Reject</button>
+                              </>
+                            )}
+                            <button onClick={() => removeLeaveRecord(record.id)} className="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300">Remove</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Leave Calendar View */}
+              {leaveView === 'calendar' && (
+                <div className={`calendar-container ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <div className="calendar-header">
+                    <button onClick={() => navigateCalendar(-1)} className="calendar-nav-btn">◀</button>
+                    <h2 className="text-xl font-bold">
+                      {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
+                    </h2>
+                    <button onClick={() => navigateCalendar(1)} className="calendar-nav-btn">▶</button>
+                  </div>
+                  <div className="calendar-grid">
+                    {dayNames.map(day => (
+                      <div key={day} className={`calendar-day-header ${darkMode ? 'bg-gray-700' : ''}`}>{day}</div>
+                    ))}
+                    {getCalendarDays().map((day, idx) => {
+                      const events = getEventsForDate(day.fullDate);
+                      return (
+                        <div
+                          key={idx}
+                          className={`calendar-day ${!day.isCurrentMonth ? 'other-month' : ''} ${isToday(day.fullDate) ? 'today' : ''}`}
+                        >
+                          <div className="calendar-day-number">{day.date}</div>
+                          {events.slice(0, 2).map((event, eIdx) => (
+                            <div key={eIdx} className={`calendar-event ${event.type}`}>
+                              {event.staffName}
+                            </div>
+                          ))}
+                          {events.length > 2 && (
+                            <div className="text-xs text-gray-500">+{events.length - 2} more</div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* Time Tracking */}
+          {activeTab === 'time-tracking' && (
+            <section className="space-y-6 animate-fadeIn">
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className={`time-card claims ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Claims</p>
+                      <p className="text-3xl font-bold" style={{color: '#3b82f6'}}>{timeStats.claims}</p>
+                    </div>
+                    <span className="text-3xl opacity-30">📋</span>
+                  </div>
+                </div>
+                <div className={`time-card late ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Late Arrivals</p>
+                      <p className="text-3xl font-bold" style={{color: '#ef4444'}}>{timeStats.late}</p>
+                    </div>
+                    <span className="text-3xl opacity-30">⏰</span>
+                  </div>
+                </div>
+                <div className={`time-card overtime ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Overtime Hours</p>
+                      <p className="text-3xl font-bold" style={{color: '#10b981'}}>{timeStats.overtime}h</p>
+                    </div>
+                    <span className="text-3xl opacity-30">⏱️</span>
+                  </div>
+                </div>
+                <div className={`time-card dayoff ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Days Off</p>
+                      <p className="text-3xl font-bold" style={{color: '#f59e0b'}}>{timeStats.dayoff}</p>
+                    </div>
+                    <span className="text-3xl opacity-30">🏖️</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filter */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <h3 className="font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Time Records</h3>
+                  <select
+                    value={timeFilter.type}
+                    onChange={(e) => setTimeFilter({type: e.target.value})}
+                    className={`px-3 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  >
+                    <option value="all">All Types</option>
+                    <option value="claims">Claims</option>
+                    <option value="late">Late Arrivals</option>
+                    <option value="overtime">Overtime</option>
+                    <option value="dayoff">Day Off</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Add Time Record Form */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Add Time Record</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Staff Name *"
+                    value={newTimeRecord.staffName}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, staffName: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Department"
+                    value={newTimeRecord.department}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, department: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <select
+                    value={newTimeRecord.type}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, type: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  >
+                    <option value="overtime">Overtime</option>
+                    <option value="late">Late Arrival</option>
+                    <option value="claims">Claims</option>
+                    <option value="dayoff">Day Off</option>
+                  </select>
+                  <input
+                    type="date"
+                    value={newTimeRecord.date}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, date: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Hours"
+                    min="0"
+                    step="0.5"
+                    value={newTimeRecord.hours}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, hours: parseFloat(e.target.value) || 0})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Reason/Notes"
+                    value={newTimeRecord.reason}
+                    onChange={(e) => setNewTimeRecord({...newTimeRecord, reason: e.target.value})}
+                    className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}
+                  />
+                </div>
+                <button onClick={addTimeRecord} className="btn-primary mt-4">Add Time Record</button>
+              </div>
+
+              {/* Time Records List */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="overflow-x-auto">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Staff Name</th>
+                        <th>Department</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Hours</th>
+                        <th>Reason</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredTimeRecords.length === 0 ? (
+                        <tr><td colSpan="7" className="text-center py-8 text-gray-500">No time records found.</td></tr>
+                      ) : (
+                        filteredTimeRecords.map((record) => (
+                          <tr key={record.id}>
+                            <td className="font-medium">{record.staffName}</td>
+                            <td>{record.department || '-'}</td>
+                            <td>
+                              <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                                record.type === 'overtime' ? 'bg-green-100 text-green-700' :
+                                record.type === 'late' ? 'bg-red-100 text-red-700' :
+                                record.type === 'claims' ? 'bg-blue-100 text-blue-700' :
+                                'bg-yellow-100 text-yellow-700'
+                              }`}>{getTimeTypeLabel(record.type)}</span>
+                            </td>
+                            <td>{record.date}</td>
+                            <td>{record.hours}h</td>
+                            <td>{record.reason || '-'}</td>
+                            <td>
+                              <button onClick={() => removeTimeRecord(record.id)} className="text-red-500 hover:underline">Remove</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Reports */}
+          {activeTab === 'reports' && (
+            <section className="space-y-6 animate-fadeIn">
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-6 text-xl" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Reports & Export</h3>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100">
+                    <p className="text-3xl font-bold text-blue-600">{departments.length}</p>
+                    <p className="text-sm text-gray-600">Departments</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-green-50 to-green-100">
+                    <p className="text-3xl font-bold text-green-600">{staffList.length}</p>
+                    <p className="text-sm text-gray-600">Staff Members</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100">
+                    <p className="text-3xl font-bold text-purple-600">{leaveRecords.length}</p>
+                    <p className="text-sm text-gray-600">Leave Records</p>
+                  </div>
+                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100">
+                    <p className="text-3xl font-bold text-orange-600">{timeRecords.length}</p>
+                    <p className="text-sm text-gray-600">Time Records</p>
+                  </div>
+                </div>
+
+                {/* Export Options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className={`p-6 rounded-lg border-2 border-dashed ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}>
+                    <h4 className="font-bold mb-3" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📤 Export Data</h4>
+                    <p className="text-sm text-gray-500 mb-4">Download your data in various formats for external use or backup.</p>
+                    <div className="space-y-3">
+                      <button onClick={exportToCSV} className="w-full btn-primary flex items-center justify-center gap-2">
+                        📄 Export to CSV
+                      </button>
+                      <button onClick={exportToExcel} className="w-full btn-secondary flex items-center justify-center gap-2">
+                        📊 Export to Excel
+                      </button>
+                      <button onClick={exportAllDataJSON} className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2">
+                        💾 Backup All Data (JSON)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={`p-6 rounded-lg border-2 border-dashed ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}>
+                    <h4 className="font-bold mb-3" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📥 Import Data</h4>
+                    <p className="text-sm text-gray-500 mb-4">Restore data from a previously exported JSON backup file.</p>
+                    <label className="w-full px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 flex items-center justify-center gap-2 text-blue-600 font-semibold">
+                      📂 Select Backup File
+                      <input type="file" accept=".json" onChange={importDataJSON} className="hidden" />
+                    </label>
+                    <p className="text-xs text-gray-400 mt-3">Only .json backup files are supported</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Report Summaries */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Department Summary */}
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🏢 Department Summary</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between"><span>High Priority Issues:</span><span className="font-bold text-red-500">{departments.filter(d => d.priority === 'High').length}</span></div>
+                    <div className="flex justify-between"><span>Medium Priority Issues:</span><span className="font-bold text-yellow-500">{departments.filter(d => d.priority === 'Medium').length}</span></div>
+                    <div className="flex justify-between"><span>Low Priority Issues:</span><span className="font-bold text-green-500">{departments.filter(d => d.priority === 'Low').length}</span></div>
+                  </div>
+                </div>
+
+                {/* Fleet Summary */}
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🚑 Fleet Summary</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between"><span>Total Vehicles:</span><span className="font-bold">{fleetData.length}</span></div>
+                    <div className="flex justify-between"><span>Total Trips:</span><span className="font-bold text-blue-500">{fleetData.reduce((s,f) => s + (f.inter||0) + (f.intra||0), 0)}</span></div>
+                    <div className="flex justify-between"><span>Total Fuel Cost:</span><span className="font-bold text-purple-500">${fleetData.reduce((s,f) => s + (f.fuel||0), 0).toLocaleString()}</span></div>
+                  </div>
+                </div>
+
+                {/* Leave Summary */}
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🏖️ Leave Summary</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between"><span>Pending Approvals:</span><span className="font-bold text-yellow-500">{leaveRecords.filter(l => l.status === 'pending').length}</span></div>
+                    <div className="flex justify-between"><span>Approved:</span><span className="font-bold text-green-500">{leaveRecords.filter(l => l.status === 'approved').length}</span></div>
+                    <div className="flex justify-between"><span>Rejected:</span><span className="font-bold text-red-500">{leaveRecords.filter(l => l.status === 'rejected').length}</span></div>
+                  </div>
+                </div>
+
+                {/* Time Summary */}
+                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>⏱️ Time Tracking Summary</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between"><span>Total Overtime Hours:</span><span className="font-bold text-green-500">{timeStats.overtime}h</span></div>
+                    <div className="flex justify-between"><span>Late Arrivals:</span><span className="font-bold text-red-500">{timeStats.late}</span></div>
+                    <div className="flex justify-between"><span>Claims Filed:</span><span className="font-bold text-blue-500">{timeStats.claims}</span></div>
+                  </div>
+                </div>
+              </div>
             </section>
           )}
 
