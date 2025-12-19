@@ -2332,8 +2332,7 @@
                 { id: 'calendar', label: '📅 Calendar', icon: '📅' },
                 { id: 'leave', label: '🏖️ Leave', icon: '🏖️' },
                 { id: 'time-tracking', label: '⏱️ Time Tracking', icon: '⏱️' },
-                { id: 'reports', label: '📋 Reports', icon: '📋' },
-                { id: 'data-entry', label: '📝 Data Entry', icon: '📝' }
+                { id: 'reports', label: '📋 Reports', icon: '📋' }
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                   className={`nav-tab ${activeTab===tab.id ? 'active' : ''}`}>
@@ -2572,13 +2571,82 @@
 
           {/* Departments */}
           {activeTab === 'departments' && (
-            <section className="space-y-6">
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded shadow`}>
-                <div className="relative">
-                  <input value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)} placeholder="Search departments, issues, or barriers..." className="w-full pl-4 pr-4 py-2 border rounded" />
+            <section className="space-y-6 animate-fadeIn">
+              {/* Header with Stats */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🏢 Department Management</h2>
+                    <p className="text-sm text-gray-500">Manage department issues, barriers, and recommendations</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="text-center px-4 py-2 rounded-lg bg-blue-50">
+                      <p className="text-2xl font-bold text-blue-600">{departments.length}</p>
+                      <p className="text-xs text-gray-500">Total Departments</p>
+                    </div>
+                    <div className="text-center px-4 py-2 rounded-lg bg-red-50">
+                      <p className="text-2xl font-bold text-red-600">{departments.filter(d => d.priority === 'High').length}</p>
+                      <p className="text-xs text-gray-500">High Priority</p>
+                    </div>
+                    <div className="text-center px-4 py-2 rounded-lg bg-yellow-50">
+                      <p className="text-2xl font-bold text-yellow-600">{departments.filter(d => d.priority === 'Medium').length}</p>
+                      <p className="text-xs text-gray-500">Medium Priority</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              {/* Add Department Form */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>➕ Add New Department</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Department Name *</label>
+                    <input type="text" placeholder="Enter department name" value={newDept.name} onChange={(e)=>setNewDept({...newDept,name:e.target.value})}
+                      className={`form-input ${errors.dept.name ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.dept.name && <p className="text-red-500 text-sm mt-1">{errors.dept.name}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Priority Level</label>
+                    <select value={newDept.priority} onChange={(e)=>setNewDept({...newDept,priority:e.target.value})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}>
+                      <option value="Low">Low Priority</option>
+                      <option value="Medium">Medium Priority</option>
+                      <option value="High">High Priority</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1">Current Issues *</label>
+                    <textarea rows="2" placeholder="Describe current issues..." value={newDept.issues} onChange={(e)=>setNewDept({...newDept,issues:e.target.value})}
+                      className={`form-input ${errors.dept.issues ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                    {errors.dept.issues && <p className="text-red-500 text-sm mt-1">{errors.dept.issues}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Barriers</label>
+                    <textarea rows="2" placeholder="Any barriers..." value={newDept.barriers} onChange={(e)=>setNewDept({...newDept,barriers:e.target.value})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Recommendations</label>
+                    <textarea rows="2" placeholder="Recommendations..." value={newDept.recommendations} onChange={(e)=>setNewDept({...newDept,recommendations:e.target.value})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button onClick={addDepartment} className="btn-primary">💾 Save Department</button>
+                  <button onClick={resetDeptForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+                </div>
+              </div>
+
+              {/* Search */}
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded shadow`}>
+                <div className="relative">
+                  <input value={searchTerm} onChange={(e)=>setSearchTerm(e.target.value)} placeholder="🔍 Search departments, issues, or barriers..."
+                    className={`w-full pl-4 pr-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`} />
+                </div>
+              </div>
+
+              {/* Department Cards */}
               <div className="grid gap-6">
                 {departments.filter(d => d.name.toLowerCase().includes(searchTerm.toLowerCase()) || d.issues.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((dept, idx) => (
@@ -2586,29 +2654,29 @@
                     <div className={`p-4 ${dept.priority==='High' ? 'border-l-4 border-red-500 bg-red-50' : dept.priority==='Medium' ? 'border-l-4 border-yellow-500 bg-yellow-50' : 'border-l-4 border-green-500 bg-green-50'}`}>
                       <div className="flex justify-between">
                         <h3 className="font-semibold">{dept.name}</h3>
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${dept.priority==='High' ? 'bg-red-100 text-red-700' : dept.priority==='Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
                           {dept.priority} Priority
                         </span>
                       </div>
                     </div>
                     <div className="p-6 space-y-3">
                       <div>
-                        <h4 className="font-semibold">Current Issues</h4>
+                        <h4 className="font-semibold text-sm text-gray-500">Current Issues</h4>
                         <p className="text-sm">{dept.issues}</p>
                       </div>
                       {dept.barriers && dept.barriers !== 'None' && (
                         <div>
-                          <h4 className="font-semibold">Barriers</h4>
+                          <h4 className="font-semibold text-sm text-gray-500">Barriers</h4>
                           <p className="text-sm">{dept.barriers}</p>
                         </div>
                       )}
                       <div>
-                        <h4 className="font-semibold">Recommendations</h4>
+                        <h4 className="font-semibold text-sm text-gray-500">Recommendations</h4>
                         <p className="text-sm">{dept.recommendations}</p>
                       </div>
-                      <div className="flex justify-end gap-2">
-                        <button onClick={() => openEditModal('department', departments.indexOf(dept), dept)} className="px-3 py-2 text-blue-500 hover:bg-blue-50 rounded">Edit</button>
-                        <button onClick={()=>removeDepartment(departments.indexOf(dept))} className="px-3 py-2 text-red-500 hover:bg-red-50 rounded">Remove</button>
+                      <div className="flex justify-end gap-2 pt-2 border-t">
+                        <button onClick={() => openEditModal('department', departments.indexOf(dept), dept)} className="px-3 py-2 text-blue-500 hover:bg-blue-50 rounded font-medium">✏️ Edit</button>
+                        <button onClick={()=>removeDepartment(departments.indexOf(dept))} className="px-3 py-2 text-red-500 hover:bg-red-50 rounded font-medium">🗑️ Remove</button>
                       </div>
                     </div>
                   </div>
@@ -2619,61 +2687,120 @@
 
           {/* Fleet */}
           {activeTab === 'fleet' && (
-            <section className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <section className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🚑 Fleet Management</h2>
+                    <p className="text-sm text-gray-500">Track ambulance trips, fuel costs, and fleet status</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                  <h4 className="text-sm">Total Trips</h4>
+                  <h4 className="text-sm text-gray-500">🚑 Fleet Size</h4>
+                  <p className="text-3xl font-bold text-indigo-600">{fleetData.length}</p>
+                  <p className="text-xs mt-1 text-gray-400">Ambulances</p>
+                </div>
+                <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
+                  <h4 className="text-sm text-gray-500">📊 Total Trips</h4>
                   <p className="text-3xl font-bold text-blue-600">{totalTrips}</p>
-                  <p className="text-xs mt-1">Inter: {fleetData.reduce((s,i)=>s+(parseInt(i.inter)||0),0)} | Intra: {fleetData.reduce((s,i)=>s+(parseInt(i.intra)||0),0)}</p>
+                  <p className="text-xs mt-1 text-gray-400">Inter: {fleetData.reduce((s,i)=>s+(parseInt(i.inter)||0),0)} | Intra: {fleetData.reduce((s,i)=>s+(parseInt(i.intra)||0),0)}</p>
                 </div>
                 <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                  <h4 className="text-sm">Patients Transported</h4>
+                  <h4 className="text-sm text-gray-500">🏥 Patients Transported</h4>
                   <p className="text-3xl font-bold text-green-600">{totalPatients}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <input type="number" min="0" value={totalPatients} onChange={(e)=>setTotalPatients(parseInt(e.target.value)||0)}
+                      className={`w-20 px-2 py-1 border rounded text-sm ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    <span className="text-xs text-gray-400">Edit</span>
+                  </div>
                 </div>
                 <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                  <h4 className="text-sm">Total Fuel Cost</h4>
+                  <h4 className="text-sm text-gray-500">⛽ Total Fuel Cost</h4>
                   <p className="text-3xl font-bold text-purple-600">${totalFuel.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</p>
                 </div>
               </div>
 
+              {/* Add Fleet Vehicle Form */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>➕ Add New Fleet Vehicle</h3>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">License Number *</label>
+                    <input type="text" placeholder="e.g., 304586" value={newFleet.ambulance} onChange={(e)=>setNewFleet({...newFleet,ambulance:e.target.value})}
+                      className={`form-input ${errors.fleet.ambulance ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.fleet.ambulance && <p className="text-red-500 text-xs mt-1">{errors.fleet.ambulance}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Inter-facility Trips</label>
+                    <input type="number" min="0" placeholder="0" value={newFleet.inter} onChange={(e)=>setNewFleet({...newFleet,inter:parseInt(e.target.value)||0})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Intra-facility Trips</label>
+                    <input type="number" min="0" placeholder="0" value={newFleet.intra} onChange={(e)=>setNewFleet({...newFleet,intra:parseInt(e.target.value)||0})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Fuel Cost ($)</label>
+                    <input type="number" min="0" step="0.01" placeholder="0.00" value={newFleet.fuel} onChange={(e)=>setNewFleet({...newFleet,fuel:parseFloat(e.target.value)||0})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Remarks</label>
+                    <input type="text" placeholder="Notes..." value={newFleet.remarks} onChange={(e)=>setNewFleet({...newFleet,remarks:e.target.value})}
+                      className={`form-input ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button onClick={addFleet} className="btn-primary">💾 Save Vehicle</button>
+                  <button onClick={resetFleetForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+                </div>
+              </div>
+
+              {/* Fleet Table */}
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded shadow overflow-hidden`}>
                 <div className="p-6">
-                  <h3 className="font-semibold mb-4">Ambulance Fleet Details</h3>
+                  <h3 className="font-semibold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📋 Ambulance Fleet Details</h3>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full">
-                      <thead className={`${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                    <table className="data-table">
+                      <thead>
                         <tr>
-                          <th className="px-4 py-2 text-left text-xs">License #</th>
-                          <th className="px-4 py-2 text-left text-xs">Inter-facility</th>
-                          <th className="px-4 py-2 text-left text-xs">Intra-facility</th>
-                          <th className="px-4 py-2 text-left text-xs">Total Trips</th>
-                          <th className="px-4 py-2 text-left text-xs">Fuel Cost</th>
-                          <th className="px-4 py-2 text-left text-xs">Remarks</th>
-                          <th className="px-4 py-2 text-left text-xs">Action</th>
+                          <th>License #</th>
+                          <th>Inter-facility</th>
+                          <th>Intra-facility</th>
+                          <th>Total Trips</th>
+                          <th>Fuel Cost</th>
+                          <th>Remarks</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {fleetData.map((v, i) => (
-                          <tr key={i} className="hover:bg-gray-50">
-                            <td className="px-4 py-2">{v.ambulance}</td>
-                            <td className="px-4 py-2">{v.inter}</td>
-                            <td className="px-4 py-2">{v.intra}</td>
-                            <td className="px-4 py-2 font-semibold">{(parseInt(v.inter)||0)+(parseInt(v.intra)||0)}</td>
-                            <td className="px-4 py-2">${(parseFloat(v.fuel)||0).toLocaleString(undefined,{minimumFractionDigits:2})}</td>
-                            <td className="px-4 py-2">{v.remarks||'-'}</td>
-                            <td className="px-4 py-2">
-                              <button onClick={() => openEditModal('fleet', i, v)} className="text-blue-500 mr-2 hover:underline">Edit</button>
-                              <button onClick={()=>removeFleet(i)} className="text-red-500 hover:underline">Remove</button>
+                          <tr key={i}>
+                            <td className="font-medium">{v.ambulance}</td>
+                            <td>{v.inter}</td>
+                            <td>{v.intra}</td>
+                            <td className="font-semibold text-blue-600">{(parseInt(v.inter)||0)+(parseInt(v.intra)||0)}</td>
+                            <td className="text-green-600">${(parseFloat(v.fuel)||0).toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+                            <td className="text-sm">{v.remarks||'-'}</td>
+                            <td>
+                              <button onClick={() => openEditModal('fleet', i, v)} className="text-blue-500 mr-2 hover:underline">✏️ Edit</button>
+                              <button onClick={()=>removeFleet(i)} className="text-red-500 hover:underline">🗑️</button>
                             </td>
                           </tr>
                         ))}
-                        <tr className="font-semibold bg-blue-50">
-                          <td className="px-4 py-2">TOTAL</td>
-                          <td className="px-4 py-2">{fleetData.reduce((s,i)=>s+(parseInt(i.inter)||0),0)}</td>
-                          <td className="px-4 py-2">{fleetData.reduce((s,i)=>s+(parseInt(i.intra)||0),0)}</td>
-                          <td className="px-4 py-2">{totalTrips}</td>
-                          <td className="px-4 py-2">${totalFuel.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
-                          <td className="px-4 py-2">-</td>
+                        <tr className="font-bold bg-gradient-to-r from-blue-50 to-blue-100">
+                          <td>TOTAL</td>
+                          <td>{fleetData.reduce((s,i)=>s+(parseInt(i.inter)||0),0)}</td>
+                          <td>{fleetData.reduce((s,i)=>s+(parseInt(i.intra)||0),0)}</td>
+                          <td className="text-blue-700">{totalTrips}</td>
+                          <td className="text-green-700">${totalFuel.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+                          <td>-</td>
                           <td></td>
                         </tr>
                       </tbody>
@@ -2682,8 +2809,9 @@
                 </div>
               </div>
 
+              {/* Chart */}
               <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Trip Comparison by Ambulance</h3>
+                <h3 className="font-semibold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Trip Comparison by Ambulance</h3>
                 <div className="chart-container">
                   <canvas ref={fleetCompareRef}></canvas>
                 </div>
@@ -2693,22 +2821,80 @@
 
           {/* Personnel */}
           {activeTab === 'personnel' && (
-            <section className="space-y-6">
-              {personnelUpdates.map((u,i)=>(
-                <div key={i} className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                  <div className="flex items-start gap-4">
-                    <div className={`${darkMode ? 'bg-blue-700' : 'bg-blue-100'} rounded-full p-3`}>U</div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{u.title}</h3>
-                      <p className="text-sm">{u.description}</p>
+            <section className="space-y-6 animate-fadeIn">
+              {/* Header with Stats */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>👥 Personnel Updates</h2>
+                    <p className="text-sm text-gray-500">Manage staff announcements, training, and updates</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="text-center px-4 py-2 rounded-lg bg-purple-50">
+                      <p className="text-2xl font-bold text-purple-600">{personnelUpdates.length}</p>
+                      <p className="text-xs text-gray-500">Total Updates</p>
                     </div>
-                    <div className="flex gap-2">
-                      <button onClick={() => openEditModal('personnel', i, u)} className="text-blue-500 hover:underline">Edit</button>
-                      <button onClick={()=>removePersonnel(i)} className="text-red-500 hover:underline">Remove</button>
+                    <div className="text-center px-4 py-2 rounded-lg bg-blue-50">
+                      <p className="text-2xl font-bold text-blue-600">{staffList.length}</p>
+                      <p className="text-xs text-gray-500">Staff Members</p>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Add Personnel Update Form */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>➕ Add New Personnel Update</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Update Title *</label>
+                    <input type="text" placeholder="e.g., New Hire, Training, Commendation..." value={newPersonnel.title} onChange={(e)=>setNewPersonnel({...newPersonnel,title:e.target.value})}
+                      className={`form-input ${errors.personnel.title ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
+                    {errors.personnel.title && <p className="text-red-500 text-sm mt-1">{errors.personnel.title}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Description *</label>
+                    <textarea rows="3" placeholder="Provide details about this update..." value={newPersonnel.description} onChange={(e)=>setNewPersonnel({...newPersonnel,description:e.target.value})}
+                      className={`form-input ${errors.personnel.description ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
+                    {errors.personnel.description && <p className="text-red-500 text-sm mt-1">{errors.personnel.description}</p>}
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button onClick={addPersonnel} className="btn-primary">💾 Save Update</button>
+                  <button onClick={resetPersonnelForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+                </div>
+              </div>
+
+              {/* Personnel Updates List */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <h3 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📋 Current Updates ({personnelUpdates.length})</h3>
+                {personnelUpdates.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p className="text-lg">No personnel updates yet</p>
+                    <p className="text-sm">Add your first update using the form above</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {personnelUpdates.map((u,i)=>(
+                      <div key={i} className={`p-4 rounded-lg border-l-4 border-purple-500 ${darkMode ? 'bg-gray-700' : 'bg-purple-50'}`}>
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                            {u.title.charAt(0)}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>{u.title}</h3>
+                            <p className="text-sm mt-1" style={{color: darkMode ? '#d1d5db' : '#4b5563'}}>{u.description}</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => openEditModal('personnel', i, u)} className="px-3 py-1 text-blue-500 hover:bg-blue-50 rounded font-medium">✏️ Edit</button>
+                            <button onClick={()=>removePersonnel(i)} className="px-3 py-1 text-red-500 hover:bg-red-50 rounded font-medium">🗑️ Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </section>
           )}
 
@@ -3454,283 +3640,322 @@
           {/* Reports */}
           {activeTab === 'reports' && (
             <section className="space-y-6 animate-fadeIn">
+              {/* Header */}
               <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                <h3 className="font-bold mb-6 text-xl" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Reports & Export</h3>
-
-                {/* Quick Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100">
-                    <p className="text-3xl font-bold text-blue-600">{departments.length}</p>
-                    <p className="text-sm text-gray-600">Departments</p>
-                  </div>
-                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-green-50 to-green-100">
-                    <p className="text-3xl font-bold text-green-600">{staffList.length}</p>
-                    <p className="text-sm text-gray-600">Staff Members</p>
-                  </div>
-                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100">
-                    <p className="text-3xl font-bold text-purple-600">{leaveRecords.length}</p>
-                    <p className="text-sm text-gray-600">Leave Records</p>
-                  </div>
-                  <div className="text-center p-4 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100">
-                    <p className="text-3xl font-bold text-orange-600">{timeRecords.length}</p>
-                    <p className="text-sm text-gray-600">Time Records</p>
-                  </div>
-                </div>
-
-                {/* Export Options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className={`p-6 rounded-lg border-2 border-dashed ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}>
-                    <h4 className="font-bold mb-3" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📤 Export Data</h4>
-                    <p className="text-sm text-gray-500 mb-4">Download your data in various formats for external use or backup.</p>
-                    <div className="space-y-3">
-                      <button onClick={exportToCSV} className="w-full btn-primary flex items-center justify-center gap-2">
-                        📄 Export to CSV
-                      </button>
-                      <button onClick={exportToExcel} className="w-full btn-secondary flex items-center justify-center gap-2">
-                        📊 Export to Excel
-                      </button>
-                      <button onClick={exportAllDataJSON} className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center justify-center gap-2">
-                        💾 Backup All Data (JSON)
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={`p-6 rounded-lg border-2 border-dashed ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}>
-                    <h4 className="font-bold mb-3" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📥 Import Data</h4>
-                    <p className="text-sm text-gray-500 mb-4">Restore data from a previously exported JSON backup file.</p>
-                    <label className="w-full px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 flex items-center justify-center gap-2 text-blue-600 font-semibold">
-                      📂 Select Backup File
-                      <input type="file" accept=".json" onChange={importDataJSON} className="hidden" />
-                    </label>
-                    <p className="text-xs text-gray-400 mt-3">Only .json backup files are supported</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Report Summaries */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Department Summary */}
-                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🏢 Department Summary</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between"><span>High Priority Issues:</span><span className="font-bold text-red-500">{departments.filter(d => d.priority === 'High').length}</span></div>
-                    <div className="flex justify-between"><span>Medium Priority Issues:</span><span className="font-bold text-yellow-500">{departments.filter(d => d.priority === 'Medium').length}</span></div>
-                    <div className="flex justify-between"><span>Low Priority Issues:</span><span className="font-bold text-green-500">{departments.filter(d => d.priority === 'Low').length}</span></div>
-                  </div>
-                </div>
-
-                {/* Fleet Summary */}
-                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🚑 Fleet Summary</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between"><span>Total Vehicles:</span><span className="font-bold">{fleetData.length}</span></div>
-                    <div className="flex justify-between"><span>Total Trips:</span><span className="font-bold text-blue-500">{fleetData.reduce((s,f) => s + (f.inter||0) + (f.intra||0), 0)}</span></div>
-                    <div className="flex justify-between"><span>Total Fuel Cost:</span><span className="font-bold text-purple-500">${fleetData.reduce((s,f) => s + (f.fuel||0), 0).toLocaleString()}</span></div>
-                  </div>
-                </div>
-
-                {/* Leave Summary */}
-                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🏖️ Leave Summary</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between"><span>Pending Approvals:</span><span className="font-bold text-yellow-500">{leaveRecords.filter(l => l.status === 'pending').length}</span></div>
-                    <div className="flex justify-between"><span>Approved:</span><span className="font-bold text-green-500">{leaveRecords.filter(l => l.status === 'approved').length}</span></div>
-                    <div className="flex justify-between"><span>Rejected:</span><span className="font-bold text-red-500">{leaveRecords.filter(l => l.status === 'rejected').length}</span></div>
-                  </div>
-                </div>
-
-                {/* Time Summary */}
-                <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h4 className="font-bold mb-4" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>⏱️ Time Tracking Summary</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between"><span>Total Overtime Hours:</span><span className="font-bold text-green-500">{timeStats.overtime}h</span></div>
-                    <div className="flex justify-between"><span>Late Arrivals:</span><span className="font-bold text-red-500">{timeStats.late}</span></div>
-                    <div className="flex justify-between"><span>Claims Filed:</span><span className="font-bold text-blue-500">{timeStats.claims}</span></div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Data Entry */}
-          {activeTab === 'data-entry' && (
-            <section className="space-y-6">
-              <div className={`${darkMode ? 'bg-yellow-900' : 'bg-yellow-50'} p-4 rounded border`}>Note: Data saved automatically to Local Storage. Use Export to download CSV.</div>
-
-              {/* Department Entry */}
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Add Department</h3>
-                <div className="space-y-3">
+                <div className="flex flex-wrap justify-between items-center gap-4">
                   <div>
-                    <input type="text" placeholder="Department Name *" value={newDept.name} onChange={(e)=>setNewDept({...newDept,name:e.target.value})}
-                      className={`w-full px-4 py-2 border rounded ${errors.dept.name ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                    {errors.dept.name && <p className="text-red-500 text-sm mt-1">{errors.dept.name}</p>}
+                    <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Reports & Analytics</h2>
+                    <p className="text-sm text-gray-500">Generate comprehensive reports for all data categories</p>
                   </div>
-                  <div>
-                    <textarea rows="3" placeholder="Current Issues *" value={newDept.issues} onChange={(e)=>setNewDept({...newDept,issues:e.target.value})}
-                      className={`w-full px-4 py-2 border rounded ${errors.dept.issues ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
-                    {errors.dept.issues && <p className="text-red-500 text-sm mt-1">{errors.dept.issues}</p>}
-                  </div>
-                  <textarea rows="2" placeholder="Barriers" value={newDept.barriers} onChange={(e)=>setNewDept({...newDept,barriers:e.target.value})}
-                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
-                  <textarea rows="2" placeholder="Recommendations" value={newDept.recommendations} onChange={(e)=>setNewDept({...newDept,recommendations:e.target.value})}
-                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
-                  <select value={newDept.priority} onChange={(e)=>setNewDept({...newDept,priority:e.target.value})}
-                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}>
-                    <option value="Low">Low Priority</option>
-                    <option value="Medium">Medium Priority</option>
-                    <option value="High">High Priority</option>
-                  </select>
-                  <div className="flex gap-3">
-                    <button onClick={addDepartment} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save Department</button>
-                    <button onClick={resetDeptForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <h4 className="font-semibold">Current Departments ({departments.length})</h4>
-                  <div className="space-y-2 mt-2">
-                    {departments.map((d,i)=>(
-                      <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <div className="flex-1">
-                          <span className="font-medium">{d.name}</span>
-                          <span className={`ml-2 text-xs px-2 py-1 rounded ${d.priority === 'High' ? 'bg-red-100 text-red-700' : d.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>{d.priority}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <button onClick={() => openEditModal('department', i, d)} className="text-blue-500 hover:underline">Edit</button>
-                          <button onClick={()=>removeDepartment(i)} className="text-red-500 hover:underline">Remove</button>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex gap-2">
+                    <button onClick={() => window.print()} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center gap-2">
+                      🖨️ Print Report
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* Fleet Entry */}
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Add Fleet Vehicle</h3>
-                <div className="space-y-3">
-                  <div>
-                    <input type="text" placeholder="Ambulance License Number *" value={newFleet.ambulance} onChange={(e)=>setNewFleet({...newFleet,ambulance:e.target.value})}
-                      className={`w-full px-4 py-2 border rounded ${errors.fleet.ambulance ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                    {errors.fleet.ambulance && <p className="text-red-500 text-sm mt-1">{errors.fleet.ambulance}</p>}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                      <input type="number" min="0" placeholder="Inter-facility Trips" value={newFleet.inter} onChange={(e)=>setNewFleet({...newFleet,inter:parseInt(e.target.value)||0})}
-                        className={`w-full px-4 py-2 border rounded ${errors.fleet.inter ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                      {errors.fleet.inter && <p className="text-red-500 text-sm mt-1">{errors.fleet.inter}</p>}
-                    </div>
-                    <div>
-                      <input type="number" min="0" placeholder="Intra-facility Trips" value={newFleet.intra} onChange={(e)=>setNewFleet({...newFleet,intra:parseInt(e.target.value)||0})}
-                        className={`w-full px-4 py-2 border rounded ${errors.fleet.intra ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                      {errors.fleet.intra && <p className="text-red-500 text-sm mt-1">{errors.fleet.intra}</p>}
-                    </div>
-                    <div>
-                      <input type="number" min="0" step="0.01" placeholder="Fuel Cost ($)" value={newFleet.fuel} onChange={(e)=>setNewFleet({...newFleet,fuel:parseFloat(e.target.value)||0})}
-                        className={`w-full px-4 py-2 border rounded ${errors.fleet.fuel ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                      {errors.fleet.fuel && <p className="text-red-500 text-sm mt-1">{errors.fleet.fuel}</p>}
-                    </div>
-                  </div>
-                  <textarea rows="2" placeholder="Remarks" value={newFleet.remarks} onChange={(e)=>setNewFleet({...newFleet,remarks:e.target.value})}
-                    className={`w-full px-4 py-2 border rounded ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
-                  <div className="flex gap-3">
-                    <button onClick={addFleet} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save Fleet Vehicle</button>
-                    <button onClick={resetFleetForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
-                  </div>
+              {/* Quick Stats Dashboard */}
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
+                  <p className="text-3xl font-bold text-blue-600">{departments.length}</p>
+                  <p className="text-xs text-gray-600">Departments</p>
                 </div>
-
-                <div className="mt-6">
-                  <h4 className="font-semibold">Current Fleet ({fleetData.length})</h4>
-                  <div className="space-y-2 mt-2">
-                    {fleetData.map((f,i)=>(
-                      <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <div className="flex-1">
-                          <span className="font-medium">Ambulance {f.ambulance}</span>
-                          <span className="ml-2 text-sm text-gray-500">{(parseInt(f.inter)||0)+(parseInt(f.intra)||0)} trips | ${(parseFloat(f.fuel)||0).toLocaleString()}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <button onClick={() => openEditModal('fleet', i, f)} className="text-blue-500 hover:underline">Edit</button>
-                          <button onClick={()=>removeFleet(i)} className="text-red-500 hover:underline">Remove</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-green-50 to-green-100 border border-green-200">
+                  <p className="text-3xl font-bold text-green-600">{fleetData.length}</p>
+                  <p className="text-xs text-gray-600">Fleet Vehicles</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200">
+                  <p className="text-3xl font-bold text-purple-600">{personnelUpdates.length}</p>
+                  <p className="text-xs text-gray-600">Personnel Updates</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200">
+                  <p className="text-3xl font-bold text-indigo-600">{totalTrips}</p>
+                  <p className="text-xs text-gray-600">Total Trips</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200">
+                  <p className="text-3xl font-bold text-orange-600">{totalPatients}</p>
+                  <p className="text-xs text-gray-600">Patients</p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200">
+                  <p className="text-3xl font-bold text-pink-600">${totalFuel.toLocaleString()}</p>
+                  <p className="text-xs text-gray-600">Fuel Cost</p>
                 </div>
               </div>
 
-              {/* Personnel Entry */}
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Add Personnel Update</h3>
-                <div className="space-y-3">
-                  <div>
-                    <input type="text" placeholder="Update Title *" value={newPersonnel.title} onChange={(e)=>setNewPersonnel({...newPersonnel,title:e.target.value})}
-                      className={`w-full px-4 py-2 border rounded ${errors.personnel.title ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                    {errors.personnel.title && <p className="text-red-500 text-sm mt-1">{errors.personnel.title}</p>}
-                  </div>
-                  <div>
-                    <textarea rows="4" placeholder="Description *" value={newPersonnel.description} onChange={(e)=>setNewPersonnel({...newPersonnel,description:e.target.value})}
-                      className={`w-full px-4 py-2 border rounded ${errors.personnel.description ? 'border-red-500' : ''} ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}></textarea>
-                    {errors.personnel.description && <p className="text-red-500 text-sm mt-1">{errors.personnel.description}</p>}
-                  </div>
-                  <div className="flex gap-3">
-                    <button onClick={addPersonnel} className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">Save Personnel Update</button>
-                    <button onClick={resetPersonnelForm} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>Clear Form</button>
+              {/* Export & Import Section */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className={`p-6 rounded-lg border-2 ${darkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-white'} shadow`}>
+                  <h4 className="font-bold mb-4 flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">📤</span>
+                    Export Data
+                  </h4>
+                  <div className="space-y-3">
+                    <button onClick={exportToCSV} className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2 text-sm">
+                      📄 Export to CSV
+                    </button>
+                    <button onClick={exportToExcel} className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 flex items-center justify-center gap-2 text-sm">
+                      📊 Export to Excel
+                    </button>
+                    <button onClick={exportAllDataJSON} className="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center justify-center gap-2 text-sm">
+                      💾 Backup (JSON)
+                    </button>
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <h4 className="font-semibold">Current Updates ({personnelUpdates.length})</h4>
-                  <div className="space-y-2 mt-2">
-                    {personnelUpdates.map((p,i)=>(
-                      <div key={i} className={`p-3 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} flex justify-between items-center`}>
-                        <span className="font-medium">{p.title}</span>
-                        <div className="flex gap-2">
-                          <button onClick={() => openEditModal('personnel', i, p)} className="text-blue-500 hover:underline">Edit</button>
-                          <button onClick={()=>removePersonnel(i)} className="text-red-500 hover:underline">Remove</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className={`p-6 rounded-lg border-2 ${darkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-white'} shadow`}>
+                  <h4 className="font-bold mb-4 flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    <span className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">📥</span>
+                    Import Data
+                  </h4>
+                  <label className="w-full px-4 py-3 bg-purple-50 border-2 border-purple-200 rounded-lg cursor-pointer hover:bg-purple-100 flex items-center justify-center gap-2 text-purple-600 font-semibold text-sm">
+                    📂 Select Backup File
+                    <input type="file" accept=".json" onChange={importDataJSON} className="hidden" />
+                  </label>
+                  <p className="text-xs text-gray-400 mt-3 text-center">Supports .json backup files</p>
                 </div>
-              </div>
 
-              {/* Total Patients */}
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Update Total Patients Transported</h3>
-                <div className="flex gap-3">
-                  <input type="number" min="0" value={totalPatients} onChange={(e)=>setTotalPatients(parseInt(e.target.value)||0)}
-                    className={`px-4 py-2 border rounded flex-1 ${darkMode ? 'bg-gray-700 border-gray-600' : ''}`}/>
-                  <button onClick={()=>showToast('Patient count updated successfully!', 'success')} className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600">Update</button>
-                </div>
-                <p className="text-sm text-gray-500 mt-2">Changes are saved automatically to local storage.</p>
-              </div>
-
-              {/* Data Management Actions */}
-              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
-                <h3 className="font-semibold mb-4">Data Management</h3>
-                <div className="flex flex-wrap gap-3">
-                  <button onClick={exportToCSV} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Export All Data to CSV</button>
-                  <button onClick={loadFromGoogleSheet} className={`px-4 py-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}>
-                    {loading ? 'Refreshing...' : 'Refresh from Google Sheet'}
+                <div className={`p-6 rounded-lg border-2 ${darkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-white'} shadow`}>
+                  <h4 className="font-bold mb-4 flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    <span className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">⚙️</span>
+                    Data Management
+                  </h4>
+                  <button onClick={loadFromGoogleSheet} className="w-full px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 flex items-center justify-center gap-2 text-sm mb-3">
+                    🔄 Sync from Google Sheet
                   </button>
                   <button onClick={() => {
-                    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+                    if (confirm('Reset all data to defaults? This cannot be undone.')) {
                       localStorage.removeItem(LS_KEY);
                       setDepartments(DEFAULT_DEPARTMENTS);
                       setFleetData(DEFAULT_FLEET);
                       setPersonnelUpdates(DEFAULT_PERSONNEL);
+                      setStaffList(DEFAULT_STAFF);
+                      setLeaveRecords(DEFAULT_LEAVE_RECORDS);
+                      setTimeRecords(DEFAULT_TIME_RECORDS);
+                      setSchedules(DEFAULT_SCHEDULES);
                       setTotalPatients(116);
-                      showToast('Local data cleared. Defaults restored.', 'info');
+                      showToast('Data reset to defaults', 'info');
                     }
-                  }} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Reset to Defaults</button>
+                  }} className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center justify-center gap-2 text-sm">
+                    🗑️ Reset to Defaults
+                  </button>
+                  <p className="text-xs text-gray-400 mt-3 text-center">
+                    {lastSync ? `Last sync: ${lastSync.toLocaleString()}` : 'Not synced'}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-500 mt-3">
-                  {lastSync ? `Last synchronized: ${lastSync.toLocaleString()}` : 'Not yet synchronized with Google Sheet'}
-                </p>
+              </div>
+
+              {/* Department Report */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    🏢 Department Report
+                  </h3>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">High: {departments.filter(d => d.priority === 'High').length}</span>
+                    <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">Medium: {departments.filter(d => d.priority === 'Medium').length}</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Low: {departments.filter(d => d.priority === 'Low').length}</span>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Department</th>
+                        <th>Current Issues</th>
+                        <th>Barriers</th>
+                        <th>Recommendations</th>
+                        <th>Priority</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {departments.map((d, i) => (
+                        <tr key={i}>
+                          <td className="font-medium">{i + 1}</td>
+                          <td className="font-semibold">{d.name}</td>
+                          <td className="text-sm max-w-xs">{d.issues.substring(0, 100)}{d.issues.length > 100 ? '...' : ''}</td>
+                          <td className="text-sm">{d.barriers || '-'}</td>
+                          <td className="text-sm max-w-xs">{d.recommendations.substring(0, 80)}{d.recommendations.length > 80 ? '...' : ''}</td>
+                          <td>
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${d.priority === 'High' ? 'bg-red-100 text-red-700' : d.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                              {d.priority}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Fleet Report */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    🚑 Fleet Report
+                  </h3>
+                  <div className="flex gap-4 text-sm">
+                    <span className="text-blue-600 font-semibold">Total Trips: {totalTrips}</span>
+                    <span className="text-green-600 font-semibold">Patients: {totalPatients}</span>
+                    <span className="text-purple-600 font-semibold">Fuel: ${totalFuel.toLocaleString()}</span>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Ambulance License</th>
+                        <th>Inter-facility Trips</th>
+                        <th>Intra-facility Trips</th>
+                        <th>Total Trips</th>
+                        <th>Fuel Cost</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fleetData.map((f, i) => (
+                        <tr key={i}>
+                          <td className="font-medium">{i + 1}</td>
+                          <td className="font-semibold">{f.ambulance}</td>
+                          <td>{f.inter || 0}</td>
+                          <td>{f.intra || 0}</td>
+                          <td className="font-bold text-blue-600">{(f.inter || 0) + (f.intra || 0)}</td>
+                          <td className="text-green-600">${(f.fuel || 0).toLocaleString()}</td>
+                          <td className="text-sm">{f.remarks || '-'}</td>
+                        </tr>
+                      ))}
+                      <tr className="font-bold bg-gradient-to-r from-blue-50 to-blue-100">
+                        <td colSpan="2">TOTAL</td>
+                        <td>{fleetData.reduce((s, f) => s + (f.inter || 0), 0)}</td>
+                        <td>{fleetData.reduce((s, f) => s + (f.intra || 0), 0)}</td>
+                        <td className="text-blue-700">{totalTrips}</td>
+                        <td className="text-green-700">${totalFuel.toLocaleString()}</td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Personnel Report */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    👥 Personnel Report
+                  </h3>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                    {personnelUpdates.length} Updates
+                  </span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {personnelUpdates.map((p, i) => (
+                        <tr key={i}>
+                          <td className="font-medium">{i + 1}</td>
+                          <td className="font-semibold">{p.title}</td>
+                          <td className="text-sm">{p.description}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Schedule Report */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
+                    📅 Schedule Report
+                  </h3>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Working: {schedules.filter(s => !s.leaveStatus).length}</span>
+                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">On Leave: {schedules.filter(s => s.leaveStatus).length}</span>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Employee</th>
+                        <th>Shift</th>
+                        <th>Ambulance</th>
+                        <th>Porter</th>
+                        <th>Patients</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schedules.slice(0, 10).map((s, i) => (
+                        <tr key={i}>
+                          <td className="font-medium">{s.date}</td>
+                          <td className="font-semibold">{s.employeeName}</td>
+                          <td>{s.shiftStart} - {s.shiftEnd}</td>
+                          <td>{s.ambulance || '-'}</td>
+                          <td>{s.porter || '-'}</td>
+                          <td>{s.patientsAssigned || 0}</td>
+                          <td>
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${s.leaveStatus ? (s.leaveStatus === 'sick' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') : 'bg-green-100 text-green-700'}`}>
+                              {s.leaveStatus ? getLeaveTypeLabel(s.leaveStatus) : 'Working'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {schedules.length > 10 && (
+                  <p className="text-sm text-gray-500 mt-2 text-center">Showing first 10 of {schedules.length} schedules</p>
+                )}
+              </div>
+
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} border`}>
+                  <h4 className="font-semibold text-sm text-gray-500 mb-2">🏖️ Leave Summary</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between"><span>Pending:</span><span className="font-bold text-yellow-600">{leaveRecords.filter(l => l.status === 'pending').length}</span></div>
+                    <div className="flex justify-between"><span>Approved:</span><span className="font-bold text-green-600">{leaveRecords.filter(l => l.status === 'approved').length}</span></div>
+                    <div className="flex justify-between"><span>Rejected:</span><span className="font-bold text-red-600">{leaveRecords.filter(l => l.status === 'rejected').length}</span></div>
+                  </div>
+                </div>
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-green-50 to-emerald-100'} border`}>
+                  <h4 className="font-semibold text-sm text-gray-500 mb-2">⏱️ Time Tracking</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between"><span>Overtime:</span><span className="font-bold text-green-600">{timeStats.overtime}h</span></div>
+                    <div className="flex justify-between"><span>Late Arrivals:</span><span className="font-bold text-red-600">{timeStats.late}</span></div>
+                    <div className="flex justify-between"><span>Claims:</span><span className="font-bold text-blue-600">{timeStats.claims}</span></div>
+                  </div>
+                </div>
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-purple-50 to-violet-100'} border`}>
+                  <h4 className="font-semibold text-sm text-gray-500 mb-2">📊 Trip Breakdown</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between"><span>Inter-facility:</span><span className="font-bold text-indigo-600">{fleetData.reduce((s,f) => s + (f.inter||0), 0)}</span></div>
+                    <div className="flex justify-between"><span>Intra-facility:</span><span className="font-bold text-purple-600">{fleetData.reduce((s,f) => s + (f.intra||0), 0)}</span></div>
+                    <div className="flex justify-between"><span>Total:</span><span className="font-bold text-blue-600">{totalTrips}</span></div>
+                  </div>
+                </div>
+                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-orange-50 to-amber-100'} border`}>
+                  <h4 className="font-semibold text-sm text-gray-500 mb-2">🗓️ Report Info</h4>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between"><span>Generated:</span><span className="font-bold">{new Date().toLocaleDateString()}</span></div>
+                    <div className="flex justify-between"><span>Total Records:</span><span className="font-bold">{departments.length + fleetData.length + personnelUpdates.length + schedules.length}</span></div>
+                  </div>
+                </div>
               </div>
             </section>
           )}
+
         </main>
       </div>
     );
