@@ -1015,6 +1015,28 @@
       text-overflow: ellipsis;
     }
 
+    /* Currency value container - prevents overflow */
+    .currency-value {
+      font-size: clamp(1rem, 4vw, 1.75rem);
+      font-weight: 700;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.3;
+      max-width: 100%;
+    }
+
+    /* Stat card with currency - ensures proper containment */
+    .stat-card-currency {
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .stat-card-currency .value {
+      font-size: clamp(0.9rem, 3vw, 1.5rem);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
     /* ============================================
        ASSET-DASHBOARD INSPIRED REPORT STYLES
        ============================================ */
@@ -3157,9 +3179,9 @@
                     <span className="text-xs text-gray-400">Edit</span>
                   </div>
                 </div>
-                <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow`}>
+                <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded shadow stat-card-currency`}>
                   <h4 className="text-sm text-gray-500">⛽ Total Fuel Cost</h4>
-                  <p className="text-3xl font-bold text-purple-600">${totalFuel.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</p>
+                  <p className="currency-value text-purple-600">${totalFuel.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</p>
                 </div>
               </div>
 
@@ -4221,8 +4243,8 @@
                   <p className="text-3xl font-bold text-orange-600">{totalPatients}</p>
                   <p className="text-xs text-gray-600">Patients</p>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200 fuel-stat-box">
-                  <p className="text-xl md:text-2xl font-bold text-pink-600 break-all" style={{wordBreak: 'break-word'}}>${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200 stat-card-currency">
+                  <p className="currency-value text-pink-600">${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <p className="text-xs text-gray-600">Fuel Cost</p>
                 </div>
               </div>
