@@ -954,6 +954,61 @@
       background: #1f2937;
       color: #f3f4f6;
     }
+
+    /* Print Styles for Separate Page Reports */
+    @media print {
+      body {
+        background: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+
+      .print-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .print-header {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #10b981;
+      }
+
+      .dashboard-card {
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .nav-header, .sidebar, header {
+        display: none !important;
+      }
+    }
+
+    /* Stat box text sizing for fuel costs */
+    .stat-value-responsive {
+      font-size: clamp(1rem, 2.5vw, 1.875rem);
+      font-weight: 700;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .fleet-stat-responsive {
+      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+      font-weight: 600;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -1113,6 +1168,7 @@
     const [username, setUsername] = useState('Administrator');
     const [loading, setLoading] = useState(false);
     const [lastSync, setLastSync] = useState(null);
+    const [printSection, setPrintSection] = useState(null); // For separate page printing
 
     // Data states
     const [departments, setDepartments] = useState([]);
@@ -1666,6 +1722,15 @@
       });
       downloadCSV('hospital_report.csv', csv);
       showToast('Data exported to hospital_report.csv', 'success');
+    };
+
+    // Generate separate page reports
+    const generateSectionReport = (section) => {
+      setPrintSection(section);
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => setPrintSection(null), 500);
+      }, 100);
     };
 
     /***** Calendar Helpers *****/
@@ -3641,7 +3706,7 @@
           {activeTab === 'reports' && (
             <section className="space-y-6 animate-fadeIn">
               {/* Header */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} no-print`}>
                 <div className="flex flex-wrap justify-between items-center gap-4">
                   <div>
                     <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Reports & Analytics</h2>
@@ -3649,14 +3714,43 @@
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => window.print()} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center gap-2">
-                      🖨️ Print Report
+                      🖨️ Print All
+                    </button>
+                  </div>
+                </div>
+
+                {/* Separate Page Report Generation */}
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <h4 className="font-semibold mb-3 text-sm" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Generate Individual Section Reports (Separate Pages)</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+                    <button onClick={() => generateSectionReport('overview')} className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs font-medium flex items-center justify-center gap-1">
+                      📋 Overview
+                    </button>
+                    <button onClick={() => generateSectionReport('departments')} className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-xs font-medium flex items-center justify-center gap-1">
+                      🏢 Departments
+                    </button>
+                    <button onClick={() => generateSectionReport('fleet')} className="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-xs font-medium flex items-center justify-center gap-1">
+                      🚑 Fleet
+                    </button>
+                    <button onClick={() => generateSectionReport('personnel')} className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-xs font-medium flex items-center justify-center gap-1">
+                      👥 Personnel
+                    </button>
+                    <button onClick={() => generateSectionReport('calendar')} className="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-xs font-medium flex items-center justify-center gap-1">
+                      📅 Calendar
+                    </button>
+                    <button onClick={() => generateSectionReport('leave')} className="px-3 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 text-xs font-medium flex items-center justify-center gap-1">
+                      🏖️ Leave
+                    </button>
+                    <button onClick={() => generateSectionReport('timetracking')} className="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 text-xs font-medium flex items-center justify-center gap-1">
+                      ⏱️ Time Tracking
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Quick Stats Dashboard */}
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+              {/* Quick Stats Dashboard - Overview */}
+              <div className={`grid grid-cols-2 md:grid-cols-6 gap-4 ${printSection && printSection !== 'overview' ? 'no-print' : ''}`} style={printSection === 'overview' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'overview' && <div className="col-span-full print-header mb-4"><h2 className="text-2xl font-bold text-center">📋 Overview Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
                 <div className="text-center p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
                   <p className="text-3xl font-bold text-blue-600">{departments.length}</p>
                   <p className="text-xs text-gray-600">Departments</p>
@@ -3677,14 +3771,14 @@
                   <p className="text-3xl font-bold text-orange-600">{totalPatients}</p>
                   <p className="text-xs text-gray-600">Patients</p>
                 </div>
-                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200">
-                  <p className="text-3xl font-bold text-pink-600">${totalFuel.toLocaleString()}</p>
+                <div className="text-center p-4 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200 overflow-hidden">
+                  <p className="stat-value-responsive text-pink-600 truncate" title={'$' + totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}>${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <p className="text-xs text-gray-600">Fuel Cost</p>
                 </div>
               </div>
 
               {/* Export & Import Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 no-print">
                 <div className={`p-6 rounded-lg border-2 ${darkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-200 bg-white'} shadow`}>
                   <h4 className="font-bold mb-4 flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">📤</span>
@@ -3746,7 +3840,8 @@
               </div>
 
               {/* Department Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'departments' ? 'no-print' : ''}`} style={printSection === 'departments' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'departments' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🏢 Department Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     🏢 Department Report
@@ -3790,15 +3885,16 @@
               </div>
 
               {/* Fleet Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                <div className="flex justify-between items-center mb-4">
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'fleet' ? 'no-print' : ''}`} style={printSection === 'fleet' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'fleet' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🚑 Fleet Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     🚑 Fleet Report
                   </h3>
-                  <div className="flex gap-4 text-sm">
-                    <span className="text-blue-600 font-semibold">Total Trips: {totalTrips}</span>
-                    <span className="text-green-600 font-semibold">Patients: {totalPatients}</span>
-                    <span className="text-purple-600 font-semibold">Fuel: ${totalFuel.toLocaleString()}</span>
+                  <div className="flex flex-wrap gap-2 text-sm">
+                    <span className="px-2 py-1 bg-blue-50 rounded text-blue-600 font-semibold whitespace-nowrap">Total Trips: {totalTrips}</span>
+                    <span className="px-2 py-1 bg-green-50 rounded text-green-600 font-semibold whitespace-nowrap">Patients: {totalPatients}</span>
+                    <span className="px-2 py-1 bg-purple-50 rounded text-purple-600 font-semibold whitespace-nowrap">Fuel: ${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -3822,7 +3918,7 @@
                           <td>{f.inter || 0}</td>
                           <td>{f.intra || 0}</td>
                           <td className="font-bold text-blue-600">{(f.inter || 0) + (f.intra || 0)}</td>
-                          <td className="text-green-600">${(f.fuel || 0).toLocaleString()}</td>
+                          <td className="text-green-600 whitespace-nowrap">${(f.fuel || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                           <td className="text-sm">{f.remarks || '-'}</td>
                         </tr>
                       ))}
@@ -3831,7 +3927,7 @@
                         <td>{fleetData.reduce((s, f) => s + (f.inter || 0), 0)}</td>
                         <td>{fleetData.reduce((s, f) => s + (f.intra || 0), 0)}</td>
                         <td className="text-blue-700">{totalTrips}</td>
-                        <td className="text-green-700">${totalFuel.toLocaleString()}</td>
+                        <td className="text-green-700 whitespace-nowrap">${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                         <td></td>
                       </tr>
                     </tbody>
@@ -3840,7 +3936,8 @@
               </div>
 
               {/* Personnel Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'personnel' ? 'no-print' : ''}`} style={printSection === 'personnel' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'personnel' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">👥 Personnel Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     👥 Personnel Report
@@ -3872,7 +3969,8 @@
               </div>
 
               {/* Schedule Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'calendar' ? 'no-print' : ''}`} style={printSection === 'calendar' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'calendar' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">📅 Calendar / Schedule Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     📅 Schedule Report
@@ -3919,8 +4017,102 @@
                 )}
               </div>
 
-              {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Leave Report - Separate Print Section */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'leave' ? 'no-print' : ''} ${!printSection ? 'hidden' : ''}`} style={printSection === 'leave' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'leave' && (
+                  <>
+                    <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🏖️ Leave Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 text-center">
+                        <p className="text-3xl font-bold text-yellow-600">{leaveRecords.filter(l => l.status === 'pending').length}</p>
+                        <p className="text-sm text-gray-600">Pending Requests</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-green-50 to-green-100 border border-green-200 text-center">
+                        <p className="text-3xl font-bold text-green-600">{leaveRecords.filter(l => l.status === 'approved').length}</p>
+                        <p className="text-sm text-gray-600">Approved Requests</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-red-50 to-red-100 border border-red-200 text-center">
+                        <p className="text-3xl font-bold text-red-600">{leaveRecords.filter(l => l.status === 'rejected').length}</p>
+                        <p className="text-sm text-gray-600">Rejected Requests</p>
+                      </div>
+                    </div>
+                    <h4 className="font-bold mb-3">Leave Records</h4>
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th>Employee</th>
+                          <th>Type</th>
+                          <th>Start Date</th>
+                          <th>End Date</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leaveRecords.map((l, i) => (
+                          <tr key={i}>
+                            <td className="font-semibold">{l.employeeName}</td>
+                            <td>{getLeaveTypeLabel(l.type)}</td>
+                            <td>{l.startDate}</td>
+                            <td>{l.endDate}</td>
+                            <td><span className={`px-2 py-1 rounded text-xs font-semibold ${l.status === 'approved' ? 'bg-green-100 text-green-700' : l.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{l.status}</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                )}
+              </div>
+
+              {/* Time Tracking Report - Separate Print Section */}
+              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'timetracking' ? 'no-print' : ''} ${!printSection ? 'hidden' : ''}`} style={printSection === 'timetracking' ? {pageBreakBefore: 'always'} : {}}>
+                {printSection === 'timetracking' && (
+                  <>
+                    <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">⏱️ Time Tracking Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-green-50 to-green-100 border border-green-200 text-center">
+                        <p className="text-3xl font-bold text-green-600">{timeStats.overtime}h</p>
+                        <p className="text-sm text-gray-600">Total Overtime</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-red-50 to-red-100 border border-red-200 text-center">
+                        <p className="text-3xl font-bold text-red-600">{timeStats.late}</p>
+                        <p className="text-sm text-gray-600">Late Arrivals</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 text-center">
+                        <p className="text-3xl font-bold text-blue-600">{timeStats.claims}</p>
+                        <p className="text-sm text-gray-600">Claims Submitted</p>
+                      </div>
+                    </div>
+                    <h4 className="font-bold mb-3">Time Records</h4>
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th>Employee</th>
+                          <th>Date</th>
+                          <th>Clock In</th>
+                          <th>Clock Out</th>
+                          <th>Hours</th>
+                          <th>Overtime</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {timeRecords.map((t, i) => (
+                          <tr key={i}>
+                            <td className="font-semibold">{t.employeeName}</td>
+                            <td>{t.date}</td>
+                            <td>{t.clockIn}</td>
+                            <td>{t.clockOut}</td>
+                            <td>{t.hoursWorked}h</td>
+                            <td className={t.overtime > 0 ? 'text-green-600 font-semibold' : ''}>{t.overtime}h</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                )}
+              </div>
+
+              {/* Summary Cards - Screen view only */}
+              <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${printSection ? 'no-print' : ''}`}>
                 <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} border`}>
                   <h4 className="font-semibold text-sm text-gray-500 mb-2">🏖️ Leave Summary</h4>
                   <div className="space-y-1 text-sm">
