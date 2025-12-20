@@ -22,17 +22,30 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* Chief Orderly Dashboard Inspired Styles */
+    /* Hospital Administrator Dashboard - Professional Healthcare Styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    :root {
+      --hospital-primary: #0891b2;
+      --hospital-primary-dark: #0e7490;
+      --hospital-secondary: #0284c7;
+      --hospital-accent: #059669;
+      --hospital-teal: #14b8a6;
+      --hospital-light: #ecfeff;
+      --hospital-bg: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #f0fdfa 100%);
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #6ee7b7 0%, #7dd3fc 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--hospital-bg);
       min-height: 100vh;
+      color: #1e293b;
     }
 
     /* Animations */
@@ -51,83 +64,148 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
     .animate-fadeIn { animation: fadeIn 0.4s ease; }
     .animate-slideUp { animation: slideUp 0.5s ease; }
     .animate-slideDown { animation: slideDown 0.3s ease; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
 
     /* Navigation Header */
     .nav-header {
-      background: white;
-      border-radius: 12px;
-      padding: 20px 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(to right, #ffffff, #f8fafc);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(14, 116, 144, 0.1);
+    }
+
+    /* Mobile Navigation Toggle */
+    .mobile-menu-btn {
+      display: none;
+      background: var(--hospital-primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .mobile-menu-btn {
+        display: flex;
+      }
+      .nav-tabs {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow-hover);
+        z-index: 1000;
+        margin-top: 8px;
+        padding: 12px;
+        flex-direction: column;
+      }
+      .nav-tabs.mobile-open {
+        display: flex;
+      }
+      .nav-tabs-wrapper {
+        position: relative;
+      }
     }
 
     .nav-tabs {
       display: flex;
-      gap: 10px;
-      background: #f7fafc;
+      gap: 6px;
+      background: linear-gradient(to right, #f0fdfa, #ecfeff);
       padding: 6px;
-      border-radius: 10px;
+      border-radius: 12px;
       flex-wrap: wrap;
+      border: 1px solid rgba(14, 116, 144, 0.1);
     }
 
     .nav-tab {
-      padding: 12px 24px;
+      padding: 10px 18px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.3s;
+      gap: 6px;
+      transition: all 0.25s ease;
       background: transparent;
-      color: #718096;
+      color: #64748b;
+      white-space: nowrap;
     }
 
     .nav-tab:hover {
-      color: #1a202c;
-      background: #e2e8f0;
+      color: var(--hospital-primary);
+      background: rgba(8, 145, 178, 0.1);
+      transform: translateY(-1px);
     }
 
     .nav-tab.active {
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-teal) 100%);
       color: white;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 4px 14px rgba(8, 145, 178, 0.35);
+      transform: translateY(-1px);
     }
 
-    /* Main Icon */
+    /* Main Icon - Hospital Cross */
     .main-icon {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
-      border-radius: 12px;
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-teal) 100%);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
+      box-shadow: 0 4px 14px rgba(8, 145, 178, 0.3);
+      position: relative;
+    }
+
+    .main-icon::before {
+      content: '✚';
+      font-size: 24px;
+      position: absolute;
     }
 
     /* Buttons */
     .btn-primary {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-accent) 100%);
       color: white;
       border: none;
       padding: 12px 24px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4);
     }
 
     .btn-secondary {
@@ -135,162 +213,295 @@
       color: white;
       border: none;
       padding: 12px 24px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
     }
 
     .btn-secondary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     }
 
     /* Cards */
     .dashboard-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(14, 116, 144, 0.08);
     }
 
     .dashboard-card:hover {
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--card-shadow-hover);
       transform: translateY(-2px);
+      border-color: rgba(14, 116, 144, 0.15);
     }
 
-    /* Stats */
+    /* Stats - Hospital Stat Cards */
     .stat-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s;
-      border-left: 4px solid;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+      border-left: 5px solid;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      opacity: 0.05;
+      border-radius: 50%;
+      transform: translate(30%, -30%);
     }
 
     .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
     }
 
-    .stat-card.blue { border-left-color: #0ea5e9; }
-    .stat-card.green { border-left-color: #10b981; }
-    .stat-card.purple { border-left-color: #a855f7; }
-    .stat-card.red { border-left-color: #ef4444; }
+    .stat-card.blue {
+      border-left-color: var(--hospital-primary);
+      background: linear-gradient(to right, #ffffff, #f0f9ff);
+    }
+    .stat-card.blue::before { background: var(--hospital-primary); }
 
-    /* Form Inputs */
+    .stat-card.green {
+      border-left-color: var(--hospital-accent);
+      background: linear-gradient(to right, #ffffff, #f0fdf4);
+    }
+    .stat-card.green::before { background: var(--hospital-accent); }
+
+    .stat-card.purple {
+      border-left-color: #8b5cf6;
+      background: linear-gradient(to right, #ffffff, #faf5ff);
+    }
+    .stat-card.purple::before { background: #8b5cf6; }
+
+    .stat-card.red {
+      border-left-color: #ef4444;
+      background: linear-gradient(to right, #ffffff, #fef2f2);
+    }
+    .stat-card.red::before { background: #ef4444; }
+
+    .stat-card.teal {
+      border-left-color: var(--hospital-teal);
+      background: linear-gradient(to right, #ffffff, #f0fdfa);
+    }
+    .stat-card.teal::before { background: var(--hospital-teal); }
+
+    /* Stat Card Value Typography */
+    .stat-value {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    /* Stat Icon Container */
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.blue { background: rgba(8, 145, 178, 0.1); }
+    .stat-icon.green { background: rgba(5, 150, 105, 0.1); }
+    .stat-icon.purple { background: rgba(139, 92, 246, 0.1); }
+    .stat-icon.red { background: rgba(239, 68, 68, 0.1); }
+    .stat-icon.teal { background: rgba(20, 184, 166, 0.1); }
+
+    /* Form Inputs - Hospital Style */
     .form-input {
       width: 100%;
-      padding: 12px 15px;
+      padding: 12px 16px;
       border: 2px solid #e2e8f0;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
+      background: #fafafa;
     }
 
     .form-input:focus {
       outline: none;
-      border-color: #10b981;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      border-color: var(--hospital-primary);
+      box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+      background: white;
+    }
+
+    .form-input:hover:not(:focus) {
+      border-color: #cbd5e1;
     }
 
     .form-input.error {
       border-color: #ef4444;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
     }
 
-    /* User Info Badge */
+    /* User Info Badge - Healthcare style */
     .user-info {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(16, 185, 129, 0.1);
+      gap: 12px;
+      background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(20, 184, 166, 0.1));
       padding: 10px 20px;
-      border-radius: 25px;
+      border-radius: 50px;
+      border: 1px solid rgba(8, 145, 178, 0.15);
     }
 
-    /* Table Styling */
+    /* Table Styling - Hospital Data Display */
     .data-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .data-table th {
-      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--hospital-primary), var(--hospital-teal));
+      padding: 14px 16px;
       text-align: left;
-      font-size: 13px;
-      font-weight: 600;
-      color: #4a5568;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .data-table td {
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+
+    .data-table tbody tr {
+      transition: all 0.2s ease;
     }
 
     .data-table tr:hover {
-      background: #f7fafc;
+      background: linear-gradient(to right, #f0fdfa, #ffffff);
     }
 
     .data-table tr.total-row {
       background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Priority Badges */
+    /* Responsive Table Container */
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+    }
+
+    @media (max-width: 768px) {
+      .data-table th,
+      .data-table td {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+    }
+
+    /* Priority Badges - Hospital Alert Levels */
     .priority-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .priority-badge.high {
-      background: #fee2e2;
-      color: #ef4444;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      color: #dc2626;
+      border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .priority-badge.high::before {
+      content: '●';
+      font-size: 8px;
+      animation: pulse 1.5s ease-in-out infinite;
     }
 
     .priority-badge.medium {
-      background: #fef3c7;
-      color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      color: #d97706;
+      border: 1px solid rgba(217, 119, 6, 0.2);
     }
 
     .priority-badge.low {
-      background: #d1fae5;
-      color: #10b981;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      color: #16a34a;
+      border: 1px solid rgba(22, 163, 74, 0.2);
     }
 
-    /* Toast Notification */
+    /* Toast Notification - Hospital Alerts */
     .toast {
       position: fixed;
       top: 20px;
       right: 20px;
-      z-index: 1000;
+      z-index: 1100;
       padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
       display: flex;
       align-items: center;
       gap: 12px;
       animation: slideDown 0.3s ease;
+      max-width: 400px;
     }
 
-    .toast.success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    @media (max-width: 480px) {
+      .toast {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+      }
+    }
+
+    .toast.success { background: linear-gradient(135deg, var(--hospital-accent), #047857); color: white; }
     .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
     .toast.warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-    .toast.info { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; }
+    .toast.info { background: linear-gradient(135deg, var(--hospital-primary), var(--hospital-secondary)); color: white; }
 
-    /* Modal */
+    /* Modal - Hospital Dialog */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -300,12 +511,12 @@
 
     .modal-content {
       background: white;
-      border-radius: 12px;
+      border-radius: 20px;
       max-width: 700px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       animation: slideUp 0.3s ease;
     }
 
@@ -313,8 +524,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 24px;
-      border-bottom: 2px solid #e2e8f0;
+      padding: 24px;
+      border-bottom: 1px solid #e2e8f0;
+      background: linear-gradient(to right, #f8fafc, #f0fdfa);
     }
 
     .modal-body {
@@ -325,198 +537,353 @@
       display: flex;
       justify-content: flex-end;
       gap: 12px;
-      padding: 16px 24px;
-      border-top: 2px solid #e2e8f0;
+      padding: 20px 24px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
     }
 
     /* Chart container */
-    .chart-container { width: 100%; height: 260px; }
+    .chart-container {
+      width: 100%;
+      height: 280px;
+      padding: 10px;
+    }
 
-    /* Icon buttons */
+    @media (max-width: 640px) {
+      .chart-container {
+        height: 220px;
+      }
+    }
+
+    /* Icon buttons - Hospital Actions */
     .icon-btn {
-      background: #f7fafc;
+      background: #f1f5f9;
       border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s ease;
       font-size: 16px;
     }
 
     .icon-btn:hover {
       background: #e2e8f0;
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
-    .icon-btn.edit:hover { background: #dbeafe; color: #0ea5e9; }
-    .icon-btn.delete:hover { background: #fee2e2; color: #ef4444; }
+    .icon-btn.edit:hover {
+      background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+      color: var(--hospital-primary);
+    }
 
-    /* Department Card */
+    .icon-btn.delete:hover {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #dc2626;
+    }
+
+    /* Department Card - Hospital Department Style */
     .dept-card {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s;
-      border-left: 4px solid;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+      border-left: 5px solid;
     }
 
     .dept-card:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      transform: translateX(5px);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateX(4px);
     }
 
-    .dept-card.high { border-left-color: #ef4444; }
-    .dept-card.medium { border-left-color: #f59e0b; }
-    .dept-card.low { border-left-color: #10b981; }
+    .dept-card.high {
+      border-left-color: #ef4444;
+      background: linear-gradient(to right, #ffffff, #fef2f2);
+    }
+    .dept-card.medium {
+      border-left-color: #f59e0b;
+      background: linear-gradient(to right, #ffffff, #fffbeb);
+    }
+    .dept-card.low {
+      border-left-color: var(--hospital-accent);
+      background: linear-gradient(to right, #ffffff, #f0fdf4);
+    }
 
-    /* Dark mode overrides */
+    /* Quick Stats Grid - Responsive */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Hospital Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: linear-gradient(135deg, var(--hospital-primary), var(--hospital-teal));
+      color: white;
+      box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .section-subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    /* Dark mode overrides - Hospital Night Mode */
+    .dark {
+      --hospital-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    }
+
     .dark .nav-header,
     .dark .dashboard-card,
     .dark .stat-card,
     .dark .dept-card,
     .dark .modal-content {
-      background: #1f2937;
-      color: #f3f4f6;
+      background: linear-gradient(to right, #1e293b, #1e293b);
+      color: #f1f5f9;
+      border-color: rgba(148, 163, 184, 0.1);
+    }
+
+    .dark .stat-card.blue,
+    .dark .stat-card.green,
+    .dark .stat-card.purple,
+    .dark .stat-card.red,
+    .dark .stat-card.teal {
+      background: linear-gradient(to right, #1e293b, #0f172a);
     }
 
     .dark .nav-tabs {
-      background: #374151;
+      background: linear-gradient(to right, #334155, #1e293b);
+      border-color: rgba(148, 163, 184, 0.1);
     }
 
     .dark .nav-tab {
-      color: #9ca3af;
+      color: #94a3b8;
     }
 
     .dark .nav-tab:hover {
-      background: #4b5563;
-      color: #f3f4f6;
+      background: rgba(8, 145, 178, 0.2);
+      color: #e2e8f0;
+    }
+
+    .dark .nav-tab.active {
+      background: linear-gradient(135deg, var(--hospital-primary), var(--hospital-teal));
     }
 
     .dark .form-input {
-      background: #374151;
-      border-color: #4b5563;
-      color: #f3f4f6;
+      background: #0f172a;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+
+    .dark .form-input:focus {
+      border-color: var(--hospital-primary);
+      box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.2);
     }
 
     .dark .data-table th {
-      background: #374151;
-      color: #d1d5db;
+      background: linear-gradient(135deg, var(--hospital-primary-dark), #0e4d5c);
     }
 
     .dark .data-table td {
-      border-bottom-color: #374151;
+      border-bottom-color: #334155;
+      color: #e2e8f0;
     }
 
     .dark .data-table tr:hover {
-      background: #374151;
+      background: rgba(8, 145, 178, 0.1);
     }
 
-    /* Scrollbar styling */
+    .dark .user-info {
+      background: linear-gradient(135deg, rgba(8, 145, 178, 0.2), rgba(20, 184, 166, 0.2));
+      border-color: rgba(8, 145, 178, 0.3);
+    }
+
+    .dark .section-title {
+      color: #f1f5f9;
+    }
+
+    /* Scrollbar styling - Hospital themed */
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 4px;
+      background: #f1f5f9;
+      border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #10b981, #0ea5e9);
-      border-radius: 4px;
+      background: linear-gradient(135deg, var(--hospital-primary), var(--hospital-teal));
+      border-radius: 5px;
+      border: 2px solid #f1f5f9;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #059669, #0284c7);
+      background: linear-gradient(135deg, var(--hospital-primary-dark), var(--hospital-accent));
     }
 
-    /* Login Page Styles */
+    .dark ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      border-color: #1e293b;
+    }
+
+    /* Login Page Styles - Hospital Portal */
     .login-container {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #6ee7b7 0%, #7dd3fc 100%);
+      background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #f0fdfa 100%);
       padding: 20px;
+      position: relative;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230891b2' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
     }
 
     .login-box {
       background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px rgba(8, 145, 178, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       overflow: hidden;
       animation: slideUp 0.5s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .login-header {
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
-      padding: 40px 30px;
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-teal) 100%);
+      padding: 48px 30px;
       text-align: center;
       color: white;
+      position: relative;
+    }
+
+    .login-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .login-icon {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 20px;
-      font-size: 36px;
+      font-size: 40px;
       backdrop-filter: blur(10px);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .login-header h1 {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 26px;
+      font-weight: 800;
       margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
 
     .login-header p {
       font-size: 14px;
       opacity: 0.9;
+      font-weight: 500;
     }
 
     .login-form {
-      padding: 40px 30px;
+      padding: 50px 30px 40px;
     }
 
     .login-input-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .login-input-group label {
       display: block;
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .login-input {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
       font-size: 15px;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       box-sizing: border-box;
+      background: #f8fafc;
     }
 
     .login-input:focus {
       outline: none;
-      border-color: #10b981;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+      border-color: var(--hospital-primary);
+      box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+      background: white;
     }
 
     .login-input.error {
@@ -526,24 +893,25 @@
 
     .login-btn {
       width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      padding: 16px;
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-teal) 100%);
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
     }
 
     .login-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 8px 25px rgba(8, 145, 178, 0.4);
     }
 
     .login-btn:disabled {
@@ -553,25 +921,26 @@
     }
 
     .login-error {
-      background: #fef2f2;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
       border: 1px solid #fecaca;
       color: #dc2626;
-      padding: 12px 16px;
-      border-radius: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
       margin-bottom: 20px;
       font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       animation: slideDown 0.3s ease;
+      font-weight: 500;
     }
 
     .login-info {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1d4ed8;
-      padding: 12px 16px;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #ecfeff, #e0f2fe);
+      border: 1px solid #a5f3fc;
+      color: var(--hospital-primary-dark);
+      padding: 14px 18px;
+      border-radius: 12px;
       margin-bottom: 20px;
       font-size: 14px;
       display: flex;
@@ -632,37 +1001,42 @@
       color: #d1d5db;
     }
 
-    /* Calendar Styles */
+    /* Calendar Styles - Hospital Scheduling */
     .calendar-container {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(14, 116, 144, 0.1);
     }
 
     .calendar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px;
-      background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--hospital-primary) 0%, var(--hospital-teal) 100%);
       color: white;
     }
 
     .calendar-nav-btn {
       background: rgba(255, 255, 255, 0.2);
       border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       color: white;
       font-size: 18px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .calendar-nav-btn:hover {
       background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
     }
 
     .calendar-grid {
@@ -672,110 +1046,170 @@
       background: #e2e8f0;
     }
 
+    @media (max-width: 768px) {
+      .calendar-grid {
+        font-size: 12px;
+      }
+      .calendar-day {
+        min-height: 70px;
+        padding: 4px;
+      }
+      .calendar-day-number {
+        font-size: 12px;
+      }
+      .calendar-event {
+        display: none;
+      }
+      .calendar-day.has-events::after {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 6px;
+        background: var(--hospital-primary);
+        border-radius: 50%;
+        margin: 4px auto 0;
+      }
+    }
+
     .calendar-day-header {
-      background: #f7fafc;
-      padding: 12px;
+      background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+      padding: 12px 8px;
       text-align: center;
-      font-weight: 600;
-      font-size: 12px;
-      color: #718096;
+      font-weight: 700;
+      font-size: 11px;
+      color: #64748b;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .calendar-day {
       background: white;
       min-height: 100px;
-      padding: 8px;
+      padding: 10px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
       position: relative;
     }
 
     .calendar-day:hover {
-      background: #f7fafc;
+      background: linear-gradient(to right, #f0fdfa, #ffffff);
+      z-index: 1;
     }
 
     .calendar-day.other-month {
-      background: #f7fafc;
-      color: #a0aec0;
+      background: #f8fafc;
+      color: #94a3b8;
     }
 
     .calendar-day.today {
-      background: #ecfdf5;
+      background: linear-gradient(135deg, #ecfeff, #f0fdfa);
+      border: 2px solid var(--hospital-primary);
+      border-radius: 8px;
     }
 
     .calendar-day.today::before {
-      content: '';
+      content: 'Today';
       position: absolute;
       top: 4px;
       right: 4px;
-      width: 8px;
-      height: 8px;
-      background: #10b981;
-      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--hospital-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .calendar-day-number {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 14px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      color: #334155;
     }
 
     .calendar-event {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-bottom: 2px;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-weight: 600;
     }
 
-    .calendar-event.sick { background: #fee2e2; color: #dc2626; }
-    .calendar-event.vacation { background: #f3e8ff; color: #9333ea; }
-    .calendar-event.dayoff { background: #fef3c7; color: #d97706; }
-    .calendar-event.departmental { background: #dbeafe; color: #2563eb; }
+    .calendar-event.sick {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #dc2626;
+      border-left: 3px solid #ef4444;
+    }
+    .calendar-event.vacation {
+      background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+      color: #9333ea;
+      border-left: 3px solid #a855f7;
+    }
+    .calendar-event.dayoff {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #b45309;
+      border-left: 3px solid #f59e0b;
+    }
+    .calendar-event.departmental {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      color: #1d4ed8;
+      border-left: 3px solid #3b82f6;
+    }
 
-    /* Notification Dropdown */
+    /* Notification Dropdown - Hospital Alerts */
     .notification-dropdown {
       position: absolute;
-      top: 100%;
+      top: calc(100% + 8px);
       right: 0;
-      width: 360px;
-      max-height: 400px;
+      width: 380px;
+      max-height: 450px;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
       z-index: 1000;
       overflow: hidden;
-      animation: slideDown 0.3s ease;
+      animation: slideDown 0.25s ease;
+      border: 1px solid rgba(14, 116, 144, 0.1);
+    }
+
+    @media (max-width: 480px) {
+      .notification-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        width: auto;
+      }
     }
 
     .notification-header {
-      padding: 16px 20px;
+      padding: 18px 20px;
       border-bottom: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      background: linear-gradient(to right, #f8fafc, #f0fdfa);
     }
 
     .notification-list {
-      max-height: 300px;
+      max-height: 350px;
       overflow-y: auto;
     }
 
     .notification-item {
-      padding: 14px 20px;
-      border-bottom: 1px solid #f7fafc;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f1f5f9;
       display: flex;
-      gap: 12px;
-      transition: background 0.2s;
+      gap: 14px;
+      transition: all 0.2s ease;
       cursor: pointer;
     }
 
     .notification-item:hover {
-      background: #f7fafc;
+      background: linear-gradient(to right, #f8fafc, #f0fdfa);
     }
 
     .notification-item.urgent {
@@ -1544,6 +1978,9 @@
     // Notification dropdown
     const [showNotifications, setShowNotifications] = useState(false);
     const [notificationItems, setNotificationItems] = useState([]);
+
+    // Mobile menu state
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // Schedule Management
     const [schedules, setSchedules] = useState([]);
@@ -2700,57 +3137,65 @@
     // Main Dashboard
     return (
       <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900 text-white' : ''}`}>
-        {/* Navigation Header - Chief Orderly Style */}
-        <div className="container mx-auto px-4 py-5">
+        {/* Navigation Header - Hospital Dashboard Style */}
+        <div className="container mx-auto px-4 py-4 lg:py-5">
           <div className={`nav-header ${darkMode ? 'bg-gray-800' : ''}`}>
             {/* Top Row */}
-            <div className="flex justify-between items-center mb-5 flex-wrap gap-4">
+            <div className="flex justify-between items-center mb-4 lg:mb-5 flex-wrap gap-3 lg:gap-4">
               {/* Logo & Title */}
-              <div className="flex items-center gap-4">
-                <div className="main-icon">HA</div>
+              <div className="flex items-center gap-3 lg:gap-4">
+                <div className="main-icon" aria-label="Hospital Administrator"></div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Hospital Administrator</h1>
-                  <p className="text-sm text-gray-500">Dashboard Management System</p>
+                  <h1 className="text-xl lg:text-2xl font-extrabold tracking-tight" style={{color: darkMode ? '#f3f4f6' : '#0f172a'}}>
+                    Hospital Administrator
+                  </h1>
+                  <p className="text-xs lg:text-sm font-medium" style={{color: darkMode ? '#94a3b8' : '#64748b'}}>
+                    Healthcare Management Dashboard
+                  </p>
                 </div>
               </div>
 
               {/* User Info & Actions */}
-              <div className="flex items-center gap-3 flex-wrap">
-                {lastSync && <div className="text-xs text-gray-500 hidden md:block">Last sync: {lastSync.toLocaleString()}</div>}
-                <button onClick={loadFromGoogleSheet} className="btn-secondary px-4 py-2 text-sm flex items-center gap-2">
-                  {loading ? 'Syncing...' : '↻ Sync'}
+              <div className="flex items-center gap-2 lg:gap-3 flex-wrap">
+                {lastSync && <div className="text-xs text-gray-500 hidden lg:block">Last sync: {lastSync.toLocaleString()}</div>}
+                <button onClick={loadFromGoogleSheet} className="btn-secondary px-3 lg:px-4 py-2 text-xs lg:text-sm hidden sm:flex items-center gap-2">
+                  {loading ? '⟳ Syncing...' : '⟳ Sync Data'}
                 </button>
-                <button onClick={exportToCSV} className="btn-primary px-4 py-2 text-sm flex items-center gap-2">
+                <button onClick={exportToCSV} className="btn-primary px-3 lg:px-4 py-2 text-xs lg:text-sm hidden sm:flex items-center gap-2">
                   ↓ Export
                 </button>
-                <button onClick={() => setDarkMode(!darkMode)} className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all ${darkMode ? 'bg-yellow-500 text-gray-900' : 'bg-gray-700 text-white'}`}>
-                  {darkMode ? '☀ Light' : '☾ Dark'}
+                <button onClick={() => setDarkMode(!darkMode)} className={`w-10 h-10 rounded-xl font-semibold text-lg transition-all flex items-center justify-center ${darkMode ? 'bg-amber-400 text-gray-900 shadow-lg shadow-amber-400/20' : 'bg-slate-700 text-white shadow-lg shadow-slate-700/20'}`} title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+                  {darkMode ? '☀️' : '🌙'}
                 </button>
                 <div className="relative">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className="w-10 h-10 bg-white rounded-full shadow flex items-center justify-center text-xl hover:scale-110 transition-transform"
+                    className={`w-10 h-10 rounded-xl shadow-md flex items-center justify-center text-xl hover:scale-105 transition-all ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
+                    aria-label="Notifications"
                   >
                     🔔
                   </button>
-                  {notifications > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{notifications}</span>}
+                  {notifications > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">{notifications}</span>}
 
                   {/* Notification Dropdown */}
                   {showNotifications && (
                     <div className={`notification-dropdown ${darkMode ? 'bg-gray-800' : ''}`}>
                       <div className={`notification-header ${darkMode ? 'bg-gray-700' : ''}`}>
-                        <h3 className="font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>Notifications</h3>
+                        <h3 className="font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>🔔 Notifications</h3>
                         <button
                           onClick={() => { setNotificationItems([]); setNotifications(0); }}
-                          className="text-sm text-blue-500 hover:underline"
+                          className="text-sm font-semibold hover:underline"
+                          style={{color: '#0891b2'}}
                         >
                           Clear All
                         </button>
                       </div>
                       <div className="notification-list">
                         {notificationItems.length === 0 ? (
-                          <div className="p-6 text-center text-gray-500">
-                            No notifications
+                          <div className="p-8 text-center text-gray-400">
+                            <div className="text-3xl mb-2">✓</div>
+                            <p className="font-medium">All caught up!</p>
+                            <p className="text-xs mt-1">No new notifications</p>
                           </div>
                         ) : (
                           notificationItems.map((item, idx) => (
@@ -2770,31 +3215,42 @@
                     </div>
                   )}
                 </div>
-                <div className="user-info">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="user-info hidden sm:flex">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {username.charAt(0)}
                   </div>
-                  <span className="text-sm font-semibold text-gray-700" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>{username}</span>
-                  <button onClick={handleLogout} className="px-3 py-1 bg-red-500 text-white rounded-full text-xs font-semibold hover:bg-red-600 transition-colors">
+                  <span className="text-sm font-semibold hidden md:inline" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>{username}</span>
+                  <button onClick={handleLogout} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition-colors shadow-sm">
                     Logout
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className={`nav-tabs ${darkMode ? 'bg-gray-700' : ''}`}>
-              {[
-                { id: 'overview', label: '📊 Overview', icon: '📊' },
-                { id: 'departments', label: '🏢 Departments', icon: '🏢' },
-                { id: 'fleet', label: '🚑 Fleet Report', icon: '🚑' },
-                { id: 'personnel', label: '👥 Personnel', icon: '👥' },
-                { id: 'calendar', label: '📅 Calendar', icon: '📅' },
-                { id: 'leave', label: '🏖️ Leave', icon: '🏖️' },
-                { id: 'time-tracking', label: '⏱️ Time Tracking', icon: '⏱️' },
-                { id: 'reports', label: '📋 Reports', icon: '📋' }
-              ].map(tab => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+            {/* Navigation Tabs with Mobile Toggle */}
+            <div className="nav-tabs-wrapper">
+              {/* Mobile Menu Button */}
+              <button
+                className="mobile-menu-btn w-full justify-center"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                <span>{mobileMenuOpen ? '✕' : '☰'}</span>
+                <span>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace('-', ' ')}</span>
+                <span className="ml-auto">{mobileMenuOpen ? '▲' : '▼'}</span>
+              </button>
+
+              <div className={`nav-tabs ${darkMode ? 'bg-gray-700' : ''} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+                {[
+                  { id: 'overview', label: '📊 Overview', shortLabel: 'Overview' },
+                  { id: 'departments', label: '🏢 Departments', shortLabel: 'Depts' },
+                  { id: 'fleet', label: '🚑 Fleet Report', shortLabel: 'Fleet' },
+                  { id: 'personnel', label: '👥 Personnel', shortLabel: 'Staff' },
+                  { id: 'calendar', label: '📅 Calendar', shortLabel: 'Calendar' },
+                  { id: 'leave', label: '🏖️ Leave', shortLabel: 'Leave' },
+                  { id: 'time-tracking', label: '⏱️ Time Tracking', shortLabel: 'Time' },
+                  { id: 'reports', label: '📋 Reports', shortLabel: 'Reports' }
+                ].map(tab => (
+                  <button key={tab.id} onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false); }}
                   className={`nav-tab ${activeTab===tab.id ? 'active' : ''}`}>
                   {tab.label}
                 </button>
@@ -2949,57 +3405,81 @@
                 </div>
               </div>
 
-              {/* Key metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className={`stat-card blue ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Total Departments</p>
-                      <p className="text-3xl font-bold" style={{color: '#0ea5e9'}}>{departments.length}</p>
+              {/* Key metrics - Hospital KPI Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <div className={`stat-card blue ${darkMode ? '' : ''}`}>
+                  <div className="flex items-center gap-4">
+                    <div className="stat-icon blue">🏢</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="stat-label">Departments</p>
+                      <p className="stat-value" style={{color: '#0891b2'}}>{departments.length}</p>
                     </div>
-                    <span className="text-4xl opacity-20">🏢</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-cyan-100 text-xs text-gray-500">
+                    Active hospital units
                   </div>
                 </div>
-                <div className={`stat-card green ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Total Ambulance Trips</p>
-                      <p className="text-3xl font-bold" style={{color: '#10b981'}}>{totalTrips}</p>
+                <div className={`stat-card green`}>
+                  <div className="flex items-center gap-4">
+                    <div className="stat-icon green">🚑</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="stat-label">Ambulance Trips</p>
+                      <p className="stat-value" style={{color: '#059669'}}>{totalTrips}</p>
                     </div>
-                    <span className="text-4xl opacity-20">🚑</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-green-100 text-xs text-gray-500">
+                    Inter: {fleetData.reduce((s,i)=>s+(parseInt(i.inter)||0),0)} | Intra: {fleetData.reduce((s,i)=>s+(parseInt(i.intra)||0),0)}
                   </div>
                 </div>
-                <div className={`stat-card purple ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Patients Transported</p>
-                      <p className="text-3xl font-bold" style={{color: '#a855f7'}}>{totalPatients}</p>
+                <div className={`stat-card purple`}>
+                  <div className="flex items-center gap-4">
+                    <div className="stat-icon purple">👥</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="stat-label">Patients Transported</p>
+                      <p className="stat-value" style={{color: '#8b5cf6'}}>{totalPatients}</p>
                     </div>
-                    <span className="text-4xl opacity-20">👥</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-purple-100 text-xs text-gray-500">
+                    Total this period
                   </div>
                 </div>
-                <div className={`stat-card red ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">High Priority Issues</p>
-                      <p className="text-3xl font-bold" style={{color: '#ef4444'}}>{departments.filter(d=>d.priority==='High').length}</p>
+                <div className={`stat-card red`}>
+                  <div className="flex items-center gap-4">
+                    <div className="stat-icon red">⚠️</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="stat-label">Priority Alerts</p>
+                      <p className="stat-value" style={{color: '#ef4444'}}>{departments.filter(d=>d.priority==='High').length}</p>
                     </div>
-                    <span className="text-4xl opacity-20">⚠️</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-red-100 text-xs text-gray-500">
+                    Requires immediate attention
                   </div>
                 </div>
               </div>
 
               {/* Charts */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                 <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h3 className="font-bold mb-4 text-lg" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Issues by Priority</h3>
+                  <div className="section-header">
+                    <div className="section-icon">📊</div>
+                    <div>
+                      <h3 className="section-title" style={{color: darkMode ? '#f3f4f6' : '#0f172a'}}>Issues by Priority</h3>
+                      <p className="section-subtitle">Department issue distribution</p>
+                    </div>
+                  </div>
                   <div className="chart-container">
                     <canvas ref={priorityChartRef}></canvas>
                   </div>
                 </div>
 
                 <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                  <h3 className="font-bold mb-4 text-lg" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📈 Ambulance Trip Distribution</h3>
+                  <div className="section-header">
+                    <div className="section-icon">📈</div>
+                    <div>
+                      <h3 className="section-title" style={{color: darkMode ? '#f3f4f6' : '#0f172a'}}>Ambulance Trip Distribution</h3>
+                      <p className="section-subtitle">Fleet activity overview</p>
+                    </div>
+                  </div>
                   <div className="chart-container">
                     <canvas ref={tripsChartRef}></canvas>
                   </div>
@@ -3008,20 +3488,27 @@
 
               {/* Executive summary */}
               <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''}`}>
-                <h3 className="font-bold mb-4 text-lg" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📋 Executive Summary</h3>
+                <div className="section-header">
+                  <div className="section-icon">📋</div>
+                  <div>
+                    <h3 className="section-title" style={{color: darkMode ? '#f3f4f6' : '#0f172a'}}>Executive Summary</h3>
+                    <p className="section-subtitle">Key highlights and action items</p>
+                  </div>
+                </div>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="border-l-4 border-red-500 pl-4 py-3 rounded-r-lg" style={{background: 'rgba(239, 68, 68, 0.05)'}}>
-                    <h4 className="font-bold text-red-600 mb-3 flex items-center gap-2">🚨 Critical Issues</h4>
+                  <div className="border-l-4 border-red-500 pl-5 py-4 rounded-r-xl" style={{background: darkMode ? 'rgba(239, 68, 68, 0.1)' : 'linear-gradient(to right, rgba(254, 226, 226, 0.5), transparent)'}}>
+                    <h4 className="font-bold text-red-600 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">🚨 Critical Issues ({departments.filter(d=>d.priority==='High').length})</h4>
                     <ul className="text-sm space-y-2">
-                      {departments.filter(d=>d.priority==='High').slice(0,3).map((d,i)=>(<li key={i} className="flex items-start gap-2"><span className="text-red-500">•</span> {d.name}</li>))}
+                      {departments.filter(d=>d.priority==='High').slice(0,3).map((d,i)=>(<li key={i} className="flex items-start gap-2"><span className="text-red-500 font-bold">•</span> <span style={{color: darkMode ? '#f1f5f9' : '#1e293b'}}>{d.name}</span></li>))}
+                      {departments.filter(d=>d.priority==='High').length === 0 && <li className="text-gray-500 italic">No critical issues</li>}
                     </ul>
                   </div>
-                  <div className="border-l-4 border-green-500 pl-4 py-3 rounded-r-lg" style={{background: 'rgba(16, 185, 129, 0.05)'}}>
-                    <h4 className="font-bold text-green-600 mb-3 flex items-center gap-2">✅ Positive Updates</h4>
+                  <div className="border-l-4 border-green-500 pl-5 py-4 rounded-r-xl" style={{background: darkMode ? 'rgba(16, 185, 129, 0.1)' : 'linear-gradient(to right, rgba(220, 252, 231, 0.5), transparent)'}}>
+                    <h4 className="font-bold text-green-600 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">✅ Positive Updates</h4>
                     <ul className="text-sm space-y-2">
-                      <li className="flex items-start gap-2"><span className="text-green-500">•</span> {totalPatients} patients transported successfully</li>
-                      <li className="flex items-start gap-2"><span className="text-green-500">•</span> {fleetData.length} ambulances in active service</li>
-                      <li className="flex items-start gap-2"><span className="text-green-500">•</span> {departments.filter(d=>d.priority==='Low').length} departments performing well</li>
+                      <li className="flex items-start gap-2"><span className="text-green-500 font-bold">•</span> <span style={{color: darkMode ? '#f1f5f9' : '#1e293b'}}><strong>{totalPatients}</strong> patients transported successfully</span></li>
+                      <li className="flex items-start gap-2"><span className="text-green-500 font-bold">•</span> <span style={{color: darkMode ? '#f1f5f9' : '#1e293b'}}><strong>{fleetData.length}</strong> ambulances in active service</span></li>
+                      <li className="flex items-start gap-2"><span className="text-green-500 font-bold">•</span> <span style={{color: darkMode ? '#f1f5f9' : '#1e293b'}}><strong>{departments.filter(d=>d.priority==='Low').length}</strong> departments performing well</span></li>
                     </ul>
                   </div>
                 </div>
