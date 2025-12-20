@@ -1014,6 +1014,295 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
+    /* ============================================
+       ASSET-DASHBOARD INSPIRED REPORT STYLES
+       ============================================ */
+
+    /* CSS Variables for theme consistency */
+    :root {
+      --primary-green: #10b981;
+      --dark-green: #059669;
+      --primary-orange: #f59e0b;
+      --bg-card: white;
+      --text-primary: #1a202c;
+      --border-color: #e2e8f0;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --table-hover: #f7fafc;
+    }
+
+    .dark {
+      --bg-card: #1f2937;
+      --text-primary: #f3f4f6;
+      --border-color: #374151;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --table-hover: #374151;
+    }
+
+    /* Floating Export Button */
+    .floating-export-btn {
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .floating-export-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+    }
+
+    .floating-export-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* PDF Download Button */
+    .btn-pdf-download {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-pdf-download:hover {
+      background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+      transform: scale(1.05);
+    }
+
+    /* Enhanced Report Section Styling */
+    .report-section {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px var(--shadow);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .report-section:hover {
+      box-shadow: 0 8px 30px var(--shadow);
+    }
+
+    /* Report Chart Card */
+    .report-chart-card {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .report-chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .report-chart-container canvas {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+
+    /* Enhanced Table Container for Reports */
+    .report-table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .report-table-container thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+    }
+
+    .report-table-container th {
+      color: white;
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9em;
+      text-transform: uppercase;
+    }
+
+    .report-table-container tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.3s;
+    }
+
+    .report-table-container tbody tr:hover {
+      background: var(--table-hover);
+    }
+
+    /* KPI Card Styles */
+    .kpi-card {
+      background: var(--bg-card);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: all 0.3s;
+      border-left: 5px solid;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px var(--shadow);
+    }
+
+    .kpi-card.orange { border-left-color: var(--primary-orange); }
+    .kpi-card.green { border-left-color: var(--primary-green); }
+    .kpi-card.blue { border-left-color: #0ea5e9; }
+    .kpi-card.purple { border-left-color: #a855f7; }
+    .kpi-card.red { border-left-color: #ef4444; }
+
+    .kpi-value {
+      font-size: 2.5em;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .kpi-label {
+      font-size: 0.9em;
+      color: #718096;
+      margin-top: 5px;
+    }
+
+    /* Print Options Panel */
+    .print-options-panel {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .print-option-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+
+    .print-option-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-green);
+    }
+
+    .print-option-item label {
+      font-size: 0.95em;
+      color: var(--text-primary);
+    }
+
+    /* Report Type Buttons Grid */
+    .report-types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .report-type-btn {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-type-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .report-type-btn.summary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
+    .report-type-btn.detailed { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+    .report-type-btn.warranty { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
+    .report-type-btn.valuation { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); color: white; }
+    .report-type-btn.audit { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; }
+
+    /* Enhanced Print Styles */
+    @media print {
+      .floating-export-btn,
+      .print-options-panel,
+      .report-types-grid,
+      .btn-pdf-download {
+        display: none !important;
+      }
+
+      .report-section {
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .kpi-card {
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+      }
+
+      .report-table-container {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .report-table-container thead {
+        background: #10b981 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Dark mode support for new styles */
+    .dark .report-section,
+    .dark .report-chart-card,
+    .dark .kpi-card,
+    .dark .print-options-panel {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    .dark .kpi-value {
+      color: #f3f4f6;
+    }
+
+    .dark .report-table-container tbody tr:hover {
+      background: #374151;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -1174,6 +1463,14 @@
     const [loading, setLoading] = useState(false);
     const [lastSync, setLastSync] = useState(null);
     const [printSection, setPrintSection] = useState(null); // For separate page printing
+
+    // Print options state (Asset-Dashboard inspired)
+    const [printOptions, setPrintOptions] = useState({
+      includeCharts: true,
+      includeLogo: true,
+      includeTimestamp: true,
+      includeStatistics: true
+    });
 
     // Data states
     const [departments, setDepartments] = useState([]);
@@ -1738,7 +2035,78 @@
       }, 100);
     };
 
-    /***** Calendar Helpers *****/
+    // Asset-Dashboard inspired: Print specific report types
+    const printReport = (type) => {
+      let sectionMap = {
+        'summary': 'overview',
+        'detailed': 'departments',
+        'fleet': 'fleet',
+        'personnel': 'personnel',
+        'schedule': 'calendar',
+        'leave': 'leave',
+        'timetracking': 'timetracking'
+      };
+      generateSectionReport(sectionMap[type] || type);
+      showToast(`Generating ${type} report...`, 'info');
+    };
+
+    // Export section data to PDF-ready format
+    const exportSectionToPDF = (section) => {
+      // Use print functionality with section isolation
+      generateSectionReport(section);
+      showToast(`${section.charAt(0).toUpperCase() + section.slice(1)} report ready for PDF export`, 'success');
+    };
+
+    // Generate comprehensive summary report
+    const generateSummaryReport = () => {
+      const reportData = {
+        generated: new Date().toISOString(),
+        summary: {
+          totalDepartments: departments.length,
+          totalFleetVehicles: fleetData.length,
+          totalTrips: fleetData.reduce((sum, f) => sum + (f.inter || 0) + (f.intra || 0), 0),
+          totalPatients,
+          totalFuelCost: fleetData.reduce((sum, f) => sum + (f.fuel || 0), 0),
+          highPriorityIssues: departments.filter(d => d.priority === 'High').length,
+          pendingLeaves: leaveRecords.filter(l => l.status === 'pending').length,
+          overtimeHours: timeRecords.filter(r => r.type === 'overtime').reduce((sum, r) => sum + (r.hours || 0), 0)
+        },
+        printOptions
+      };
+      console.log('Summary Report Data:', reportData);
+      printReport('summary');
+    };
+
+    // Generate detailed inventory report
+    const generateDetailedReport = () => {
+      printReport('detailed');
+    };
+
+    // Generate fleet valuation report
+    const generateFleetReport = () => {
+      printReport('fleet');
+    };
+
+    // Generate audit trail report
+    const generateAuditReport = () => {
+      const auditData = {
+        generated: new Date().toISOString(),
+        user: username,
+        sections: ['departments', 'fleet', 'personnel', 'schedules', 'leave', 'timetracking'],
+        recordCounts: {
+          departments: departments.length,
+          fleet: fleetData.length,
+          personnel: personnelUpdates.length,
+          schedules: schedules.length,
+          leave: leaveRecords.length,
+          timeRecords: timeRecords.length
+        }
+      };
+      console.log('Audit Report Generated:', auditData);
+      showToast('Audit report generated - check console for full data', 'success');
+    };
+
+    /***** Calendar Helpers ****/
     const getCalendarDays = () => {
       const year = calendarDate.getFullYear();
       const month = calendarDate.getMonth();
@@ -3711,42 +4079,119 @@
           {activeTab === 'reports' && (
             <section className="space-y-6 animate-fadeIn">
               {/* Header */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} no-print`}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} no-print`}>
                 <div className="flex flex-wrap justify-between items-center gap-4">
                   <div>
                     <h2 className="text-xl font-bold" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>📊 Reports & Analytics</h2>
-                    <p className="text-sm text-gray-500">Generate comprehensive reports for all data categories</p>
+                    <p className="text-sm text-gray-500">Generate comprehensive reports for all data categories (Asset-Dashboard Style)</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <button onClick={() => window.print()} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 flex items-center gap-2">
                       🖨️ Print All
+                    </button>
+                    <button onClick={generateAuditReport} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+                      📋 Audit Trail
                     </button>
                   </div>
                 </div>
 
+                {/* Asset-Dashboard Style Report Types */}
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <h4 className="font-semibold mb-4 text-sm flex items-center gap-2" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>
+                    <span className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center text-white text-xs">📄</span>
+                    Quick Report Generation
+                  </h4>
+                  <div className="report-types-grid">
+                    <button onClick={generateSummaryReport} className="report-type-btn summary">
+                      📋 Summary Report
+                    </button>
+                    <button onClick={generateDetailedReport} className="report-type-btn detailed">
+                      📊 Detailed Inventory
+                    </button>
+                    <button onClick={generateFleetReport} className="report-type-btn warranty">
+                      🚑 Fleet Report
+                    </button>
+                    <button onClick={() => printReport('personnel')} className="report-type-btn valuation">
+                      👥 Personnel Report
+                    </button>
+                    <button onClick={generateAuditReport} className="report-type-btn audit">
+                      📝 Audit Trail
+                    </button>
+                  </div>
+                </div>
+
+                {/* Print Options Panel */}
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <h4 className="font-semibold mb-3 text-sm flex items-center gap-2" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>
+                    <span className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">⚙️</span>
+                    Print Options
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="print-option-item">
+                      <input
+                        type="checkbox"
+                        id="includeCharts"
+                        checked={printOptions.includeCharts}
+                        onChange={(e) => setPrintOptions({...printOptions, includeCharts: e.target.checked})}
+                      />
+                      <label htmlFor="includeCharts" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Include Charts</label>
+                    </div>
+                    <div className="print-option-item">
+                      <input
+                        type="checkbox"
+                        id="includeLogo"
+                        checked={printOptions.includeLogo}
+                        onChange={(e) => setPrintOptions({...printOptions, includeLogo: e.target.checked})}
+                      />
+                      <label htmlFor="includeLogo" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Include Logo</label>
+                    </div>
+                    <div className="print-option-item">
+                      <input
+                        type="checkbox"
+                        id="includeTimestamp"
+                        checked={printOptions.includeTimestamp}
+                        onChange={(e) => setPrintOptions({...printOptions, includeTimestamp: e.target.checked})}
+                      />
+                      <label htmlFor="includeTimestamp" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Include Timestamp</label>
+                    </div>
+                    <div className="print-option-item">
+                      <input
+                        type="checkbox"
+                        id="includeStatistics"
+                        checked={printOptions.includeStatistics}
+                        onChange={(e) => setPrintOptions({...printOptions, includeStatistics: e.target.checked})}
+                      />
+                      <label htmlFor="includeStatistics" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Include Statistics</label>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Separate Page Report Generation */}
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <h4 className="font-semibold mb-3 text-sm" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>Generate Individual Section Reports (Separate Pages)</h4>
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <h4 className="font-semibold mb-3 text-sm flex items-center gap-2" style={{color: darkMode ? '#d1d5db' : '#4a5568'}}>
+                    <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">📑</span>
+                    Individual Section Reports (Separate Pages)
+                  </h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-                    <button onClick={() => generateSectionReport('overview')} className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('overview')} className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       📋 Overview
                     </button>
-                    <button onClick={() => generateSectionReport('departments')} className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('departments')} className="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       🏢 Departments
                     </button>
-                    <button onClick={() => generateSectionReport('fleet')} className="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('fleet')} className="px-3 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       🚑 Fleet
                     </button>
-                    <button onClick={() => generateSectionReport('personnel')} className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('personnel')} className="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       👥 Personnel
                     </button>
-                    <button onClick={() => generateSectionReport('calendar')} className="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('calendar')} className="px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       📅 Calendar
                     </button>
-                    <button onClick={() => generateSectionReport('leave')} className="px-3 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('leave')} className="px-3 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       🏖️ Leave
                     </button>
-                    <button onClick={() => generateSectionReport('timetracking')} className="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 text-xs font-medium flex items-center justify-center gap-1">
+                    <button onClick={() => generateSectionReport('timetracking')} className="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 text-xs font-medium flex items-center justify-center gap-1 transition-all hover:shadow-lg">
                       ⏱️ Time Tracking
                     </button>
                   </div>
@@ -3845,16 +4290,19 @@
               </div>
 
               {/* Department Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'departments' ? 'no-print' : ''}`} style={printSection === 'departments' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'departments' ? 'no-print' : ''}`} style={printSection === 'departments' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'departments' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🏢 Department Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     🏢 Department Report
                   </h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">High: {departments.filter(d => d.priority === 'High').length}</span>
                     <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">Medium: {departments.filter(d => d.priority === 'Medium').length}</span>
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Low: {departments.filter(d => d.priority === 'Low').length}</span>
+                    <button onClick={() => exportSectionToPDF('departments')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -3890,16 +4338,19 @@
               </div>
 
               {/* Fleet Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'fleet' ? 'no-print' : ''}`} style={printSection === 'fleet' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'fleet' ? 'no-print' : ''}`} style={printSection === 'fleet' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'fleet' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🚑 Fleet Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
                 <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     🚑 Fleet Report
                   </h3>
-                  <div className="flex flex-wrap gap-2 text-sm">
+                  <div className="flex flex-wrap gap-2 text-sm items-center">
                     <span className="px-2 py-1 bg-blue-50 rounded text-blue-600 font-semibold whitespace-nowrap">Total Trips: {totalTrips}</span>
                     <span className="px-2 py-1 bg-green-50 rounded text-green-600 font-semibold whitespace-nowrap">Patients: {totalPatients}</span>
                     <span className="px-2 py-1 bg-purple-50 rounded text-purple-600 font-semibold whitespace-nowrap">Fuel: ${totalFuel.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <button onClick={() => exportSectionToPDF('fleet')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -3941,15 +4392,20 @@
               </div>
 
               {/* Personnel Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'personnel' ? 'no-print' : ''}`} style={printSection === 'personnel' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'personnel' ? 'no-print' : ''}`} style={printSection === 'personnel' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'personnel' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">👥 Personnel Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     👥 Personnel Report
                   </h3>
-                  <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
-                    {personnelUpdates.length} Updates
-                  </span>
+                  <div className="flex gap-2 items-center">
+                    <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                      {personnelUpdates.length} Updates
+                    </span>
+                    <button onClick={() => exportSectionToPDF('personnel')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="data-table">
@@ -3974,15 +4430,18 @@
               </div>
 
               {/* Schedule Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'calendar' ? 'no-print' : ''}`} style={printSection === 'calendar' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'calendar' ? 'no-print' : ''}`} style={printSection === 'calendar' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'calendar' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">📅 Calendar / Schedule Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     📅 Schedule Report
                   </h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Working: {schedules.filter(s => !s.leaveStatus).length}</span>
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">On Leave: {schedules.filter(s => s.leaveStatus).length}</span>
+                    <button onClick={() => exportSectionToPDF('calendar')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -4023,16 +4482,19 @@
               </div>
 
               {/* Leave Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'leave' ? 'no-print' : ''}`} style={printSection === 'leave' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'leave' ? 'no-print' : ''}`} style={printSection === 'leave' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'leave' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">🏖️ Leave Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     🏖️ Leave Report
                   </h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">Pending: {leaveRecords.filter(l => l.status === 'pending').length}</span>
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Approved: {leaveRecords.filter(l => l.status === 'approved').length}</span>
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Rejected: {leaveRecords.filter(l => l.status === 'rejected').length}</span>
+                    <button onClick={() => exportSectionToPDF('leave')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -4064,16 +4526,19 @@
               </div>
 
               {/* Time Tracking Report */}
-              <div className={`dashboard-card ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'timetracking' ? 'no-print' : ''}`} style={printSection === 'timetracking' ? {pageBreakBefore: 'always'} : {}}>
+              <div className={`report-section ${darkMode ? 'bg-gray-800' : ''} ${printSection && printSection !== 'timetracking' ? 'no-print' : ''}`} style={printSection === 'timetracking' ? {pageBreakBefore: 'always'} : {}}>
                 {printSection === 'timetracking' && <div className="print-header mb-4"><h2 className="text-2xl font-bold text-center">⏱️ Time Tracking Report</h2><p className="text-center text-gray-500">Generated: {new Date().toLocaleDateString()}</p></div>}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
                   <h3 className="font-bold text-lg flex items-center gap-2" style={{color: darkMode ? '#f3f4f6' : '#1a202c'}}>
                     ⏱️ Time Tracking Report
                   </h3>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Overtime: {timeStats.overtime}h</span>
                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Late: {timeStats.late}</span>
                     <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">Claims: {timeStats.claims}</span>
+                    <button onClick={() => exportSectionToPDF('timetracking')} className="btn-pdf-download no-print">
+                      📄 PDF
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -4106,9 +4571,9 @@
                 </div>
               </div>
 
-              {/* Summary Cards - Screen view only */}
+              {/* Summary Cards - Screen view only - Asset-Dashboard KPI Style */}
               <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 ${printSection ? 'no-print' : ''}`}>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} border`}>
+                <div className={`kpi-card blue ${darkMode ? 'bg-gray-700' : ''}`}>
                   <h4 className="font-semibold text-sm text-gray-500 mb-2">🏖️ Leave Summary</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between"><span>Pending:</span><span className="font-bold text-yellow-600">{leaveRecords.filter(l => l.status === 'pending').length}</span></div>
@@ -4116,7 +4581,7 @@
                     <div className="flex justify-between"><span>Rejected:</span><span className="font-bold text-red-600">{leaveRecords.filter(l => l.status === 'rejected').length}</span></div>
                   </div>
                 </div>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-green-50 to-emerald-100'} border`}>
+                <div className={`kpi-card green ${darkMode ? 'bg-gray-700' : ''}`}>
                   <h4 className="font-semibold text-sm text-gray-500 mb-2">⏱️ Time Tracking</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between"><span>Overtime:</span><span className="font-bold text-green-600">{timeStats.overtime}h</span></div>
@@ -4124,7 +4589,7 @@
                     <div className="flex justify-between"><span>Claims:</span><span className="font-bold text-blue-600">{timeStats.claims}</span></div>
                   </div>
                 </div>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-purple-50 to-violet-100'} border`}>
+                <div className={`kpi-card purple ${darkMode ? 'bg-gray-700' : ''}`}>
                   <h4 className="font-semibold text-sm text-gray-500 mb-2">📊 Trip Breakdown</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between"><span>Inter-facility:</span><span className="font-bold text-indigo-600">{fleetData.reduce((s,f) => s + (f.inter||0), 0)}</span></div>
@@ -4132,7 +4597,7 @@
                     <div className="flex justify-between"><span>Total:</span><span className="font-bold text-blue-600">{totalTrips}</span></div>
                   </div>
                 </div>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gradient-to-br from-orange-50 to-amber-100'} border`}>
+                <div className={`kpi-card orange ${darkMode ? 'bg-gray-700' : ''}`}>
                   <h4 className="font-semibold text-sm text-gray-500 mb-2">🗓️ Report Info</h4>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between"><span>Generated:</span><span className="font-bold">{new Date().toLocaleDateString()}</span></div>
@@ -4144,6 +4609,15 @@
           )}
 
         </main>
+
+        {/* Floating Export Button - Asset-Dashboard Style */}
+        <button
+          onClick={exportToExcel}
+          className="floating-export-btn no-print"
+          title="Quick Export to Excel"
+        >
+          📊 Export
+        </button>
       </div>
     );
   }
