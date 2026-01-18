@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Management System - Complete</title>
+    <title>Hospital Management System - Advanced</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -64,14 +64,30 @@
             color: #f1f5f9;
         }
 
-        .dark-mode .fleet-card {
+        .dark-mode .fleet-card,
+        .dark-mode .update-card,
+        .dark-mode .assignment-card,
+        .dark-mode .settings-card {
             background: #1e293b;
             border-color: #334155;
         }
 
-        .dark-mode .update-card {
+        .dark-mode .sub-nav {
+            background: #0f172a;
+        }
+
+        .dark-mode .sub-nav-tab {
+            color: #94a3b8;
+        }
+
+        .dark-mode .sub-nav-tab.active {
             background: #1e293b;
-            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        .dark-mode .tag {
+            background: #334155;
+            color: #f1f5f9;
         }
 
         .container {
@@ -209,6 +225,39 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
+        /* Sub Navigation */
+        .sub-nav {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .sub-nav-tab {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: transparent;
+            color: #64748b;
+        }
+
+        .sub-nav-tab:hover {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+
+        .sub-nav-tab.active {
+            background: white;
+            color: #10b981;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
         /* Buttons */
         .btn {
             padding: 12px 24px;
@@ -238,6 +287,11 @@
         .btn-danger {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
         }
 
         /* Cards */
@@ -358,6 +412,29 @@
         .badge-yellow { background: #fef3c7; color: #92400e; }
         .badge-red { background: #fee2e2; color: #991b1b; }
         .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-purple { background: #f3e8ff; color: #6b21a8; }
+
+        /* Tag */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-size: 13px;
+            margin: 4px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .tag-remove:hover {
+            color: #dc2626;
+        }
 
         /* Modal */
         .modal-overlay {
@@ -383,6 +460,10 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content.large {
+            max-width: 900px;
         }
 
         .form-group {
@@ -490,18 +571,13 @@
             background: #334155;
         }
 
-        .calendar-day.has-schedule {
+        .calendar-day.has-assignments {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             font-weight: 700;
         }
 
-        .dark-mode .calendar-day.has-schedule {
+        .dark-mode .calendar-day.has-assignments {
             background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-        }
-
-        .calendar-day.has-leave {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            font-weight: 700;
         }
 
         .calendar-day.today {
@@ -509,7 +585,7 @@
             font-weight: 700;
         }
 
-        .schedule-indicator {
+        .assignment-indicator {
             position: absolute;
             top: 2px;
             right: 2px;
@@ -517,26 +593,45 @@
             background: #3b82f6;
             color: white;
             border-radius: 50%;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
         }
 
-        .leave-count {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            font-size: 10px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
+        /* Settings Card */
+        .settings-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .settings-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .settings-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .dark-mode .settings-title {
+            color: #f1f5f9;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         /* Activity Item */
@@ -611,17 +706,6 @@
             margin-bottom: 12px;
         }
 
-        .kpi-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .kpi-value {
-            font-weight: bold;
-        }
-
         /* Fleet Card */
         .fleet-card {
             background: white;
@@ -677,6 +761,77 @@
             display: flex;
             gap: 8px;
             margin-top: 16px;
+        }
+
+        /* Assignment Card */
+        .assignment-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+        }
+
+        .assignment-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .assignment-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .dark-mode .assignment-title {
+            color: #f1f5f9;
+        }
+
+        .assignment-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .assignment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .assignment-detail {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .dark-mode .assignment-detail {
+            background: #0f172a;
+        }
+
+        .assignment-detail-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .assignment-detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .dark-mode .assignment-detail-value {
+            color: #f1f5f9;
         }
 
         /* Update Card */
@@ -739,40 +894,117 @@
         .update-type-warning { background: #fef3c7; color: #92400e; }
         .update-type-issue { background: #fee2e2; color: #991b1b; }
 
-        /* Schedule List */
-        .schedule-list {
-            margin-top: 20px;
-        }
-
-        .schedule-item {
-            background: #f8fafc;
-            border-left: 4px solid #10b981;
+        /* Driver Assignment List */
+        .driver-assignment-item {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 12px;
         }
 
-        .dark-mode .schedule-item {
-            background: #0f172a;
+        .dark-mode .driver-assignment-item {
+            background: #1e3a8a;
         }
 
-        .schedule-staff-name {
-            font-weight: 700;
-            font-size: 16px;
-            color: #1a202c;
+        .driver-assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 8px;
         }
 
-        .dark-mode .schedule-staff-name {
+        .driver-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1a202c;
+        }
+
+        .dark-mode .driver-name {
             color: #f1f5f9;
         }
 
-        .schedule-details {
+        .driver-time {
+            font-size: 14px;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .driver-details {
             font-size: 14px;
             color: #64748b;
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
+        }
+
+        .dark-mode .driver-details {
+            color: #cbd5e1;
+        }
+
+        /* Staff Card */
+        .staff-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .staff-card:hover {
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .dark-mode .staff-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .staff-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .staff-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .dark-mode .staff-name {
+            color: #f1f5f9;
+        }
+
+        .staff-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .staff-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .staff-info-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .staff-info-value {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a202c;
+        }
+
+        .dark-mode .staff-info-value {
+            color: #f1f5f9;
         }
 
         /* Print Styles */
@@ -937,6 +1169,10 @@
             .print-summary {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .assignment-details {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* File Input */
@@ -959,6 +1195,17 @@
         .file-input {
             display: none;
         }
+
+        /* Section Divider */
+        .section-divider {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 30px 0;
+        }
+
+        .dark-mode .section-divider {
+            border-top-color: #334155;
+        }
     </style>
 </head>
 <body>
@@ -972,11 +1219,54 @@
     <!-- Print Area -->
     <div id="printArea" class="print-area"></div>
 
+    <!-- Sync Modal -->
+    <div id="syncModal" class="modal-overlay" style="display: none;" onclick="closeSyncModal()">
+        <div class="modal-content large" onclick="event.stopPropagation()">
+            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">🔄 Data Sync & Transfer</h2>
+            
+            <p style="color: #64748b; margin-bottom: 24px;">Transfer your hospital management data between devices or create backups to cloud storage.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <div style="border: 2px solid #10b981; border-radius: 12px; padding: 24px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📤</div>
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #10b981;">Export Complete Backup</h3>
+                    <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Download all your data as a JSON file</p>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="exportCompleteBackup()">📥 Download Backup</button>
+                </div>
+                
+                <div style="border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">📥</div>
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #3b82f6;">Import from Backup</h3>
+                    <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Restore data from a backup file</p>
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="importCompleteBackup()">📤 Upload Backup</button>
+                </div>
+            </div>
+            
+            <div style="border-top: 2px solid #e2e8f0; padding-top: 24px;">
+                <h3 style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📋 Sync Instructions</h3>
+                <div style="background: #f8fafc; border-radius: 8px; padding: 16px; font-size: 14px; line-height: 1.8; color: #64748b;">
+                    <p><strong>To transfer data between devices:</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 8px;">
+                        <li>Click "Download Backup" to export your data</li>
+                        <li>Upload the file to Google Drive, Dropbox, or email it to yourself</li>
+                        <li>On your other device, download the backup file</li>
+                        <li>Click "Upload Backup" and select the file</li>
+                    </ol>
+                    <p style="margin-top: 12px;"><strong>💡 Tip:</strong> Create regular backups to protect your data!</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button type="button" class="btn" style="border: 2px solid #e2e8f0;" onclick="closeSyncModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============ CONFIGURATION ============
         const CONFIG = {
             USE_GOOGLE_SHEETS: false,
-            SCRIPT_URL: '', // Add your Google Apps Script URL here
+            SCRIPT_URL: '',
             SYNC_ENABLED: false
         };
 
@@ -992,32 +1282,55 @@
         };
 
         // ============ INITIAL DATA ============
-        const initialStaff = [
-            { id: 1, trn: '001', name: 'John Smith', department: 'Emergency', position: 'Senior Porter', phone: '876-555-0101', email: 'john.smith@hospital.com', status: 'active', vacationDays: 20, sickDays: 10, personalDays: 5 },
-            { id: 2, trn: '002', name: 'Sarah Johnson', department: 'Surgery', position: 'Porter', phone: '876-555-0102', email: 'sarah.j@hospital.com', status: 'active', vacationDays: 18, sickDays: 12, personalDays: 5 },
-            { id: 3, trn: '003', name: 'Michael Brown', department: 'ICU', position: 'Porter', phone: '876-555-0103', email: 'michael.b@hospital.com', status: 'active', vacationDays: 15, sickDays: 10, personalDays: 3 },
-            { id: 4, trn: '004', name: 'Emily Davis', department: 'Pediatrics', position: 'Junior Porter', phone: '876-555-0104', email: 'emily.d@hospital.com', status: 'active', vacationDays: 22, sickDays: 8, personalDays: 5 },
-        ];
+        const initialDepartments = ['Emergency', 'Surgery', 'ICU', 'Pediatrics', 'Maternity', 'Orthopedics', 'Cardiology', 'Oncology', 'General Ward'];
+        
+        const initialLeaveTypes = ['Vacation', 'Sick Leave', 'Personal Leave', 'Maternity Leave', 'Paternity Leave', 'Bereavement', 'Other'];
 
-        const initialDepartments = [
-            { id: 1, name: 'Emergency', employees: 12, status: 'active', head: 'Dr. Anderson' },
-            { id: 2, name: 'Surgery', employees: 8, status: 'active', head: 'Dr. Martinez' },
-            { id: 3, name: 'ICU', employees: 15, status: 'active', head: 'Dr. Thompson' },
-            { id: 4, name: 'Pediatrics', employees: 10, status: 'active', head: 'Dr. Wilson' },
+        const initialStaff = [
+            { id: 1, trn: '001', name: 'John Smith', type: 'porter', department: 'Emergency', position: 'Senior Porter', phone: '876-555-0101', email: 'john.smith@hospital.com', status: 'active' },
+            { id: 2, trn: '002', name: 'Sarah Johnson', type: 'porter', department: 'Surgery', position: 'Porter', phone: '876-555-0102', email: 'sarah.j@hospital.com', status: 'active' },
+            { id: 3, trn: '003', name: 'Michael Brown', type: 'driver', department: 'Transport', position: 'Ambulance Driver', phone: '876-555-0103', email: 'michael.b@hospital.com', status: 'active' },
+            { id: 4, trn: '004', name: 'Emily Davis', type: 'porter', department: 'Pediatrics', position: 'Junior Porter', phone: '876-555-0104', email: 'emily.d@hospital.com', status: 'active' },
         ];
 
         // ============ APPLICATION STATE ============
         class AppState {
             constructor() {
                 this.activeTab = 'dashboard';
+                this.staffSubTab = 'all';
+                this.settingsSubTab = 'departments';
+                this.fleetSubTab = 'vehicles';
                 this.darkMode = localStorage.getItem('darkMode') === 'true';
+                this.departments = StorageManager.get('hospital_departments_list') || [...initialDepartments];
+                this.leaveTypes = StorageManager.get('hospital_leave_types') || [...initialLeaveTypes];
                 this.staff = StorageManager.get('hospital_staff') || initialStaff;
-                this.departments = StorageManager.get('hospital_departments') || initialDepartments;
                 this.fleet = StorageManager.get('hospital_fleet') || [];
                 this.leaveRecords = StorageManager.get('hospital_leave_records') || [];
                 this.timeTrackingRecords = StorageManager.get('hospital_time_tracking') || [];
-                this.scheduleData = StorageManager.get('hospital_schedules') || {};
+                this.ambulanceAssignments = StorageManager.get('hospital_assignments') || [];
+                this.driverSchedules = StorageManager.get('hospital_driver_schedules') || {};
                 this.hospitalUpdates = StorageManager.get('hospital_updates') || [];
+                this.fuelRecords = StorageManager.get('hospital_fuel_records') || [];
+                this.gasPriceData = StorageManager.get('hospital_gas_price') || { 
+                    gas87: 178.97,
+                    gas90: 186.98,
+                    lastUpdated: null, 
+                    source: 'manual',
+                    petrojamDate: null
+                };
+                
+                // Migrate old data structure to new structure
+                if (this.gasPriceData.pricePerLiter && !this.gasPriceData.gas87) {
+                    this.gasPriceData = {
+                        gas87: this.gasPriceData.pricePerLiter,
+                        gas90: this.gasPriceData.pricePerLiter + 8, // Estimate gas90 price
+                        lastUpdated: this.gasPriceData.lastUpdated || null,
+                        source: this.gasPriceData.source || 'manual',
+                        petrojamDate: this.gasPriceData.petrojamDate || null
+                    };
+                    StorageManager.set('hospital_gas_price', this.gasPriceData);
+                }
+                
                 this.modalOpen = false;
                 this.modalType = '';
                 this.editingItem = null;
@@ -1026,13 +1339,17 @@
             }
 
             save() {
+                StorageManager.set('hospital_departments_list', this.departments);
+                StorageManager.set('hospital_leave_types', this.leaveTypes);
                 StorageManager.set('hospital_staff', this.staff);
-                StorageManager.set('hospital_departments', this.departments);
                 StorageManager.set('hospital_fleet', this.fleet);
                 StorageManager.set('hospital_leave_records', this.leaveRecords);
                 StorageManager.set('hospital_time_tracking', this.timeTrackingRecords);
-                StorageManager.set('hospital_schedules', this.scheduleData);
+                StorageManager.set('hospital_assignments', this.ambulanceAssignments);
+                StorageManager.set('hospital_driver_schedules', this.driverSchedules);
                 StorageManager.set('hospital_updates', this.hospitalUpdates);
+                StorageManager.set('hospital_fuel_records', this.fuelRecords);
+                StorageManager.set('hospital_gas_price', this.gasPriceData);
             }
 
             toggleDarkMode() {
@@ -1042,8 +1359,13 @@
             }
 
             getStats() {
+                const today = new Date().toISOString().split('T')[0];
+                const todayAssignments = this.ambulanceAssignments.filter(a => a.date === today);
+                
                 return {
                     totalStaff: this.staff.length,
+                    drivers: this.staff.filter(s => s.type === 'driver').length,
+                    porters: this.staff.filter(s => s.type === 'porter').length,
                     activeStaff: this.staff.filter(s => s.status === 'active').length,
                     pendingLeave: this.leaveRecords.filter(l => l.status === 'pending').length,
                     approvedLeave: this.leaveRecords.filter(l => l.status === 'approved').length,
@@ -1055,11 +1377,21 @@
                     totalTrips: this.fleet.reduce((sum, v) => sum + (v.totalTrips || 0), 0),
                     activeVehicles: this.fleet.filter(v => v.status === 'active').length,
                     totalUpdates: this.hospitalUpdates.length,
+                    totalAssignments: this.ambulanceAssignments.length,
+                    todayAssignments: todayAssignments.length,
                 };
             }
         }
 
-        const state = new AppState();
+        let state;
+        try {
+            state = new AppState();
+            console.log('State initialized successfully');
+        } catch (error) {
+            console.error('Error creating state:', error);
+            alert('Error initializing application state. Please clear browser data and refresh.');
+            throw error;
+        }
 
         // Apply dark mode on load
         if (state.darkMode) {
@@ -1093,6 +1425,15 @@
             });
         }
 
+        function formatTime(timeString) {
+            if (!timeString) return '';
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
         // ============ RENDER FUNCTIONS ============
         function render() {
             const app = document.getElementById('app');
@@ -1123,16 +1464,21 @@
                             <button class="btn btn-primary" onclick="toggleDarkMode()" title="Toggle Dark Mode">
                                 ${state.darkMode ? '☀️ Light' : '🌙 Dark'}
                             </button>
-                            <button class="btn btn-secondary" onclick="syncData()" title="Sync with Google Sheets">
+                            <button class="btn btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="saveAllData()" title="Save All Data">
+                                💾 Save
+                            </button>
+                            <button class="btn btn-secondary" onclick="openSyncModal()" title="Sync & Transfer Data">
                                 🔄 Sync
                             </button>
                             <button class="btn btn-secondary" onclick="exportToExcel()">
-                                📊 Export
+                                📊 Excel
                             </button>
-                            <label class="file-input-label" style="padding: 12px 20px; font-size: 14px;">
-                                📥 Import
-                                <input type="file" class="file-input" accept=".xlsx,.xls,.json" onchange="importData(event)">
-                            </label>
+                            <button class="btn btn-secondary" onclick="exportToJSON()">
+                                💾 Export JSON
+                            </button>
+                            <button class="btn btn-secondary" onclick="importFromJSON()">
+                                📥 Import JSON
+                            </button>
                         </div>
                     </div>
                     <div class="nav-tabs">
@@ -1143,6 +1489,7 @@
                         ${renderTab('timetracking', '⏱️ Time Tracking')}
                         ${renderTab('fleet', '🚗 Fleet')}
                         ${renderTab('updates', '📢 Updates')}
+                        ${renderTab('settings', '⚙️ Settings')}
                         ${renderTab('reports', '📈 Reports')}
                     </div>
                 </div>
@@ -1163,6 +1510,7 @@
                 case 'timetracking': return renderTimeTracking();
                 case 'fleet': return renderFleet();
                 case 'updates': return renderUpdates();
+                case 'settings': return renderSettings();
                 case 'reports': return renderReports();
                 default: return renderDashboard();
             }
@@ -1175,16 +1523,16 @@
                     <h2 class="section-title mb-20">📊 Dashboard Overview</h2>
                     
                     <div class="stats-grid">
-                        ${renderStatCard('blue', '👥', 'Total Staff', stats.totalStaff, `Active: ${stats.activeStaff}`)}
+                        ${renderStatCard('blue', '👥', 'Total Staff', stats.totalStaff, `${stats.drivers} Drivers | ${stats.porters} Porters`)}
                         ${renderStatCard('green', '🏖️', 'Leave Requests', stats.pendingLeave, 'Pending Approval')}
-                        ${renderStatCard('purple', '⏰', 'Overtime Hours', stats.overtimeHours.toFixed(1), 'This Month')}
+                        ${renderStatCard('purple', '🚑', 'Assignments', stats.totalAssignments, `Today: ${stats.todayAssignments}`)}
                         ${renderStatCard('red', '⏱️', 'Late Arrivals', stats.lateCount, 'This Month')}
                         ${renderStatCard('orange', '🚗', 'Fleet Trips', stats.totalTrips, `${stats.activeVehicles} Active Vehicles`)}
                         ${renderStatCard('yellow', '📢', 'Hospital Updates', stats.totalUpdates, 'View All Updates')}
                     </div>
 
                     <div class="two-col-grid">
-                        ${renderRecentLeave()}
+                        ${renderRecentAssignments()}
                         ${renderRecentTimeTracking()}
                     </div>
                 </div>
@@ -1206,21 +1554,19 @@
             `;
         }
 
-        function renderRecentLeave() {
-            const recent = state.leaveRecords.slice(0, 5);
+        function renderRecentAssignments() {
+            const recent = state.ambulanceAssignments.slice(0, 5);
             return `
                 <div class="dashboard-card">
-                    <h3 class="font-bold mb-20">📋 Recent Leave Requests</h3>
-                    ${recent.length === 0 ? '<p style="color: #64748b;">No leave requests yet</p>' : 
-                        recent.map(leave => `
+                    <h3 class="font-bold mb-20">🚑 Recent Assignments</h3>
+                    ${recent.length === 0 ? '<p style="color: #64748b;">No assignments yet</p>' : 
+                        recent.map(assignment => `
                             <div class="activity-item">
                                 <div>
-                                    <p class="activity-name">${leave.employeeName}</p>
-                                    <p class="activity-detail">${formatDate(leave.startDate)} to ${formatDate(leave.endDate)}</p>
+                                    <p class="activity-name">${assignment.driverName} → ${assignment.destination}</p>
+                                    <p class="activity-detail">📍 ${assignment.fromWard} | Porter: ${assignment.porterName} | ${formatDate(assignment.date)} ${formatTime(assignment.departureTime)}</p>
                                 </div>
-                                <span class="badge badge-${leave.status === 'approved' ? 'green' : leave.status === 'pending' ? 'yellow' : 'red'}">
-                                    ${leave.status}
-                                </span>
+                                <span class="badge badge-blue">${assignment.ambulance}</span>
                             </div>
                         `).join('')
                     }
@@ -1255,8 +1601,31 @@
         function renderStaff() {
             return `
                 <div>
+                    <h2 class="section-title mb-20">👥 Staff Management</h2>
+                    
+                    <div class="sub-nav">
+                        <button class="sub-nav-tab ${state.staffSubTab === 'all' ? 'active' : ''}" onclick="switchStaffTab('all')">
+                            👥 All Staff
+                        </button>
+                        <button class="sub-nav-tab ${state.staffSubTab === 'drivers' ? 'active' : ''}" onclick="switchStaffTab('drivers')">
+                            🚗 Drivers
+                        </button>
+                        <button class="sub-nav-tab ${state.staffSubTab === 'porters' ? 'active' : ''}" onclick="switchStaffTab('porters')">
+                            👷 Porters
+                        </button>
+                    </div>
+                    
+                    ${state.staffSubTab === 'all' ? renderAllStaff() : 
+                      state.staffSubTab === 'drivers' ? renderDrivers() : renderPorters()}
+                </div>
+            `;
+        }
+
+        function renderAllStaff() {
+            return `
+                <div>
                     <div class="section-header">
-                        <h2 class="section-title">👥 Staff Management</h2>
+                        <h3 class="font-bold" style="font-size: 20px;">All Staff Members</h3>
                         <button class="btn btn-primary" onclick="openModal('addStaff')">➕ Add Staff Member</button>
                     </div>
                     
@@ -1267,10 +1636,10 @@
                                     <tr>
                                         <th>TRN</th>
                                         <th>Name</th>
+                                        <th>Type</th>
                                         <th>Department</th>
                                         <th>Position</th>
                                         <th>Phone</th>
-                                        <th>Email</th>
                                         <th>Status</th>
                                         <th class="no-print">Actions</th>
                                     </tr>
@@ -1280,17 +1649,264 @@
                                         <tr>
                                             <td style="font-weight: 700;">${s.trn}</td>
                                             <td style="font-weight: 600;">${s.name}</td>
+                                            <td><span class="badge badge-${s.type === 'driver' ? 'blue' : 'purple'}">${s.type === 'driver' ? '🚗 Driver' : '👷 Porter'}</span></td>
                                             <td>${s.department}</td>
                                             <td>${s.position}</td>
                                             <td>${s.phone}</td>
-                                            <td>${s.email}</td>
                                             <td><span class="badge badge-${s.status === 'active' ? 'green' : 'red'}">${s.status}</span></td>
                                             <td class="no-print">
-                                                <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; margin-right: 5px;" onclick="editStaff(${s.id})">Edit</button>
-                                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="deleteStaff(${s.id})">Delete</button>
+                                                <button class="btn btn-primary btn-small" style="margin-right: 5px;" onclick="editStaff(${s.id})">Edit</button>
+                                                <button class="btn btn-danger btn-small" onclick="deleteStaff(${s.id})">Delete</button>
                                             </td>
                                         </tr>
                                     `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDrivers() {
+            const drivers = state.staff.filter(s => s.type === 'driver');
+            return `
+                <div>
+                    <div class="section-header">
+                        <h3 class="font-bold" style="font-size: 20px;">🚗 Ambulance Drivers</h3>
+                        <button class="btn btn-primary" onclick="openModal('addDriver')">➕ Add Driver</button>
+                    </div>
+                    
+                    ${drivers.length === 0 ? `
+                        <div class="dashboard-card text-center" style="padding: 60px;">
+                            <p style="font-size: 48px; margin-bottom: 20px;">🚗</p>
+                            <p style="font-size: 18px; color: #64748b; margin-bottom: 20px;">No drivers added yet</p>
+                            <button class="btn btn-primary" onclick="openModal('addDriver')">Add Your First Driver</button>
+                        </div>
+                    ` : `
+                        <div class="stats-grid">
+                            ${drivers.map(driver => `
+                                <div class="staff-card">
+                                    <div class="staff-header">
+                                        <div>
+                                            <div class="staff-name">🚗 ${driver.name}</div>
+                                            <span class="badge badge-${driver.status === 'active' ? 'green' : 'red'}" style="margin-top: 8px;">
+                                                ${driver.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="staff-info">
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">TRN</div>
+                                            <div class="staff-info-value">${driver.trn}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Department</div>
+                                            <div class="staff-info-value">${driver.department}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Position</div>
+                                            <div class="staff-info-value">${driver.position}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Phone</div>
+                                            <div class="staff-info-value">${driver.phone}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                                        <button class="btn btn-primary btn-small" onclick="editStaff(${driver.id})">Edit</button>
+                                        <button class="btn btn-danger btn-small" onclick="deleteStaff(${driver.id})">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function renderPorters() {
+            const porters = state.staff.filter(s => s.type === 'porter');
+            return `
+                <div>
+                    <div class="section-header">
+                        <h3 class="font-bold" style="font-size: 20px;">👷 Hospital Porters</h3>
+                        <button class="btn btn-primary" onclick="openModal('addPorter')">➕ Add Porter</button>
+                    </div>
+                    
+                    ${porters.length === 0 ? `
+                        <div class="dashboard-card text-center" style="padding: 60px;">
+                            <p style="font-size: 48px; margin-bottom: 20px;">👷</p>
+                            <p style="font-size: 18px; color: #64748b; margin-bottom: 20px;">No porters added yet</p>
+                            <button class="btn btn-primary" onclick="openModal('addPorter')">Add Your First Porter</button>
+                        </div>
+                    ` : `
+                        <div class="stats-grid">
+                            ${porters.map(porter => `
+                                <div class="staff-card">
+                                    <div class="staff-header">
+                                        <div>
+                                            <div class="staff-name">👷 ${porter.name}</div>
+                                            <span class="badge badge-${porter.status === 'active' ? 'green' : 'red'}" style="margin-top: 8px;">
+                                                ${porter.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="staff-info">
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">TRN</div>
+                                            <div class="staff-info-value">${porter.trn}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Department</div>
+                                            <div class="staff-info-value">${porter.department}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Position</div>
+                                            <div class="staff-info-value">${porter.position}</div>
+                                        </div>
+                                        <div class="staff-info-item">
+                                            <div class="staff-info-label">Phone</div>
+                                            <div class="staff-info-value">${porter.phone}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                                        <button class="btn btn-primary btn-small" onclick="editStaff(${porter.id})">Edit</button>
+                                        <button class="btn btn-danger btn-small" onclick="deleteStaff(${porter.id})">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function renderSettings() {
+            return `
+                <div>
+                    <h2 class="section-title mb-20">⚙️ System Settings</h2>
+                    
+                    <div class="sub-nav">
+                        <button class="sub-nav-tab ${state.settingsSubTab === 'departments' ? 'active' : ''}" onclick="switchSettingsTab('departments')">
+                            🏥 Departments
+                        </button>
+                        <button class="sub-nav-tab ${state.settingsSubTab === 'leavetypes' ? 'active' : ''}" onclick="switchSettingsTab('leavetypes')">
+                            🏖️ Leave Types
+                        </button>
+                    </div>
+                    
+                    ${state.settingsSubTab === 'departments' ? renderDepartmentsSettings() : renderLeaveTypesSettings()}
+                </div>
+            `;
+        }
+
+        function renderDepartmentsSettings() {
+            return `
+                <div>
+                    <div class="settings-card">
+                        <div class="settings-header">
+                            <h3 class="settings-title">🏥 Manage Departments/Wards</h3>
+                            <button class="btn btn-primary" onclick="openModal('addDepartment')">➕ Add Department</button>
+                        </div>
+                        
+                        <p style="color: #64748b; margin-bottom: 20px;">These departments/wards will be available throughout the system for staff assignments, ambulance dispatches, and patient tracking.</p>
+                        
+                        <div class="tags-container">
+                            ${state.departments.map((dept, index) => `
+                                <div class="tag">
+                                    <span>${dept}</span>
+                                    <span class="tag-remove" onclick="removeDepartment(${index})" title="Remove">×</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3 class="font-bold mb-20">📊 Department Usage Statistics</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department/Ward</th>
+                                        <th>Staff Members</th>
+                                        <th>Active Assignments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.departments.map(dept => {
+                                        const staffCount = state.staff.filter(s => s.department === dept).length;
+                                        const assignmentCount = state.ambulanceAssignments.filter(a => a.fromWard === dept).length;
+                                        return `
+                                            <tr>
+                                                <td style="font-weight: 600;">${dept}</td>
+                                                <td>${staffCount}</td>
+                                                <td>${assignmentCount}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLeaveTypesSettings() {
+            return `
+                <div>
+                    <div class="settings-card">
+                        <div class="settings-header">
+                            <h3 class="settings-title">🏖️ Manage Leave Types</h3>
+                            <button class="btn btn-primary" onclick="openModal('addLeaveType')">➕ Add Leave Type</button>
+                        </div>
+                        
+                        <p style="color: #64748b; margin-bottom: 20px;">These leave types will be available when staff members request time off.</p>
+                        
+                        <div class="tags-container">
+                            ${state.leaveTypes.map((type, index) => `
+                                <div class="tag">
+                                    <span>${type}</span>
+                                    <span class="tag-remove" onclick="removeLeaveType(${index})" title="Remove">×</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3 class="font-bold mb-20">📊 Leave Type Usage Statistics</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Leave Type</th>
+                                        <th>Total Requests</th>
+                                        <th>Approved</th>
+                                        <th>Pending</th>
+                                        <th>Rejected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.leaveTypes.map(type => {
+                                        const total = state.leaveRecords.filter(l => l.type === type).length;
+                                        const approved = state.leaveRecords.filter(l => l.type === type && l.status === 'approved').length;
+                                        const pending = state.leaveRecords.filter(l => l.type === type && l.status === 'pending').length;
+                                        const rejected = state.leaveRecords.filter(l => l.type === type && l.status === 'rejected').length;
+                                        return `
+                                            <tr>
+                                                <td style="font-weight: 600;">${type}</td>
+                                                <td>${total}</td>
+                                                <td><span class="badge badge-green">${approved}</span></td>
+                                                <td><span class="badge badge-yellow">${pending}</span></td>
+                                                <td><span class="badge badge-red">${rejected}</span></td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -1334,10 +1950,10 @@
                                             <td><span class="badge badge-${leave.status === 'approved' ? 'green' : leave.status === 'pending' ? 'yellow' : 'red'}">${leave.status}</span></td>
                                             <td class="no-print">
                                                 ${leave.status === 'pending' ? `
-                                                    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; margin-right: 5px;" onclick="updateLeaveStatus(${leave.id}, 'approved')">✓ Approve</button>
-                                                    <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; margin-right: 5px;" onclick="updateLeaveStatus(${leave.id}, 'rejected')">✗ Reject</button>
+                                                    <button class="btn btn-primary btn-small" style="margin-right: 5px;" onclick="updateLeaveStatus(${leave.id}, 'approved')">✓ Approve</button>
+                                                    <button class="btn btn-danger btn-small" style="margin-right: 5px;" onclick="updateLeaveStatus(${leave.id}, 'rejected')">✗ Reject</button>
                                                 ` : ''}
-                                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="deleteLeave(${leave.id})">Delete</button>
+                                                <button class="btn btn-danger btn-small" onclick="deleteLeave(${leave.id})">Delete</button>
                                             </td>
                                         </tr>
                                     `).join('')}
@@ -1349,45 +1965,45 @@
             `;
         }
 
+        // Continue in next part due to length...
         function renderCalendar() {
             const { year, month, daysInMonth, startingDayOfWeek } = getCalendarData();
             const days = [];
             
-            // Empty cells before month starts
             for (let i = 0; i < startingDayOfWeek; i++) {
                 days.push('<div class="calendar-day" style="background: transparent; cursor: default;"></div>');
             }
             
-            // Days of month
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = date.toISOString().split('T')[0];
-                const leavesOnDay = getLeaveForDate(date);
-                const schedulesOnDay = state.scheduleData[dateStr] || [];
+                const assignmentsOnDay = state.driverSchedules[dateStr] || [];
                 const isToday = new Date().toDateString() === date.toDateString();
                 const classes = ['calendar-day'];
-                if (schedulesOnDay.length > 0) classes.push('has-schedule');
-                if (leavesOnDay.length > 0) classes.push('has-leave');
+                if (assignmentsOnDay.length > 0) classes.push('has-assignments');
                 if (isToday) classes.push('today');
                 
                 days.push(`
-                    <div class="${classes.join(' ')}" onclick="openScheduleDay('${dateStr}')">
+                    <div class="${classes.join(' ')}" onclick="openDriverScheduleDay('${dateStr}')">
                         ${day}
-                        ${schedulesOnDay.length > 0 ? `<div class="schedule-indicator">${schedulesOnDay.length}</div>` : ''}
-                        ${leavesOnDay.length > 0 ? `<div class="leave-count">${leavesOnDay.length}</div>` : ''}
+                        ${assignmentsOnDay.length > 0 ? `<div class="assignment-indicator">${assignmentsOnDay.length}</div>` : ''}
                     </div>
                 `);
             }
             
             return `
                 <div>
-                    <h2 class="section-title mb-20">📅 Schedule Calendar</h2>
+                    <h2 class="section-title mb-20">📅 Driver & Porter Schedule Calendar</h2>
                     
                     <div class="dashboard-card">
                         <div class="calendar-header">
                             <button class="btn btn-primary" onclick="previousMonth()">← Previous</button>
                             <h3 class="calendar-title">${state.calendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h3>
                             <button class="btn btn-primary" onclick="nextMonth()">Next →</button>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px; padding: 12px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                            <p style="font-size: 14px; color: #1e40af;"><strong>📌 Tip:</strong> Click on any day to schedule drivers and porters for that day</p>
                         </div>
                         
                         <div class="calendar-grid">
@@ -1464,7 +2080,7 @@
                                             </td>
                                             <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${record.notes || '-'}</td>
                                             <td class="no-print">
-                                                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="deleteTimeTracking(${record.id})">Delete</button>
+                                                <button class="btn btn-danger btn-small" onclick="deleteTimeTracking(${record.id})">Delete</button>
                                             </td>
                                         </tr>
                                     `).join('')}
@@ -1479,8 +2095,31 @@
         function renderFleet() {
             return `
                 <div>
+                    <h2 class="section-title mb-20">🚗 Fleet Management</h2>
+                    
+                    <div class="sub-nav">
+                        <button class="sub-nav-tab ${state.fleetSubTab === 'vehicles' ? 'active' : ''}" onclick="switchFleetTab('vehicles')">
+                            🚗 Vehicles
+                        </button>
+                        <button class="sub-nav-tab ${state.fleetSubTab === 'assignments' ? 'active' : ''}" onclick="switchFleetTab('assignments')">
+                            🚑 Assignments
+                        </button>
+                        <button class="sub-nav-tab ${state.fleetSubTab === 'fuel' ? 'active' : ''}" onclick="switchFleetTab('fuel')">
+                            ⛽ Fuel Consumption
+                        </button>
+                    </div>
+                    
+                    ${state.fleetSubTab === 'vehicles' ? renderVehicles() : 
+                      state.fleetSubTab === 'assignments' ? renderAssignments() : renderFuelConsumption()}
+                </div>
+            `;
+        }
+
+        function renderVehicles() {
+            return `
+                <div>
                     <div class="section-header">
-                        <h2 class="section-title">🚗 Fleet Management</h2>
+                        <h3 class="font-bold" style="font-size: 20px;">🚗 Fleet Vehicles</h3>
                         <button class="btn btn-primary" onclick="openModal('addVehicle')">➕ Add Vehicle</button>
                     </div>
                     
@@ -1536,8 +2175,8 @@
                                     ` : ''}
                                     
                                     <div class="fleet-actions">
-                                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="editVehicle(${vehicle.id})">Edit</button>
-                                        <button class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;" onclick="deleteVehicle(${vehicle.id})">Delete</button>
+                                        <button class="btn btn-primary btn-small" onclick="editVehicle(${vehicle.id})">Edit</button>
+                                        <button class="btn btn-danger btn-small" onclick="deleteVehicle(${vehicle.id})">Delete</button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -1545,6 +2184,304 @@
                     `}
                 </div>
             `;
+        }
+
+        function renderAssignments() {
+            return `
+                <div>
+                    <div class="section-header">
+                        <h3 class="font-bold" style="font-size: 20px;">🚑 Ambulance Assignments</h3>
+                        <button class="btn btn-secondary" onclick="openModal('addAssignment')">➕ Create Assignment</button>
+                    </div>
+                    
+                    ${state.ambulanceAssignments.length === 0 ? `
+                        <div class="dashboard-card text-center" style="padding: 40px;">
+                            <p style="font-size: 36px; margin-bottom: 16px;">🚑</p>
+                            <p style="font-size: 16px; color: #64748b; margin-bottom: 16px;">No assignments created yet</p>
+                            <button class="btn btn-secondary" onclick="openModal('addAssignment')">Create First Assignment</button>
+                        </div>
+                    ` : `
+                        <div>
+                            ${state.ambulanceAssignments.sort((a, b) => new Date(b.date + ' ' + b.departureTime) - new Date(a.date + ' ' + a.departureTime)).map(assignment => `
+                                <div class="assignment-card">
+                                    <div class="assignment-header">
+                                        <div>
+                                            <span class="badge badge-blue" style="font-size: 13px; margin-right: 8px;">${assignment.ambulance}</span>
+                                            <span class="assignment-title">${assignment.destination}</span>
+                                        </div>
+                                        <div class="assignment-time">
+                                            ${formatDate(assignment.date)} ${formatTime(assignment.departureTime)}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="assignment-details">
+                                        <div class="assignment-detail">
+                                            <div class="assignment-detail-label">Driver</div>
+                                            <div class="assignment-detail-value">👨‍✈️ ${assignment.driverName}</div>
+                                        </div>
+                                        <div class="assignment-detail">
+                                            <div class="assignment-detail-label">Porter</div>
+                                            <div class="assignment-detail-value">👷 ${assignment.porterName}</div>
+                                        </div>
+                                        <div class="assignment-detail">
+                                            <div class="assignment-detail-label">From Ward</div>
+                                            <div class="assignment-detail-value">📍 ${assignment.fromWard}</div>
+                                        </div>
+                                        <div class="assignment-detail">
+                                            <div class="assignment-detail-label">Destination</div>
+                                            <div class="assignment-detail-value">🏥 ${assignment.destination}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    ${assignment.notes ? `
+                                        <div style="margin-top: 12px; padding: 10px; background: #f8fafc; border-radius: 6px;">
+                                            <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Notes</div>
+                                            <div style="font-size: 14px; color: #1a202c;">${assignment.notes}</div>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    <div style="margin-top: 12px;">
+                                        <button class="btn btn-danger btn-small" onclick="deleteAssignment(${assignment.id})">Delete Assignment</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function renderFuelConsumption() {
+            const ambulances = state.fleet.filter(v => v.type === 'Ambulance');
+            const FUEL_COST_PER_LITER = 180; // JMD per liter
+            
+            // Get unique months from fuel records
+            const months = [...new Set(state.fuelRecords.map(r => r.month))].sort().reverse();
+            const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+            
+            // Calculate totals per ambulance per month
+            const fuelByAmbulanceMonth = {};
+            const costByAmbulanceMonth = {};
+            ambulances.forEach(ambulance => {
+                fuelByAmbulanceMonth[ambulance.vehicleId] = {};
+                costByAmbulanceMonth[ambulance.vehicleId] = {};
+                months.forEach(month => {
+                    const monthRecords = state.fuelRecords.filter(r => 
+                        r.vehicleId === ambulance.vehicleId && r.month === month
+                    );
+                    const totalLiters = monthRecords.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+                    const totalCostForMonth = monthRecords.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+                    fuelByAmbulanceMonth[ambulance.vehicleId][month] = totalLiters;
+                    costByAmbulanceMonth[ambulance.vehicleId][month] = totalCostForMonth;
+                });
+            });
+            
+            // Calculate overall totals
+            const totalFuel = state.fuelRecords.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+            const totalCost = state.fuelRecords.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+            const totalRecords = state.fuelRecords.length;
+            
+            return `
+                <div>
+                    <div class="section-header">
+                        <h3 class="font-bold" style="font-size: 20px;">⛽ Fuel Consumption Tracker</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="printFuelConsumptionReport()">🖨️ Print Report</button>
+                            <button class="btn btn-primary" onclick="openModal('addFuel')">➕ Add Fuel Record</button>
+                        </div>
+                    </div>
+                    
+                    <div class="two-col-grid mb-20">
+                        <div class="dashboard-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">Current Gas Prices</div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+                                        <div>
+                                            <div style="font-size: 13px; opacity: 0.8; margin-bottom: 4px;">⛽ Gasoline 87</div>
+                                            <div style="font-size: 28px; font-weight: bold;">JMD ${state.gasPriceData.gas87.toFixed(2)}</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 13px; opacity: 0.8; margin-bottom: 4px;">⛽ Gasoline 90</div>
+                                            <div style="font-size: 28px; font-weight: bold;">JMD ${state.gasPriceData.gas90.toFixed(2)}</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 12px; opacity: 0.8; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3);">
+                                        ${state.gasPriceData.lastUpdated ? 
+                                            `Fetched: ${new Date(state.gasPriceData.lastUpdated).toLocaleDateString()} ${new Date(state.gasPriceData.lastUpdated).toLocaleTimeString()}` : 
+                                            'Not yet updated'}
+                                    </div>
+                                    ${state.gasPriceData.petrojamDate ? 
+                                        `<div style="font-size: 11px; opacity: 0.8; margin-top: 4px;">Petrojam: ${state.gasPriceData.petrojamDate}</div>` : 
+                                        ''}
+                                </div>
+                                <div style="text-align: center; margin-left: 16px;">
+                                    <button onclick="fetchCurrentGasPrice()" class="btn" style="background: white; color: #10b981; border: none; padding: 12px 20px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; width: 100%;">
+                                        🔄 Fetch Latest
+                                    </button>
+                                    <button onclick="openModal('updateGasPrices')" class="btn" style="background: rgba(255,255,255,0.9); color: #10b981; border: none; padding: 10px 20px; font-weight: 600; margin-bottom: 8px; white-space: nowrap; width: 100%;">
+                                        ✏️ Manual Update
+                                    </button>
+                                    <div style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 6px; font-size: 12px;">
+                                        ${state.gasPriceData.source === 'petrojam' ? '🌐 Petrojam' : '✏️ Manual'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 24px;">
+                            <div style="font-size: 14px; opacity: 0.9; margin-bottom: 12px;">📍 Price Source</div>
+                            <div style="font-size: 16px; line-height: 1.6;">
+                                <strong>Petrojam Official Website</strong><br>
+                                <a href="https://www.petrojam.com/price/petroleum-product-prices-202/" target="_blank" style="color: white; text-decoration: underline; font-size: 13px; opacity: 0.9;">
+                                    www.petrojam.com/price
+                                </a>
+                            </div>
+                            <div style="font-size: 12px; opacity: 0.8; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3);">
+                                💡 <strong>Fetch Latest:</strong> Automatically retrieves current prices from Petrojam<br>
+                                ✏️ <strong>Manual Update:</strong> Enter prices manually if automatic fetch fails
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card mb-20" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); color: white; padding: 30px;">
+                        <h3 style="font-size: 24px; margin-bottom: 20px; color: white;">📊 Overall Fuel Statistics</h3>
+                        <div class="stats-grid">
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px;">${ambulances.length}</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Ambulances</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px;">${totalRecords}</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Fuel Records</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px;">JMD ${totalCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Total Amount Spent</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; font-weight: bold; margin-bottom: 8px;">${totalFuel.toFixed(1)} L</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Total Fuel Received</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${ambulances.length === 0 ? `
+                        <div class="dashboard-card text-center" style="padding: 60px;">
+                            <p style="font-size: 48px; margin-bottom: 20px;">🚑</p>
+                            <p style="font-size: 18px; color: #64748b; margin-bottom: 20px;">No ambulances available</p>
+                            <p style="font-size: 14px; color: #64748b;">Add ambulances to the fleet first</p>
+                        </div>
+                    ` : state.fuelRecords.length === 0 ? `
+                        <div class="dashboard-card text-center" style="padding: 60px;">
+                            <p style="font-size: 48px; margin-bottom: 20px;">⛽</p>
+                            <p style="font-size: 18px; color: #64748b; margin-bottom: 20px;">No fuel records added yet</p>
+                            <button class="btn btn-primary" onclick="openModal('addFuel')">Add First Fuel Record</button>
+                        </div>
+                    ` : `
+                        <div class="dashboard-card mb-20">
+                            <h3 class="font-bold mb-20">📅 Monthly Fuel Consumption by Ambulance</h3>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ambulance ID</th>
+                                            <th>Driver</th>
+                                            ${months.map(month => `<th>${formatMonthYear(month)}</th>`).join('')}
+                                            <th style="background: #10b981;">Total (L)</th>
+                                            <th style="background: #10b981;">Total Cost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${ambulances.map(ambulance => {
+                                            const monthlyFuel = months.map(month => fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0);
+                                            const monthlyCost = months.map(month => costByAmbulanceMonth[ambulance.vehicleId][month] || 0);
+                                            const totalForAmbulance = monthlyFuel.reduce((sum, val) => sum + val, 0);
+                                            const costForAmbulance = monthlyCost.reduce((sum, val) => sum + val, 0);
+                                            
+                                            return `
+                                                <tr>
+                                                    <td style="font-weight: 700;">🚑 ${ambulance.vehicleId}</td>
+                                                    <td>${ambulance.driver || 'Unassigned'}</td>
+                                                    ${months.map(month => {
+                                                        const fuel = fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0;
+                                                        return `<td style="text-align: center; ${fuel > 0 ? 'font-weight: 600; color: #f59e0b;' : 'color: #94a3b8;'}">${fuel > 0 ? fuel.toFixed(1) : '-'}</td>`;
+                                                    }).join('')}
+                                                    <td style="font-weight: 700; color: #f59e0b;">${totalForAmbulance.toFixed(1)}</td>
+                                                    <td style="font-weight: 700; color: #10b981;">$${costForAmbulance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                        <tr style="background: #f1f5f9; font-weight: bold;">
+                                            <td colspan="2">MONTHLY TOTALS</td>
+                                            ${months.map(month => {
+                                                const monthTotal = ambulances.reduce((sum, amb) => 
+                                                    sum + (fuelByAmbulanceMonth[amb.vehicleId][month] || 0), 0
+                                                );
+                                                return `<td style="text-align: center; color: #f59e0b;">${monthTotal.toFixed(1)}</td>`;
+                                            }).join('')}
+                                            <td style="color: #f59e0b;">${totalFuel.toFixed(1)}</td>
+                                            <td style="color: #10b981;">$${totalCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="section-header" style="margin-bottom: 20px;">
+                                <h3 class="font-bold">📋 Recent Fuel Records</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date Added</th>
+                                            <th>Month</th>
+                                            <th>Ambulance</th>
+                                            <th>Grade</th>
+                                            <th>Amount Spent</th>
+                                            <th>Liters</th>
+                                            <th>Price/L</th>
+                                            <th>Notes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${state.fuelRecords.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)).slice(0, 20).map(record => `
+                                            <tr>
+                                                <td>${formatDate(record.dateAdded)}</td>
+                                                <td><span class="badge badge-blue">${formatMonthYear(record.month)}</span></td>
+                                                <td style="font-weight: 600;">🚑 ${record.vehicleId}</td>
+                                                <td><span class="badge" style="background: ${record.gasGrade === '90' ? '#8b5cf6' : '#3b82f6'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${record.gasGrade || '87'}</span></td>
+                                                <td style="font-weight: 700; color: #10b981;">$${(record.cost || 0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                                                <td style="font-weight: 700; color: #f59e0b;">${(record.liters || 0).toFixed(2)} L</td>
+                                                <td style="font-size: 13px; color: #64748b;">$${(record.pricePerLiter || 180).toFixed(2)}</td>
+                                                <td style="font-size: 13px; color: #64748b;">${record.notes || '-'}</td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-small" onclick="deleteFuelRecord(${record.id})">Delete</button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function formatMonthYear(monthStr) {
+            // Convert YYYY-MM to "Mon YYYY"
+            const [year, month] = monthStr.split('-');
+            const date = new Date(year, month - 1);
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+
+        function switchFleetTab(tab) {
+            state.fleetSubTab = tab;
+            render();
         }
 
         function renderUpdates() {
@@ -1577,7 +2514,7 @@
                                         ${update.department ? `<span class="badge badge-blue" style="margin-left: 8px;">${update.department}</span>` : ''}
                                     </div>
                                     <div style="margin-top: 12px;">
-                                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="deleteUpdate(${update.id})">Delete</button>
+                                        <button class="btn btn-danger btn-small" onclick="deleteUpdate(${update.id})">Delete</button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -1603,8 +2540,8 @@
                                 <h4 class="kpi-title">🏖️ Leave Report</h4>
                                 <p style="color: #10b981; margin-top: 8px;">Click to Print</p>
                             </div>
-                            <div class="kpi-card purple" style="cursor: pointer;" onclick="printTimeTrackingReport()">
-                                <h4 class="kpi-title">⏱️ Time Tracking Report</h4>
+                            <div class="kpi-card purple" style="cursor: pointer;" onclick="printAssignmentsReport()">
+                                <h4 class="kpi-title">🚑 Assignments Report</h4>
                                 <p style="color: #a855f7; margin-top: 8px;">Click to Print</p>
                             </div>
                             <div class="kpi-card orange" style="cursor: pointer;" onclick="printFleetReport()">
@@ -1622,24 +2559,141 @@
             
             let content = '';
             switch(state.modalType) {
-                case 'addLeave': content = renderLeaveForm(); break;
-                case 'addClaim': content = renderTimeTrackingForm('claims'); break;
-                case 'addLate': content = renderTimeTrackingForm('late'); break;
-                case 'addDayOff': content = renderTimeTrackingForm('dayoff'); break;
-                case 'addOvertime': content = renderTimeTrackingForm('overtime'); break;
-                case 'addVehicle': content = renderVehicleForm(); break;
-                case 'editVehicle': content = renderVehicleForm(state.editingItem); break;
-                case 'addUpdate': content = renderUpdateForm(); break;
-                case 'scheduleDay': content = renderScheduleForm(); break;
-                default: content = '';
+                case 'addStaff':
+                case 'addDriver':
+                case 'addPorter':
+                    content = renderStaffForm(); 
+                    break;
+                case 'editStaff':
+                    content = renderStaffForm(state.editingItem);
+                    break;
+                case 'addLeave':
+                    content = renderLeaveForm();
+                    break;
+                case 'addClaim':
+                    content = renderTimeTrackingForm('claims');
+                    break;
+                case 'addLate':
+                    content = renderTimeTrackingForm('late');
+                    break;
+                case 'addDayOff':
+                    content = renderTimeTrackingForm('dayoff');
+                    break;
+                case 'addOvertime':
+                    content = renderTimeTrackingForm('overtime');
+                    break;
+                case 'addVehicle':
+                    content = renderVehicleForm();
+                    break;
+                case 'editVehicle':
+                    content = renderVehicleForm(state.editingItem);
+                    break;
+                case 'addUpdate':
+                    content = renderUpdateForm();
+                    break;
+                case 'addAssignment':
+                    content = renderAssignmentForm();
+                    break;
+                case 'driverScheduleDay':
+                    content = renderDriverScheduleForm();
+                    break;
+                case 'addDepartment':
+                    content = renderAddDepartmentForm();
+                    break;
+                case 'addLeaveType':
+                    content = renderAddLeaveTypeForm();
+                    break;
+                case 'addFuel':
+                    content = renderAddFuelForm();
+                    break;
+                case 'updateGasPrices':
+                    content = renderUpdateGasPricesForm();
+                    break;
+                default:
+                    content = '';
             }
             
             return `
                 <div class="modal-overlay" onclick="closeModal()">
-                    <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-content ${state.modalType === 'driverScheduleDay' ? 'large' : ''}" onclick="event.stopPropagation()">
                         ${content}
                     </div>
                 </div>
+            `;
+        }
+
+        function renderStaffForm(staff = null) {
+            const isEdit = staff !== null;
+            let staffType = 'staff';
+            if (state.modalType === 'addDriver') staffType = 'driver';
+            else if (state.modalType === 'addPorter') staffType = 'porter';
+            else if (staff) staffType = staff.type;
+            
+            return `
+                <form onsubmit="submitStaff(event, ${isEdit}, '${staffType}')">
+                    <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+                        ${isEdit ? '✏️ Edit' : '➕ Add'} ${staffType === 'driver' ? '🚗 Driver' : staffType === 'porter' ? '👷 Porter' : '👥 Staff Member'}
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">TRN *</label>
+                        <input type="text" class="form-input" id="staffTrn" value="${staff?.trn || ''}" required placeholder="e.g., 001">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" id="staffName" value="${staff?.name || ''}" required placeholder="Full name">
+                    </div>
+                    
+                    ${state.modalType === 'addStaff' || isEdit ? `
+                        <div class="form-group">
+                            <label class="form-label">Type *</label>
+                            <select class="form-select" id="staffType" required>
+                                <option value="porter" ${staffType === 'porter' ? 'selected' : ''}>👷 Porter</option>
+                                <option value="driver" ${staffType === 'driver' ? 'selected' : ''}>🚗 Driver</option>
+                            </select>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Department *</label>
+                            <select class="form-select" id="staffDepartment" required>
+                                <option value="">Select Department</option>
+                                ${state.departments.map(d => `<option value="${d}" ${staff?.department === d ? 'selected' : ''}>${d}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Position *</label>
+                            <input type="text" class="form-input" id="staffPosition" value="${staff?.position || ''}" required placeholder="Job title">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Phone *</label>
+                            <input type="tel" class="form-input" id="staffPhone" value="${staff?.phone || ''}" required placeholder="876-555-0101">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-input" id="staffEmail" value="${staff?.email || ''}" required placeholder="email@hospital.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Status *</label>
+                        <select class="form-select" id="staffStatus" required>
+                            <option value="active" ${staff?.status === 'active' ? 'selected' : ''}>Active</option>
+                            <option value="inactive" ${staff?.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                            <option value="on-leave" ${staff?.status === 'on-leave' ? 'selected' : ''}>On Leave</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" style="border: 2px solid #e2e8f0;" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">${isEdit ? 'Update' : 'Add'} ${staffType === 'driver' ? 'Driver' : staffType === 'porter' ? 'Porter' : 'Staff'}</button>
+                    </div>
+                </form>
             `;
         }
 
@@ -1650,7 +2704,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Employee *</label>
-                        <select class="form-select" id="leaveEmployeeId" required onchange="updateEmployeeInfo()">
+                        <select class="form-select" id="leaveEmployeeId" required>
                             <option value="">Select Employee</option>
                             ${state.staff.map(s => `<option value="${s.id}">${s.name} (${s.department})</option>`).join('')}
                         </select>
@@ -1659,10 +2713,8 @@
                     <div class="form-group">
                         <label class="form-label">Leave Type *</label>
                         <select class="form-select" id="leaveType" required>
-                            <option value="Vacation">Vacation</option>
-                            <option value="Sick">Sick Leave</option>
-                            <option value="Personal">Personal Leave</option>
-                            <option value="Other">Other</option>
+                            <option value="">Select Type</option>
+                            ${state.leaveTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
                         </select>
                     </div>
                     
@@ -1704,7 +2756,7 @@
                     
                     <div class="form-group">
                         <label class="form-label">Staff Member *</label>
-                        <select class="form-select" id="ttStaffId" required onchange="updateStaffInfo()">
+                        <select class="form-select" id="ttStaffId" required>
                             <option value="">Select Staff</option>
                             ${state.staff.map(s => `<option value="${s.trn}">${s.name} (${s.department})</option>`).join('')}
                         </select>
@@ -1833,7 +2885,7 @@
                         <label class="form-label">Department</label>
                         <select class="form-select" id="updateDepartment">
                             <option value="">All Departments</option>
-                            ${state.departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}
+                            ${state.departments.map(d => `<option value="${d}">${d}</option>`).join('')}
                         </select>
                     </div>
                     
@@ -1850,41 +2902,109 @@
             `;
         }
 
-        function renderScheduleForm() {
+        function renderAssignmentForm() {
+            return `
+                <form onsubmit="submitAssignment(event)">
+                    <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">🚑 Create Ambulance Assignment</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ambulance *</label>
+                        <select class="form-select" id="assignmentAmbulance" required>
+                            <option value="">Select Ambulance</option>
+                            ${state.fleet.filter(v => v.type === 'Ambulance' && v.status === 'active').map(v => 
+                                `<option value="${v.vehicleId}">${v.vehicleId} ${v.driver ? `(${v.driver})` : ''}</option>`
+                            ).join('')}
+                            ${state.fleet.filter(v => v.type === 'Ambulance' && v.status === 'active').length === 0 ? 
+                                '<option value="" disabled>No active ambulances available</option>' : ''}
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Driver Name *</label>
+                            <input type="text" class="form-input" id="assignmentDriver" required placeholder="Driver name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Porter Name *</label>
+                            <input type="text" class="form-input" id="assignmentPorter" required placeholder="Porter name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">From Ward *</label>
+                        <select class="form-select" id="assignmentFromWard" required>
+                            <option value="">Select Ward</option>
+                            ${state.departments.map(d => `<option value="${d}">${d}</option>`).join('')}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Destination *</label>
+                        <input type="text" class="form-input" id="assignmentDestination" required placeholder="e.g., Kingston Public Hospital, Lab">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date *</label>
+                            <input type="date" class="form-input" id="assignmentDate" value="${new Date().toISOString().split('T')[0]}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Departure Time *</label>
+                            <input type="time" class="form-input" id="assignmentTime" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" id="assignmentNotes" rows="3" placeholder="Additional instructions or notes..."></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" style="border: 2px solid #e2e8f0;" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-secondary">Create Assignment</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function renderDriverScheduleForm() {
             const dateStr = state.selectedDate;
-            const schedules = state.scheduleData[dateStr] || [];
+            const schedules = state.driverSchedules[dateStr] || [];
             
             return `
-                <div style="max-width: 800px;">
+                <div style="max-width: 900px;">
                     <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">
-                        📅 Schedule for ${formatDate(dateStr)}
+                        📅 Driver & Porter Schedule for ${formatDate(dateStr)}
                     </h2>
                     
-                    <form onsubmit="submitSchedule(event)" style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 8px;">
-                        <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">Add Schedule</h3>
+                    <form onsubmit="submitDriverSchedule(event)" style="margin-bottom: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px; border: 2px solid #3b82f6;">
+                        <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 16px; color: #1e40af;">➕ Add Driver/Porter Schedule</h3>
                         
-                        <div class="form-group">
-                            <label class="form-label">Staff Member *</label>
-                            <select class="form-select" id="scheduleStaffId" required>
-                                <option value="">Select Staff</option>
-                                ${state.staff.map(s => `<option value="${s.trn}">${s.name} - ${s.department}</option>`).join('')}
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Driver Name *</label>
+                                <input type="text" class="form-input" id="scheduleDriverName" required placeholder="Driver name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Porter Name *</label>
+                                <input type="text" class="form-input" id="schedulePorterName" required placeholder="Porter name">
+                            </div>
                         </div>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Start Time *</label>
+                                <label class="form-label">Duty Start Time *</label>
                                 <input type="time" class="form-input" id="scheduleStartTime" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">End Time *</label>
+                                <label class="form-label">Duty End Time *</label>
                                 <input type="time" class="form-input" id="scheduleEndTime" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Assignment</label>
-                            <input type="text" class="form-input" id="scheduleAssignment" placeholder="e.g., Emergency Ward, Transport Duty">
+                            <label class="form-label">Assignment / Duty</label>
+                            <input type="text" class="form-input" id="scheduleDuty" placeholder="e.g., Emergency Transport, Patient Transfer">
                         </div>
                         
                         <div class="form-group">
@@ -1892,22 +3012,26 @@
                             <textarea class="form-textarea" id="scheduleNotes" rows="2" placeholder="Additional notes..."></textarea>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Schedule</button>
+                        <button type="submit" class="btn btn-secondary" style="width: 100%;">Add to Schedule</button>
                     </form>
                     
                     <div>
-                        <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">Current Schedule (${schedules.length})</h3>
-                        ${schedules.length === 0 ? '<p style="color: #64748b;">No schedules for this day</p>' : `
-                            <div class="schedule-list">
+                        <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 16px;">📋 Current Schedule (${schedules.length})</h3>
+                        ${schedules.length === 0 ? '<p style="color: #64748b; padding: 20px; text-align: center; background: #f8fafc; border-radius: 8px;">No schedules for this day yet</p>' : `
+                            <div>
                                 ${schedules.map((schedule, index) => `
-                                    <div class="schedule-item">
-                                        <div class="schedule-staff-name">${schedule.staffName}</div>
-                                        <div class="schedule-details">
-                                            <span>⏰ ${schedule.startTime} - ${schedule.endTime}</span>
-                                            ${schedule.assignment ? `<span>📋 ${schedule.assignment}</span>` : ''}
+                                    <div class="driver-assignment-item">
+                                        <div class="driver-assignment-header">
+                                            <div>
+                                                <div class="driver-name">👨‍✈️ ${schedule.driverName} & 👷 ${schedule.porterName}</div>
+                                            </div>
+                                            <div class="driver-time">⏰ ${formatTime(schedule.startTime)} - ${formatTime(schedule.endTime)}</div>
+                                        </div>
+                                        <div class="driver-details">
+                                            ${schedule.duty ? `<span>📋 ${schedule.duty}</span>` : ''}
                                             ${schedule.notes ? `<span>📝 ${schedule.notes}</span>` : ''}
                                         </div>
-                                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; margin-top: 8px;" onclick="deleteSchedule('${dateStr}', ${index})">Delete</button>
+                                        <button class="btn btn-danger btn-small" style="margin-top: 8px;" onclick="deleteDriverSchedule('${dateStr}', ${index})">Delete</button>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1921,13 +3045,63 @@
             `;
         }
 
+        function renderAddDepartmentForm() {
+            return `
+                <form onsubmit="submitDepartment(event)">
+                    <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">🏥 Add Department/Ward</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Department/Ward Name *</label>
+                        <input type="text" class="form-input" id="departmentName" required placeholder="e.g., Neurology, Radiology">
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; margin-top: 12px;">This department will be available throughout the system for staff assignments, ambulance dispatches, and patient tracking.</p>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" style="border: 2px solid #e2e8f0;" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Department</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function renderAddLeaveTypeForm() {
+            return `
+                <form onsubmit="submitLeaveType(event)">
+                    <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">🏖️ Add Leave Type</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Leave Type Name *</label>
+                        <input type="text" class="form-input" id="leaveTypeName" required placeholder="e.g., Study Leave, Compassionate Leave">
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; margin-top: 12px;">This leave type will be available when staff members request time off.</p>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" style="border: 2px solid #e2e8f0;" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Leave Type</button>
+                    </div>
+                </form>
+            `;
+        }
+
         function renderFloatingButton() {
-            return '<button class="floating-btn no-print" onclick="exportToExcel()">📊 Export</button>';
+            return ''; // Export buttons now in navigation
         }
 
         // ============ EVENT HANDLERS ============
         function switchTab(tab) {
             state.activeTab = tab;
+            render();
+        }
+
+        function switchStaffTab(tab) {
+            state.staffSubTab = tab;
+            render();
+        }
+
+        function switchSettingsTab(tab) {
+            state.settingsSubTab = tab;
             render();
         }
 
@@ -1949,11 +3123,39 @@
             render();
         }
 
-        function openScheduleDay(dateStr) {
+        function openDriverScheduleDay(dateStr) {
             state.selectedDate = dateStr;
             state.modalOpen = true;
-            state.modalType = 'scheduleDay';
+            state.modalType = 'driverScheduleDay';
             render();
+        }
+
+        function submitStaff(e, isEdit, staffType) {
+            e.preventDefault();
+            
+            const staff = {
+                trn: document.getElementById('staffTrn').value,
+                name: document.getElementById('staffName').value,
+                type: document.getElementById('staffType')?.value || staffType,
+                department: document.getElementById('staffDepartment').value,
+                position: document.getElementById('staffPosition').value,
+                phone: document.getElementById('staffPhone').value,
+                email: document.getElementById('staffEmail').value,
+                status: document.getElementById('staffStatus').value,
+            };
+            
+            if (isEdit && state.editingItem) {
+                const index = state.staff.findIndex(s => s.id === state.editingItem.id);
+                state.staff[index] = { ...staff, id: state.editingItem.id };
+                showAlert('✅ Staff updated successfully');
+            } else {
+                staff.id = Date.now();
+                state.staff.push(staff);
+                showAlert(`✅ ${staff.type === 'driver' ? 'Driver' : 'Porter'} added successfully`);
+            }
+            
+            state.save();
+            closeModal();
         }
 
         function submitLeave(e) {
@@ -2069,55 +3271,468 @@
             showAlert('✅ Update posted successfully');
         }
 
-        function submitSchedule(e) {
+        function submitAssignment(e) {
             e.preventDefault();
             
-            const staffId = document.getElementById('scheduleStaffId').value;
-            const staffMember = state.staff.find(s => s.trn === staffId);
+            const assignment = {
+                id: Date.now(),
+                ambulance: document.getElementById('assignmentAmbulance').value,
+                driverName: document.getElementById('assignmentDriver').value,
+                porterName: document.getElementById('assignmentPorter').value,
+                fromWard: document.getElementById('assignmentFromWard').value,
+                destination: document.getElementById('assignmentDestination').value,
+                date: document.getElementById('assignmentDate').value,
+                departureTime: document.getElementById('assignmentTime').value,
+                notes: document.getElementById('assignmentNotes').value,
+                timestamp: new Date().toISOString()
+            };
             
-            if (!staffMember) {
-                showAlert('⚠️ Please select a staff member');
-                return;
-            }
+            state.ambulanceAssignments.push(assignment);
+            state.save();
+            closeModal();
+            showAlert('✅ Assignment created successfully');
+        }
+
+        function submitDriverSchedule(e) {
+            e.preventDefault();
             
             const schedule = {
-                staffId: staffId,
-                staffName: staffMember.name,
-                staffDepartment: staffMember.department,
+                driverName: document.getElementById('scheduleDriverName').value,
+                porterName: document.getElementById('schedulePorterName').value,
                 startTime: document.getElementById('scheduleStartTime').value,
                 endTime: document.getElementById('scheduleEndTime').value,
-                assignment: document.getElementById('scheduleAssignment').value,
+                duty: document.getElementById('scheduleDuty').value,
                 notes: document.getElementById('scheduleNotes').value,
             };
             
             const dateStr = state.selectedDate;
-            if (!state.scheduleData[dateStr]) {
-                state.scheduleData[dateStr] = [];
+            if (!state.driverSchedules[dateStr]) {
+                state.driverSchedules[dateStr] = [];
             }
             
-            state.scheduleData[dateStr].push(schedule);
+            state.driverSchedules[dateStr].push(schedule);
             state.save();
             showAlert('✅ Schedule added successfully');
             
-            // Re-render modal to show updated schedule
             state.modalOpen = true;
-            state.modalType = 'scheduleDay';
+            state.modalType = 'driverScheduleDay';
             render();
         }
 
-        function deleteSchedule(dateStr, index) {
+        function submitDepartment(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('departmentName').value.trim();
+            
+            if (state.departments.includes(name)) {
+                showAlert('⚠️ This department already exists');
+                return;
+            }
+            
+            state.departments.push(name);
+            state.save();
+            closeModal();
+            showAlert('✅ Department added successfully');
+        }
+
+        function submitLeaveType(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('leaveTypeName').value.trim();
+            
+            if (state.leaveTypes.includes(name)) {
+                showAlert('⚠️ This leave type already exists');
+                return;
+            }
+            
+            state.leaveTypes.push(name);
+            state.save();
+            closeModal();
+            showAlert('✅ Leave type added successfully');
+        }
+
+        function removeDepartment(index) {
+            const dept = state.departments[index];
+            const usedByStaff = state.staff.some(s => s.department === dept);
+            const usedByAssignments = state.ambulanceAssignments.some(a => a.fromWard === dept);
+            
+            if (usedByStaff || usedByAssignments) {
+                if (!confirm(`This department is being used by staff or assignments. Are you sure you want to remove it?`)) {
+                    return;
+                }
+            }
+            
+            state.departments.splice(index, 1);
+            state.save();
+            render();
+            showAlert('✅ Department removed');
+        }
+
+        function removeLeaveType(index) {
+            const type = state.leaveTypes[index];
+            const usedByLeaves = state.leaveRecords.some(l => l.type === type);
+            
+            if (usedByLeaves) {
+                if (!confirm(`This leave type is being used in leave records. Are you sure you want to remove it?`)) {
+                    return;
+                }
+            }
+            
+            state.leaveTypes.splice(index, 1);
+            state.save();
+            render();
+            showAlert('✅ Leave type removed');
+        }
+
+        // ============ FUEL RECORD FUNCTIONS ============
+        async function fetchCurrentGasPrice() {
+            try {
+                showAlert('🔄 Fetching current gas prices from Petrojam...');
+                
+                // Use CORS proxy to fetch the Petrojam price page
+                // Option 1: Try direct fetch first
+                let response;
+                let html;
+                
+                try {
+                    response = await fetch('https://www.petrojam.com/price/petroleum-product-prices-202/');
+                    if (!response.ok) throw new Error('Direct fetch failed');
+                    html = await response.text();
+                } catch (directError) {
+                    // Option 2: Try with CORS proxy
+                    console.log('Direct fetch failed, trying CORS proxy...', directError);
+                    try {
+                        const corsProxy = 'https://api.allorigins.win/raw?url=';
+                        const targetUrl = encodeURIComponent('https://www.petrojam.com/price/petroleum-product-prices-202/');
+                        response = await fetch(corsProxy + targetUrl);
+                        if (!response.ok) throw new Error('Proxy fetch failed');
+                        html = await response.text();
+                    } catch (proxyError) {
+                        console.error('Both direct and proxy fetch failed:', proxyError);
+                        showAlert('❌ Unable to fetch prices due to browser security restrictions.\n\nPlease manually update prices:\n• Visit: www.petrojam.com/price\n• Note the E10 87 and E10 90 prices\n• Enter them in the form below');
+                        return;
+                    }
+                }
+                
+                // Parse HTML to extract gas prices for both grades
+                let gas87Price = null;
+                let gas90Price = null;
+                let priceDate = null;
+                
+                // Try to extract the date
+                const dateMatch = html.match(/Date:\s*([^<]+)/);
+                if (dateMatch) {
+                    priceDate = dateMatch[1].trim();
+                }
+                
+                // Look for "E10 87: XXX.XXXX" pattern (Gasoline 87 final price)
+                const gas87Pattern = /E10\s+87:\s*(\d+\.\d+)/i;
+                const match87 = html.match(gas87Pattern);
+                if (match87) {
+                    gas87Price = parseFloat(match87[1]);
+                }
+                
+                // Look for "E10 90: XXX.XXXX" pattern (Gasoline 90 final price)
+                const gas90Pattern = /E10\s+90:\s*(\d+\.\d+)/i;
+                const match90 = html.match(gas90Pattern);
+                if (match90) {
+                    gas90Price = parseFloat(match90[1]);
+                }
+                
+                // Validate the prices (should be between 100-300 JMD typically)
+                const valid87 = gas87Price && gas87Price > 50 && gas87Price < 400;
+                const valid90 = gas90Price && gas90Price > 50 && gas90Price < 400;
+                
+                if (valid87 || valid90) {
+                    // Update the gas price in state
+                    state.gasPriceData = {
+                        gas87: valid87 ? gas87Price : state.gasPriceData.gas87,
+                        gas90: valid90 ? gas90Price : state.gasPriceData.gas90,
+                        lastUpdated: new Date().toISOString(),
+                        source: 'petrojam',
+                        petrojamDate: priceDate || 'Unknown'
+                    };
+                    state.save();
+                    render();
+                    
+                    let message = '✅ Gas prices updated from Petrojam:\n';
+                    if (valid87) message += `• Gasoline 87: JMD ${gas87Price.toFixed(2)}/L\n`;
+                    if (valid90) message += `• Gasoline 90: JMD ${gas90Price.toFixed(2)}/L\n`;
+                    if (priceDate) message += `(Petrojam date: ${priceDate})`;
+                    
+                    showAlert(message);
+                } else {
+                    showAlert(`⚠️ Could not extract valid gas prices from Petrojam website.\n\nFound: 87=${gas87Price}, 90=${gas90Price}.\n\nPlease update manually or try again later.`);
+                }
+            } catch (error) {
+                console.error('Error fetching gas price:', error);
+                showAlert('❌ Error fetching gas prices.\n\nThis could be due to:\n• Browser security (CORS) restrictions\n• Network connectivity issues\n• Petrojam website changes\n\nPlease visit www.petrojam.com/price and update prices manually.');
+            }
+        }
+
+        function renderUpdateGasPricesForm() {
+            return `
+                <h2 class="modal-title">💰 Update Gas Prices Manually</h2>
+                <form onsubmit="submitManualGasPrices(event)" class="form">
+                    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <div style="font-size: 14px; color: #92400e; margin-bottom: 8px;">
+                            <strong>📍 How to get current prices:</strong>
+                        </div>
+                        <div style="font-size: 13px; color: #92400e;">
+                            1. Visit <a href="https://www.petrojam.com/price/petroleum-product-prices-202/" target="_blank" style="color: #ea580c; text-decoration: underline;">www.petrojam.com/price</a><br>
+                            2. Find the <strong>E10 87</strong> and <strong>E10 90</strong> final prices<br>
+                            3. Enter them below
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Gasoline 87 Price (JMD/L) *</label>
+                        <input 
+                            type="number" 
+                            name="gas87" 
+                            class="form-input" 
+                            step="0.01" 
+                            min="0"
+                            value="${state.gasPriceData.gas87}"
+                            placeholder="e.g., 178.97" 
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Gasoline 90 Price (JMD/L) *</label>
+                        <input 
+                            type="number" 
+                            name="gas90" 
+                            class="form-input" 
+                            step="0.01" 
+                            min="0"
+                            value="${state.gasPriceData.gas90}"
+                            placeholder="e.g., 186.98" 
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Petrojam Date (Optional)</label>
+                        <input 
+                            type="text" 
+                            name="petrojamDate" 
+                            class="form-input" 
+                            placeholder="e.g., Wednesday, July 10, 2024">
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">💾 Update Prices</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function submitManualGasPrices(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            state.gasPriceData = {
+                gas87: parseFloat(formData.get('gas87')),
+                gas90: parseFloat(formData.get('gas90')),
+                lastUpdated: new Date().toISOString(),
+                source: 'manual',
+                petrojamDate: formData.get('petrojamDate') || null
+            };
+            
+            state.save();
+            closeModal();
+            render();
+            showAlert('✅ Gas prices updated successfully!');
+        }
+
+        function renderAddFuelForm() {
+            const ambulances = state.fleet.filter(v => v.type === 'Ambulance');
+            const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+            const lastUpdated = state.gasPriceData.lastUpdated;
+            const priceSource = state.gasPriceData.source;
+            
+            return `
+                <h2 class="modal-title">⛽ Add Fuel Record</h2>
+                <form onsubmit="submitFuelRecord(event)" class="form" id="fuelForm">
+                    <div class="form-group">
+                        <label class="form-label">Ambulance *</label>
+                        <select name="vehicleId" class="form-input" required>
+                            <option value="">Select Ambulance</option>
+                            ${ambulances.map(v => `
+                                <option value="${v.vehicleId}">${v.vehicleId} ${v.driver ? '- ' + v.driver : ''}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Month *</label>
+                        <input type="month" name="month" class="form-input" value="${currentMonth}" required>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">Current Gas Prices</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div>
+                                        <div style="font-size: 12px; opacity: 0.8;">Gasoline 87</div>
+                                        <div style="font-size: 24px; font-weight: bold;">JMD ${state.gasPriceData.gas87.toFixed(2)}</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 12px; opacity: 0.8;">Gasoline 90</div>
+                                        <div style="font-size: 24px; font-weight: bold;">JMD ${state.gasPriceData.gas90.toFixed(2)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="fetchCurrentGasPrice()" class="btn" style="background: white; color: #f59e0b; border: none; padding: 10px 16px; font-weight: 600;">
+                                🔄 Fetch Latest
+                            </button>
+                        </div>
+                        <div style="font-size: 13px; opacity: 0.8; display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3);">
+                            <span>
+                                ${lastUpdated ? `Updated: ${new Date(lastUpdated).toLocaleDateString()} ${new Date(lastUpdated).toLocaleTimeString()}` : 'Price not yet updated'}
+                            </span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                                ${priceSource === 'petrojam' ? '🌐 Petrojam' : '✏️ Manual'}
+                            </span>
+                        </div>
+                        <div style="font-size: 12px; opacity: 0.8; margin-top: 8px;">
+                            💡 Select gas grade, enter amount spent, and we'll calculate liters automatically
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Gas Grade *</label>
+                        <select name="gasGrade" id="gasGrade" class="form-input" onchange="calculateLitersFromForm()" required>
+                            <option value="87">Gasoline 87 (E10) - JMD ${state.gasPriceData.gas87.toFixed(2)}/L</option>
+                            <option value="90">Gasoline 90 (E10) - JMD ${state.gasPriceData.gas90.toFixed(2)}/L</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Amount Spent (JMD) *</label>
+                        <input 
+                            type="number" 
+                            name="cost" 
+                            id="fuelCost"
+                            class="form-input" 
+                            step="0.01" 
+                            min="0" 
+                            placeholder="e.g., 5000.00" 
+                            oninput="calculateLitersFromForm()"
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Calculated Fuel Amount</label>
+                        <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: bold; color: #1e40af;" id="calculatedLiters">0.0</div>
+                            <div style="font-size: 14px; color: #1e40af; margin-top: 4px;">Liters</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-input" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">💾 Add Fuel Record</button>
+                    </div>
+                </form>
+                
+                <script>
+                    function calculateLitersFromForm() {
+                        const cost = parseFloat(document.getElementById('fuelCost').value) || 0;
+                        const grade = document.getElementById('gasGrade').value;
+                        const price = grade === '87' ? ${state.gasPriceData.gas87} : ${state.gasPriceData.gas90};
+                        const liters = cost / price;
+                        document.getElementById('calculatedLiters').textContent = liters.toFixed(2);
+                    }
+                <\/script>
+            `;
+        }
+
+        function submitFuelRecord(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const gasGrade = formData.get('gasGrade');
+            const FUEL_PRICE = gasGrade === '87' ? state.gasPriceData.gas87 : state.gasPriceData.gas90;
+            
+            const cost = parseFloat(formData.get('cost'));
+            const liters = cost / FUEL_PRICE;
+            
+            const fuelRecord = {
+                id: Date.now(),
+                vehicleId: formData.get('vehicleId'),
+                month: formData.get('month'),
+                gasGrade: gasGrade,
+                cost: cost,
+                liters: liters,
+                pricePerLiter: FUEL_PRICE,
+                notes: formData.get('notes'),
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+            
+            state.fuelRecords.push(fuelRecord);
+            state.save();
+            closeModal();
+            render();
+            showAlert('✅ Fuel record added successfully');
+        }
+
+        function deleteFuelRecord(id) {
+            if (confirm('Delete this fuel record?')) {
+                state.fuelRecords = state.fuelRecords.filter(r => r.id !== id);
+                state.save();
+                render();
+                showAlert('✅ Fuel record deleted');
+            }
+        }
+
+        function deleteDriverSchedule(dateStr, index) {
             if (confirm('Delete this schedule?')) {
-                state.scheduleData[dateStr].splice(index, 1);
-                if (state.scheduleData[dateStr].length === 0) {
-                    delete state.scheduleData[dateStr];
+                state.driverSchedules[dateStr].splice(index, 1);
+                if (state.driverSchedules[dateStr].length === 0) {
+                    delete state.driverSchedules[dateStr];
                 }
                 state.save();
                 showAlert('✅ Schedule deleted');
                 
-                // Re-render modal
                 state.modalOpen = true;
-                state.modalType = 'scheduleDay';
+                state.modalType = 'driverScheduleDay';
                 render();
+            }
+        }
+
+        function deleteAssignment(id) {
+            if (confirm('Delete this assignment?')) {
+                state.ambulanceAssignments = state.ambulanceAssignments.filter(a => a.id !== id);
+                state.save();
+                render();
+                showAlert('✅ Assignment deleted');
+            }
+        }
+
+        function editStaff(id) {
+            const staff = state.staff.find(s => s.id === id);
+            state.editingItem = staff;
+            state.modalOpen = true;
+            state.modalType = 'editStaff';
+            render();
+        }
+
+        function deleteStaff(id) {
+            if (confirm('Delete this staff member?')) {
+                state.staff = state.staff.filter(s => s.id !== id);
+                state.save();
+                render();
+                showAlert('✅ Staff member deleted');
             }
         }
 
@@ -2166,15 +3781,6 @@
             }
         }
 
-        function deleteStaff(id) {
-            if (confirm('Delete this staff member?')) {
-                state.staff = state.staff.filter(s => s.id !== id);
-                state.save();
-                render();
-                showAlert('✅ Staff member deleted');
-            }
-        }
-
         function deleteTimeTracking(id) {
             if (confirm('Delete this time tracking record?')) {
                 state.timeTrackingRecords = state.timeTrackingRecords.filter(t => t.id !== id);
@@ -2197,14 +3803,6 @@
             }
         }
 
-        function updateEmployeeInfo() {
-            // Placeholder for additional employee info updates
-        }
-
-        function updateStaffInfo() {
-            // Placeholder for additional staff info updates
-        }
-
         // ============ CALENDAR FUNCTIONS ============
         function getCalendarData() {
             const year = state.calendarDate.getFullYear();
@@ -2215,16 +3813,6 @@
             const startingDayOfWeek = firstDay.getDay();
             
             return { year, month, daysInMonth, startingDayOfWeek };
-        }
-
-        function getLeaveForDate(date) {
-            const dateStr = new Date(date).toISOString().split('T')[0];
-            return state.leaveRecords.filter(leave => {
-                const start = new Date(leave.startDate);
-                const end = new Date(leave.endDate);
-                const current = new Date(dateStr);
-                return current >= start && current <= end && leave.status === 'approved';
-            });
         }
 
         function previousMonth() {
@@ -2241,33 +3829,35 @@
         function exportToExcel() {
             const wb = XLSX.utils.book_new();
             
-            // Staff sheet
             const staffWS = XLSX.utils.json_to_sheet(state.staff);
             XLSX.utils.book_append_sheet(wb, staffWS, 'Staff');
             
-            // Departments sheet
-            const deptWS = XLSX.utils.json_to_sheet(state.departments);
+            const deptWS = XLSX.utils.json_to_sheet(state.departments.map(d => ({ Department: d })));
             XLSX.utils.book_append_sheet(wb, deptWS, 'Departments');
             
-            // Fleet sheet
+            const leaveTypesWS = XLSX.utils.json_to_sheet(state.leaveTypes.map(t => ({ LeaveType: t })));
+            XLSX.utils.book_append_sheet(wb, leaveTypesWS, 'Leave Types');
+            
             if (state.fleet.length > 0) {
                 const fleetWS = XLSX.utils.json_to_sheet(state.fleet);
                 XLSX.utils.book_append_sheet(wb, fleetWS, 'Fleet');
             }
             
-            // Leave records sheet
+            if (state.ambulanceAssignments.length > 0) {
+                const assignWS = XLSX.utils.json_to_sheet(state.ambulanceAssignments);
+                XLSX.utils.book_append_sheet(wb, assignWS, 'Ambulance Assignments');
+            }
+            
             if (state.leaveRecords.length > 0) {
                 const leaveWS = XLSX.utils.json_to_sheet(state.leaveRecords);
                 XLSX.utils.book_append_sheet(wb, leaveWS, 'Leave Records');
             }
             
-            // Time tracking sheet
             if (state.timeTrackingRecords.length > 0) {
                 const timeWS = XLSX.utils.json_to_sheet(state.timeTrackingRecords);
                 XLSX.utils.book_append_sheet(wb, timeWS, 'Time Tracking');
             }
             
-            // Hospital updates sheet
             if (state.hospitalUpdates.length > 0) {
                 const updatesWS = XLSX.utils.json_to_sheet(state.hospitalUpdates);
                 XLSX.utils.book_append_sheet(wb, updatesWS, 'Updates');
@@ -2288,19 +3878,30 @@
                         const data = JSON.parse(e.target.result);
                         if (data.staff) state.staff = data.staff;
                         if (data.departments) state.departments = data.departments;
+                        if (data.leaveTypes) state.leaveTypes = data.leaveTypes;
                         if (data.fleet) state.fleet = data.fleet;
                         if (data.leaveRecords) state.leaveRecords = data.leaveRecords;
                         if (data.timeTrackingRecords) state.timeTrackingRecords = data.timeTrackingRecords;
                         if (data.hospitalUpdates) state.hospitalUpdates = data.hospitalUpdates;
-                        if (data.scheduleData) state.scheduleData = data.scheduleData;
+                        if (data.ambulanceAssignments) state.ambulanceAssignments = data.ambulanceAssignments;
+                        if (data.driverSchedules) state.driverSchedules = data.driverSchedules;
                     } else {
                         const wb = XLSX.read(e.target.result, { type: 'binary' });
                         
                         if (wb.SheetNames.includes('Staff')) {
                             state.staff = XLSX.utils.sheet_to_json(wb.Sheets['Staff']);
                         }
+                        if (wb.SheetNames.includes('Departments')) {
+                            state.departments = XLSX.utils.sheet_to_json(wb.Sheets['Departments']).map(d => d.Department);
+                        }
+                        if (wb.SheetNames.includes('Leave Types')) {
+                            state.leaveTypes = XLSX.utils.sheet_to_json(wb.Sheets['Leave Types']).map(t => t.LeaveType);
+                        }
                         if (wb.SheetNames.includes('Fleet')) {
                             state.fleet = XLSX.utils.sheet_to_json(wb.Sheets['Fleet']);
+                        }
+                        if (wb.SheetNames.includes('Ambulance Assignments')) {
+                            state.ambulanceAssignments = XLSX.utils.sheet_to_json(wb.Sheets['Ambulance Assignments']);
                         }
                         if (wb.SheetNames.includes('Leave Records')) {
                             state.leaveRecords = XLSX.utils.sheet_to_json(wb.Sheets['Leave Records']);
@@ -2328,8 +3929,250 @@
                 reader.readAsBinaryString(file);
             }
             
-            // Reset file input
             event.target.value = '';
+        }
+
+        function exportToJSON() {
+            const completeData = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                hospitalName: 'Hospital Management System',
+                data: {
+                    staff: state.staff,
+                    departments: state.departments,
+                    leaveTypes: state.leaveTypes,
+                    fleet: state.fleet,
+                    leaveRecords: state.leaveRecords,
+                    timeTrackingRecords: state.timeTrackingRecords,
+                    ambulanceAssignments: state.ambulanceAssignments,
+                    driverSchedules: state.driverSchedules,
+                    hospitalUpdates: state.hospitalUpdates,
+                    fuelRecords: state.fuelRecords,
+                    gasPriceData: state.gasPriceData
+                },
+                summary: {
+                    totalStaff: state.staff.length,
+                    totalDepartments: state.departments.length,
+                    totalLeaveTypes: state.leaveTypes.length,
+                    totalFleet: state.fleet.length,
+                    totalLeaveRecords: state.leaveRecords.length,
+                    totalTimeTracking: state.timeTrackingRecords.length,
+                    totalAssignments: state.ambulanceAssignments.length,
+                    totalUpdates: state.hospitalUpdates.length,
+                    totalFuelRecords: state.fuelRecords.length
+                }
+            };
+            
+            const dataStr = JSON.stringify(completeData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `hospital-management-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showAlert('✅ JSON backup exported successfully!');
+        }
+
+        function importFromJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        
+                        // Check if it's the new format or old format
+                        let dataToImport;
+                        if (importedData.version && importedData.data) {
+                            // New format
+                            dataToImport = importedData.data;
+                        } else {
+                            // Old format (direct data)
+                            dataToImport = importedData;
+                        }
+                        
+                        // Show confirmation with summary
+                        const summary = [];
+                        if (dataToImport.staff) summary.push(`${dataToImport.staff.length} staff members`);
+                        if (dataToImport.departments) summary.push(`${dataToImport.departments.length} departments`);
+                        if (dataToImport.leaveRecords) summary.push(`${dataToImport.leaveRecords.length} leave records`);
+                        if (dataToImport.ambulanceAssignments) summary.push(`${dataToImport.ambulanceAssignments.length} assignments`);
+                        
+                        if (!confirm(`Import data?\n\n${summary.join('\n')}\n\nThis will REPLACE all existing data. This action cannot be undone.`)) {
+                            return;
+                        }
+                        
+                        // Import data
+                        if (dataToImport.staff) state.staff = dataToImport.staff;
+                        if (dataToImport.departments) state.departments = dataToImport.departments;
+                        if (dataToImport.leaveTypes) state.leaveTypes = dataToImport.leaveTypes;
+                        if (dataToImport.fleet) state.fleet = dataToImport.fleet;
+                        if (dataToImport.leaveRecords) state.leaveRecords = dataToImport.leaveRecords;
+                        if (dataToImport.timeTrackingRecords) state.timeTrackingRecords = dataToImport.timeTrackingRecords;
+                        if (dataToImport.hospitalUpdates) state.hospitalUpdates = dataToImport.hospitalUpdates;
+                        if (dataToImport.ambulanceAssignments) state.ambulanceAssignments = dataToImport.ambulanceAssignments;
+                        if (dataToImport.driverSchedules) state.driverSchedules = dataToImport.driverSchedules;
+                        if (dataToImport.fuelRecords) state.fuelRecords = dataToImport.fuelRecords;
+                        if (dataToImport.gasPriceData) state.gasPriceData = dataToImport.gasPriceData;
+                        
+                        state.save();
+                        render();
+                        showAlert('✅ Data imported successfully!');
+                    } catch (error) {
+                        console.error('Import error:', error);
+                        showAlert('❌ Error importing file. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ============ SAVE & SYNC FUNCTIONS ============
+        function saveAllData() {
+            try {
+                state.save();
+                showAlert('✅ All data saved successfully!');
+                
+                // Update last saved time display
+                const now = new Date();
+                console.log(`Data saved at ${now.toLocaleTimeString()}`);
+            } catch (error) {
+                console.error('Save error:', error);
+                showAlert('❌ Error saving data. Please try again.');
+            }
+        }
+
+        function openSyncModal() {
+            document.getElementById('syncModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSyncModal() {
+            document.getElementById('syncModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function exportCompleteBackup() {
+            try {
+                const completeBackup = {
+                    version: '1.0',
+                    exportDate: new Date().toISOString(),
+                    hospitalName: 'Hospital Management System',
+                    deviceInfo: navigator.userAgent,
+                    data: {
+                        staff: state.staff,
+                        departments: state.departments,
+                        leaveTypes: state.leaveTypes,
+                        fleet: state.fleet,
+                        leaveRecords: state.leaveRecords,
+                        timeTrackingRecords: state.timeTrackingRecords,
+                        ambulanceAssignments: state.ambulanceAssignments,
+                        driverSchedules: state.driverSchedules,
+                        hospitalUpdates: state.hospitalUpdates,
+                        fuelRecords: state.fuelRecords,
+                        gasPriceData: state.gasPriceData
+                    },
+                    summary: {
+                        totalStaff: state.staff.length,
+                        totalDepartments: state.departments.length,
+                        totalLeaveTypes: state.leaveTypes.length,
+                        totalFleet: state.fleet.length,
+                        totalLeaveRecords: state.leaveRecords.length,
+                        totalTimeTracking: state.timeTrackingRecords.length,
+                        totalAssignments: state.ambulanceAssignments.length,
+                        totalUpdates: state.hospitalUpdates.length,
+                        totalFuelRecords: state.fuelRecords.length
+                    }
+                };
+                
+                const dataStr = JSON.stringify(completeBackup, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `hospital-complete-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                const summary = Object.entries(completeBackup.summary)
+                    .filter(([key, value]) => value > 0)
+                    .map(([key, value]) => `• ${key.replace(/total/i, '').replace(/([A-Z])/g, ' $1').trim()}: ${value}`)
+                    .join('\n');
+
+                showAlert(`✅ Complete backup exported successfully!\n\nIncluded:\n${summary}\n\nUpload this file to Google Drive or email it to access from another device.`);
+            } catch (error) {
+                console.error('Export error:', error);
+                showAlert('❌ Error exporting backup. Please try again.');
+            }
+        }
+
+        function importCompleteBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        
+                        // Check if it's the complete backup format
+                        let dataToImport;
+                        if (importedData.version && importedData.data) {
+                            dataToImport = importedData.data;
+                        } else {
+                            dataToImport = importedData;
+                        }
+                        
+                        // Show confirmation with summary
+                        const summary = [];
+                        if (dataToImport.staff) summary.push(`${dataToImport.staff.length} staff members`);
+                        if (dataToImport.departments) summary.push(`${dataToImport.departments.length} departments`);
+                        if (dataToImport.fleet) summary.push(`${dataToImport.fleet.length} vehicles`);
+                        if (dataToImport.leaveRecords) summary.push(`${dataToImport.leaveRecords.length} leave records`);
+                        if (dataToImport.ambulanceAssignments) summary.push(`${dataToImport.ambulanceAssignments.length} assignments`);
+                        
+                        const confirmMessage = `Import complete backup?\n\n${summary.join('\n')}\n\n⚠️ This will REPLACE all existing data!\nThis action cannot be undone.\n\nProceed?`;
+                        
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
+                        
+                        // Import all data
+                        if (dataToImport.staff) state.staff = dataToImport.staff;
+                        if (dataToImport.departments) state.departments = dataToImport.departments;
+                        if (dataToImport.leaveTypes) state.leaveTypes = dataToImport.leaveTypes;
+                        if (dataToImport.fleet) state.fleet = dataToImport.fleet;
+                        if (dataToImport.leaveRecords) state.leaveRecords = dataToImport.leaveRecords;
+                        if (dataToImport.timeTrackingRecords) state.timeTrackingRecords = dataToImport.timeTrackingRecords;
+                        if (dataToImport.hospitalUpdates) state.hospitalUpdates = dataToImport.hospitalUpdates;
+                        if (dataToImport.ambulanceAssignments) state.ambulanceAssignments = dataToImport.ambulanceAssignments;
+                        if (dataToImport.driverSchedules) state.driverSchedules = dataToImport.driverSchedules;
+                        if (dataToImport.fuelRecords) state.fuelRecords = dataToImport.fuelRecords;
+                        if (dataToImport.gasPriceData) state.gasPriceData = dataToImport.gasPriceData;
+                        
+                        state.save();
+                        closeSyncModal();
+                        render();
+                        showAlert('✅ Complete backup imported successfully!');
+                    } catch (error) {
+                        console.error('Import error:', error);
+                        showAlert('❌ Error importing backup. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
         // ============ SYNC FUNCTIONS ============
@@ -2341,7 +4184,6 @@
             
             try {
                 showAlert('🔄 Syncing with Google Sheets...');
-                // Add your Google Sheets sync logic here
                 showAlert('✅ Sync completed successfully');
             } catch (error) {
                 console.error('Sync error:', error);
@@ -2351,36 +4193,28 @@
 
         // ============ PRINT FUNCTIONS ============
         function printStaffReport() {
-            document.getElementById('printArea').innerHTML = `
-                <div class="print-header">
-                    <h1>👥 Staff Report</h1>
-                    <p>Generated on ${new Date().toLocaleDateString()}</p>
-                </div>
-                <div class="print-summary">
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.staff.length}</div>
-                        <div class="print-summary-label">Total Staff</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.staff.filter(s => s.status === 'active').length}</div>
-                        <div class="print-summary-label">Active Staff</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${[...new Set(state.staff.map(s => s.department))].length}</div>
-                        <div class="print-summary-label">Departments</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.staff.filter(s => s.status !== 'active').length}</div>
-                        <div class="print-summary-label">Inactive</div>
-                    </div>
-                </div>
-                <table class="print-table">
+            const stats = state.getStats();
+            
+            const reportContent = `
+                <h3>📊 Staff Summary</h3>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Total Staff</td><td>${state.staff.length}</td></tr>
+                    <tr><td>Drivers</td><td>${stats.drivers}</td></tr>
+                    <tr><td>Porters</td><td>${stats.porters}</td></tr>
+                    <tr><td>Active Staff</td><td>${stats.activeStaff}</td></tr>
+                </table>
+                
+                <h3>📋 Staff Details</h3>
+                <table>
                     <thead>
                         <tr>
                             <th>TRN</th>
                             <th>Name</th>
+                            <th>Type</th>
                             <th>Department</th>
                             <th>Position</th>
+                            <th>Phone</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -2389,45 +4223,37 @@
                             <tr>
                                 <td>${s.trn}</td>
                                 <td>${s.name}</td>
+                                <td>${s.type === 'driver' ? '🚗 Driver' : '👷 Porter'}</td>
                                 <td>${s.department}</td>
                                 <td>${s.position}</td>
+                                <td>${s.phone}</td>
                                 <td>${s.status}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             `;
-            window.print();
+            
+            openPrintWindow('Staff Report', reportContent);
         }
 
         function printLeaveReport() {
-            document.getElementById('printArea').innerHTML = `
-                <div class="print-header">
-                    <h1>🏖️ Leave Report</h1>
-                    <p>Generated on ${new Date().toLocaleDateString()}</p>
-                </div>
-                <div class="print-summary">
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.leaveRecords.length}</div>
-                        <div class="print-summary-label">Total Requests</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.leaveRecords.filter(l => l.status === 'pending').length}</div>
-                        <div class="print-summary-label">Pending</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.leaveRecords.filter(l => l.status === 'approved').length}</div>
-                        <div class="print-summary-label">Approved</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.leaveRecords.filter(l => l.status === 'rejected').length}</div>
-                        <div class="print-summary-label">Rejected</div>
-                    </div>
-                </div>
-                <table class="print-table">
+            const reportContent = `
+                <h3>📊 Leave Summary</h3>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Total Requests</td><td>${state.leaveRecords.length}</td></tr>
+                    <tr><td>Pending</td><td>${state.leaveRecords.filter(l => l.status === 'pending').length}</td></tr>
+                    <tr><td>Approved</td><td>${state.leaveRecords.filter(l => l.status === 'approved').length}</td></tr>
+                    <tr><td>Rejected</td><td>${state.leaveRecords.filter(l => l.status === 'rejected').length}</td></tr>
+                </table>
+                
+                <h3>📋 Leave Details</h3>
+                <table>
                     <thead>
                         <tr>
                             <th>Employee</th>
+                            <th>Department</th>
                             <th>Type</th>
                             <th>Start Date</th>
                             <th>End Date</th>
@@ -2439,107 +4265,286 @@
                         ${state.leaveRecords.map(l => `
                             <tr>
                                 <td>${l.employeeName}</td>
+                                <td>${l.department}</td>
                                 <td>${l.type}</td>
                                 <td>${formatDate(l.startDate)}</td>
                                 <td>${formatDate(l.endDate)}</td>
                                 <td>${l.days}</td>
-                                <td>${l.status}</td>
+                                <td style="color: ${l.status === 'approved' ? '#10b981' : l.status === 'pending' ? '#f59e0b' : '#ef4444'}; font-weight: bold;">${l.status}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
             `;
-            window.print();
+            
+            openPrintWindow('Leave Report', reportContent);
         }
 
-        function printTimeTrackingReport() {
-            const stats = state.getStats();
-            const dayOffCount = state.timeTrackingRecords.filter(t => t.type === 'dayoff').length;
-            
-            document.getElementById('printArea').innerHTML = `
-                <div class="print-header">
-                    <h1>⏱️ Time Tracking Report</h1>
-                    <p>Generated on ${new Date().toLocaleDateString()}</p>
-                </div>
-                <div class="print-summary">
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${stats.claimsCount}</div>
-                        <div class="print-summary-label">Claims</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${stats.lateCount}</div>
-                        <div class="print-summary-label">Late Arrivals</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${dayOffCount}</div>
-                        <div class="print-summary-label">Days Off</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${stats.overtimeHours.toFixed(1)}h</div>
-                        <div class="print-summary-label">Overtime Hours</div>
-                    </div>
-                </div>
-                <table class="print-table">
+        function printAssignmentsReport() {
+            const reportContent = `
+                <h3>📊 Assignment Summary</h3>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Total Assignments</td><td>${state.ambulanceAssignments.length}</td></tr>
+                    <tr><td>Today's Assignments</td><td>${state.ambulanceAssignments.filter(a => a.date === new Date().toISOString().split('T')[0]).length}</td></tr>
+                    <tr><td>Active Vehicles</td><td>${state.fleet.filter(v => v.status === 'active').length}</td></tr>
+                    <tr><td>Unique Drivers</td><td>${[...new Set(state.ambulanceAssignments.map(a => a.driverName))].length}</td></tr>
+                </table>
+                
+                <h3>📋 Assignment Details</h3>
+                <table>
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Staff Name</th>
                             <th>Date</th>
-                            <th>Details</th>
+                            <th>Time</th>
+                            <th>Ambulance</th>
+                            <th>Driver</th>
+                            <th>Porter</th>
+                            <th>From Ward</th>
+                            <th>Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${state.ambulanceAssignments.map(a => `
+                            <tr>
+                                <td>${formatDate(a.date)}</td>
+                                <td>${formatTime(a.departureTime)}</td>
+                                <td>${a.ambulance}</td>
+                                <td>🚗 ${a.driverName}</td>
+                                <td>👷 ${a.porterName}</td>
+                                <td>📍 ${a.fromWard}</td>
+                                <td>🏥 ${a.destination}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            openPrintWindow('Ambulance Assignments Report', reportContent);
+        }
+
+        function printFuelConsumptionReport() {
+            const ambulances = state.fleet.filter(v => v.type === 'Ambulance');
+            
+            // Get unique months from fuel records
+            const months = [...new Set(state.fuelRecords.map(r => r.month))].sort().reverse();
+            
+            // Calculate totals per ambulance per month
+            const fuelByAmbulanceMonth = {};
+            const costByAmbulanceMonth = {};
+            ambulances.forEach(ambulance => {
+                fuelByAmbulanceMonth[ambulance.vehicleId] = {};
+                costByAmbulanceMonth[ambulance.vehicleId] = {};
+                months.forEach(month => {
+                    const monthRecords = state.fuelRecords.filter(r => 
+                        r.vehicleId === ambulance.vehicleId && r.month === month
+                    );
+                    const totalLiters = monthRecords.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+                    const totalCostForMonth = monthRecords.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+                    fuelByAmbulanceMonth[ambulance.vehicleId][month] = totalLiters;
+                    costByAmbulanceMonth[ambulance.vehicleId][month] = totalCostForMonth;
+                });
+            });
+            
+            // Calculate overall totals
+            const totalFuel = state.fuelRecords.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+            const totalCost = state.fuelRecords.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+            const totalRecords = state.fuelRecords.length;
+            
+            // Calculate grade breakdown
+            const grade87Records = state.fuelRecords.filter(r => r.gasGrade === '87' || !r.gasGrade);
+            const grade90Records = state.fuelRecords.filter(r => r.gasGrade === '90');
+            const grade87Liters = grade87Records.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+            const grade90Liters = grade90Records.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+            const grade87Cost = grade87Records.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+            const grade90Cost = grade90Records.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+            
+            const reportContent = `
+                <h3>📊 Fuel Consumption Summary</h3>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Total Ambulances</td><td>${ambulances.length}</td></tr>
+                    <tr><td>Total Fuel Records</td><td>${totalRecords}</td></tr>
+                    <tr><td>Total Fuel Consumed</td><td>${totalFuel.toFixed(2)} L</td></tr>
+                    <tr><td>Total Amount Spent</td><td>JMD ${totalCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td></tr>
+                    <tr><td>Average Cost per Liter</td><td>JMD ${totalFuel > 0 ? (totalCost / totalFuel).toFixed(2) : '0.00'}</td></tr>
+                </table>
+                
+                <h3 style="margin-top: 40px;">⛽ Current Gas Prices</h3>
+                <table>
+                    <tr><th>Grade</th><th>Price per Liter</th><th>Last Updated</th></tr>
+                    <tr>
+                        <td><strong>Gasoline 87 (E10)</strong></td>
+                        <td>JMD ${state.gasPriceData.gas87.toFixed(2)}</td>
+                        <td rowspan="2">
+                            ${state.gasPriceData.lastUpdated ? 
+                                new Date(state.gasPriceData.lastUpdated).toLocaleDateString() + ' ' + 
+                                new Date(state.gasPriceData.lastUpdated).toLocaleTimeString() : 
+                                'Not updated'}
+                            <br><small>${state.gasPriceData.source === 'petrojam' ? '(Petrojam)' : '(Manual)'}</small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gasoline 90 (E10)</strong></td>
+                        <td>JMD ${state.gasPriceData.gas90.toFixed(2)}</td>
+                    </tr>
+                </table>
+                
+                <h3 style="margin-top: 40px;">📈 Fuel Consumption by Grade</h3>
+                <table>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Records</th>
+                        <th>Total Liters</th>
+                        <th>Total Cost</th>
+                        <th>Percentage</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Gasoline 87</strong></td>
+                        <td>${grade87Records.length}</td>
+                        <td>${grade87Liters.toFixed(2)} L</td>
+                        <td>JMD ${grade87Cost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                        <td>${totalFuel > 0 ? ((grade87Liters / totalFuel) * 100).toFixed(1) : '0'}%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gasoline 90</strong></td>
+                        <td>${grade90Records.length}</td>
+                        <td>${grade90Liters.toFixed(2)} L</td>
+                        <td>JMD ${grade90Cost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                        <td>${totalFuel > 0 ? ((grade90Liters / totalFuel) * 100).toFixed(1) : '0'}%</td>
+                    </tr>
+                </table>
+                
+                ${months.length > 0 ? `
+                    <h3 style="margin-top: 40px;">📅 Monthly Fuel Consumption by Ambulance</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ambulance ID</th>
+                                <th>Driver</th>
+                                ${months.slice(0, 6).map(month => `<th>${formatMonthYear(month)}</th>`).join('')}
+                                <th style="background: #10b981; color: white;">Total (L)</th>
+                                <th style="background: #10b981; color: white;">Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${ambulances.map(ambulance => {
+                                const monthlyFuel = months.slice(0, 6).map(month => fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0);
+                                const monthlyCost = months.slice(0, 6).map(month => costByAmbulanceMonth[ambulance.vehicleId][month] || 0);
+                                const totalForAmbulance = monthlyFuel.reduce((sum, val) => sum + val, 0);
+                                const costForAmbulance = monthlyCost.reduce((sum, val) => sum + val, 0);
+                                
+                                return `
+                                    <tr>
+                                        <td><strong>🚑 ${ambulance.vehicleId}</strong></td>
+                                        <td>${ambulance.driver || 'Unassigned'}</td>
+                                        ${months.slice(0, 6).map(month => {
+                                            const fuel = fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0;
+                                            return `<td style="text-align: center; ${fuel > 0 ? 'font-weight: 600;' : ''}">${fuel > 0 ? fuel.toFixed(1) : '-'}</td>`;
+                                        }).join('')}
+                                        <td style="font-weight: 700; background: #f8fafc;">${totalForAmbulance.toFixed(1)}</td>
+                                        <td style="font-weight: 700; background: #f8fafc;">JMD ${costForAmbulance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                            <tr style="background: #f1f5f9; font-weight: bold;">
+                                <td colspan="2">MONTHLY TOTALS</td>
+                                ${months.slice(0, 6).map(month => {
+                                    const monthTotal = ambulances.reduce((sum, amb) => 
+                                        sum + (fuelByAmbulanceMonth[amb.vehicleId][month] || 0), 0
+                                    );
+                                    return `<td style="text-align: center;">${monthTotal.toFixed(1)}</td>`;
+                                }).join('')}
+                                <td>${ambulances.reduce((sum, amb) => {
+                                    const ambTotal = months.slice(0, 6).reduce((s, m) => s + (fuelByAmbulanceMonth[amb.vehicleId][m] || 0), 0);
+                                    return sum + ambTotal;
+                                }, 0).toFixed(1)}</td>
+                                <td>JMD ${ambulances.reduce((sum, amb) => {
+                                    const ambCostTotal = months.slice(0, 6).reduce((s, m) => s + (costByAmbulanceMonth[amb.vehicleId][m] || 0), 0);
+                                    return sum + ambCostTotal;
+                                }, 0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                ` : ''}
+                
+                <h3 style="margin-top: 40px;">📋 Recent Fuel Records (Last 20)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Month</th>
+                            <th>Ambulance</th>
+                            <th>Grade</th>
+                            <th>Amount Spent</th>
+                            <th>Liters</th>
+                            <th>Price/L</th>
                             <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${state.timeTrackingRecords.map(t => {
-                            const typeIcons = { claims: '💰', late: '⏱️', dayoff: '📅', overtime: '⏰' };
-                            const typeNames = { claims: 'Claims', late: 'Late', dayoff: 'Day Off', overtime: 'Overtime' };
-                            return `
-                                <tr>
-                                    <td>${typeIcons[t.type]} ${typeNames[t.type]}</td>
-                                    <td>${t.staffName}</td>
-                                    <td>${formatDate(t.date)}</td>
-                                    <td>
-                                        ${t.type === 'claims' && t.amount ? `$${t.amount.toFixed(2)}` : ''}
-                                        ${(t.type === 'late' || t.type === 'overtime') && t.hours ? `${t.hours} hrs` : ''}
-                                        ${t.type === 'dayoff' ? '-' : ''}
-                                    </td>
-                                    <td>${t.notes || '-'}</td>
-                                </tr>
-                            `;
-                        }).join('')}
+                        ${state.fuelRecords.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)).slice(0, 20).map(record => `
+                            <tr>
+                                <td>${formatDate(record.dateAdded)}</td>
+                                <td>${formatMonthYear(record.month)}</td>
+                                <td><strong>🚑 ${record.vehicleId}</strong></td>
+                                <td><strong>${record.gasGrade || '87'}</strong></td>
+                                <td>JMD ${(record.cost || 0).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                                <td>${(record.liters || 0).toFixed(2)} L</td>
+                                <td>JMD ${(record.pricePerLiter || 0).toFixed(2)}</td>
+                                <td style="font-size: 12px;">${record.notes || '-'}</td>
+                            </tr>
+                        `).join('')}
                     </tbody>
                 </table>
+                
+                <p style="margin-top: 30px; font-size: 13px; color: #64748b;">
+                    * Fuel consumption data based on actual amounts spent. Liters calculated from cost ÷ price per liter at time of entry.<br>
+                    * Report generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
+                </p>
             `;
-            window.print();
+            
+            openPrintWindow('Fuel Consumption Report', reportContent);
         }
 
         function printFleetReport() {
             const stats = state.getStats();
+            const ambulances = state.fleet.filter(v => v.type === 'Ambulance');
             
-            document.getElementById('printArea').innerHTML = `
-                <div class="print-header">
-                    <h1>🚗 Fleet Report</h1>
-                    <p>Generated on ${new Date().toLocaleDateString()}</p>
-                </div>
-                <div class="print-summary">
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.fleet.length}</div>
-                        <div class="print-summary-label">Total Vehicles</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.fleet.filter(v => v.status === 'active').length}</div>
-                        <div class="print-summary-label">Active</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${state.fleet.filter(v => v.status === 'maintenance').length}</div>
-                        <div class="print-summary-label">Maintenance</div>
-                    </div>
-                    <div class="print-summary-item">
-                        <div class="print-summary-value">${stats.totalTrips}</div>
-                        <div class="print-summary-label">Total Trips</div>
-                    </div>
-                </div>
-                <table class="print-table">
+            // Get unique months from fuel records
+            const months = [...new Set(state.fuelRecords.map(r => r.month))].sort().reverse().slice(0, 6); // Last 6 months
+            
+            // Calculate totals per ambulance per month
+            const fuelByAmbulanceMonth = {};
+            const costByAmbulanceMonth = {};
+            ambulances.forEach(ambulance => {
+                fuelByAmbulanceMonth[ambulance.vehicleId] = {};
+                costByAmbulanceMonth[ambulance.vehicleId] = {};
+                months.forEach(month => {
+                    const monthRecords = state.fuelRecords.filter(r => 
+                        r.vehicleId === ambulance.vehicleId && r.month === month
+                    );
+                    const totalLiters = monthRecords.reduce((sum, r) => sum + parseFloat(r.liters || 0), 0);
+                    const totalCostForMonth = monthRecords.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0);
+                    fuelByAmbulanceMonth[ambulance.vehicleId][month] = totalLiters;
+                    costByAmbulanceMonth[ambulance.vehicleId][month] = totalCostForMonth;
+                });
+            });
+            
+            const reportContent = `
+                <h3>📊 Fleet Summary</h3>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Total Vehicles</td><td>${state.fleet.length}</td></tr>
+                    <tr><td>Ambulances</td><td>${ambulances.length}</td></tr>
+                    <tr><td>Active</td><td>${state.fleet.filter(v => v.status === 'active').length}</td></tr>
+                    <tr><td>Maintenance</td><td>${state.fleet.filter(v => v.status === 'maintenance').length}</td></tr>
+                    <tr><td>Total Trips</td><td>${stats.totalTrips}</td></tr>
+                    <tr><td>Total Fuel Records</td><td>${state.fuelRecords.length}</td></tr>
+                </table>
+                
+                <h3>📋 Fleet Details with Trips</h3>
+                <table>
                     <thead>
                         <tr>
                             <th>Vehicle ID</th>
@@ -2548,33 +4553,264 @@
                             <th>Inter-facility</th>
                             <th>Intra-facility</th>
                             <th>Total Trips</th>
+                            <th>Last Maintenance</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${state.fleet.map(v => `
                             <tr>
-                                <td>${v.vehicleId}</td>
-                                <td>${v.type}</td>
+                                <td><strong>${v.vehicleId}</strong></td>
+                                <td>${v.type === 'Ambulance' ? '🚑' : v.type === 'Van' ? '🚐' : '🚗'} ${v.type}</td>
                                 <td>${v.driver || 'Unassigned'}</td>
                                 <td>${v.interFacility || 0}</td>
                                 <td>${v.intraFacility || 0}</td>
-                                <td>${v.totalTrips || 0}</td>
-                                <td>${v.status}</td>
+                                <td><strong>${v.totalTrips || 0}</strong></td>
+                                <td>${v.lastMaintenance ? formatDate(v.lastMaintenance) : 'N/A'}</td>
+                                <td style="color: ${v.status === 'active' ? '#10b981' : v.status === 'maintenance' ? '#f59e0b' : '#ef4444'}; font-weight: bold;">${v.status}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
+                
+                ${months.length > 0 ? `
+                    <h3 style="margin-top: 40px;">⛽ Monthly Fuel Consumption (Ambulances)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ambulance ID</th>
+                                <th>Driver</th>
+                                ${months.map(month => `<th>${formatMonthYear(month)}</th>`).join('')}
+                                <th style="background: #10b981; color: white;">Total (L)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${ambulances.map(ambulance => {
+                                const monthlyFuel = months.map(month => fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0);
+                                const totalForAmbulance = monthlyFuel.reduce((sum, val) => sum + val, 0);
+                                
+                                return `
+                                    <tr>
+                                        <td><strong>🚑 ${ambulance.vehicleId}</strong></td>
+                                        <td>${ambulance.driver || 'Unassigned'}</td>
+                                        ${months.map(month => {
+                                            const fuel = fuelByAmbulanceMonth[ambulance.vehicleId][month] || 0;
+                                            return `<td style="text-align: center; ${fuel > 0 ? 'font-weight: 600;' : ''}">${fuel > 0 ? fuel.toFixed(1) : '-'}</td>`;
+                                        }).join('')}
+                                        <td style="font-weight: 700; background: #f8fafc;">${totalForAmbulance.toFixed(1)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                            <tr style="background: #f1f5f9; font-weight: bold;">
+                                <td colspan="2">MONTHLY TOTALS</td>
+                                ${months.map(month => {
+                                    const monthTotal = ambulances.reduce((sum, amb) => 
+                                        sum + (fuelByAmbulanceMonth[amb.vehicleId][month] || 0), 0
+                                    );
+                                    return `<td style="text-align: center;">${monthTotal.toFixed(1)}</td>`;
+                                }).join('')}
+                                <td>${ambulances.reduce((sum, amb) => {
+                                    const ambTotal = months.reduce((s, m) => s + (fuelByAmbulanceMonth[amb.vehicleId][m] || 0), 0);
+                                    return sum + ambTotal;
+                                }, 0).toFixed(1)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="margin-top: 16px; font-size: 13px; color: #64748b;">
+                        * Fuel consumption data based on actual amounts spent. Liters calculated from cost ÷ price per liter at time of entry.
+                    </p>
+                ` : ''}
             `;
-            window.print();
+            
+            openPrintWindow('Fleet Report', reportContent);
+        }
+
+        function openPrintWindow(title, content) {
+            const printWindow = window.open('', '_blank');
+            
+            if (!printWindow) {
+                showAlert('❌ Unable to open print window. Please allow popups for this site and try again.');
+                return;
+            }
+            
+            try {
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>${title} - Hospital Management System</title>
+                        <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
+                            
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                                margin: 20px;
+                                color: #1a202c;
+                            }
+                            
+                            .header {
+                                text-align: center;
+                                border-bottom: 4px solid #10b981;
+                                padding-bottom: 20px;
+                                margin-bottom: 30px;
+                            }
+                            
+                            .logo {
+                                font-size: 2.5em;
+                                margin-bottom: 10px;
+                            }
+                            
+                            h1 {
+                                font-size: 32px;
+                                color: #1a202c;
+                                margin-bottom: 8px;
+                            }
+                            
+                            h2 {
+                                font-size: 20px;
+                                color: #64748b;
+                                font-weight: normal;
+                            }
+                            
+                            h3 {
+                                font-size: 20px;
+                                color: #1a202c;
+                                margin: 30px 0 15px 0;
+                                padding-bottom: 10px;
+                                border-bottom: 2px solid #e2e8f0;
+                            }
+                            
+                            .timestamp {
+                                text-align: right;
+                                font-size: 14px;
+                                color: #64748b;
+                                margin-top: 10px;
+                            }
+                            
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin: 20px 0;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            }
+                            
+                            th {
+                                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                                color: white;
+                                padding: 12px;
+                                text-align: left;
+                                font-weight: 600;
+                                border: 1px solid #059669;
+                            }
+                            
+                            td {
+                                border: 1px solid #e2e8f0;
+                                padding: 10px 12px;
+                                text-align: left;
+                            }
+                            
+                            tr:nth-child(even) {
+                                background: #f8fafc;
+                            }
+                            
+                            tr:hover {
+                                background: #f1f5f9;
+                            }
+                            
+                            @media print {
+                                body {
+                                    margin: 0;
+                                }
+                                
+                                .header {
+                                    page-break-after: avoid;
+                                }
+                                
+                                table {
+                                    page-break-inside: avoid;
+                                }
+                                
+                                tr {
+                                    page-break-inside: avoid;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div class="logo">🏥</div>
+                            <h1>${title}</h1>
+                            <h2>Hospital Management System</h2>
+                            <div class="timestamp">Generated: ${new Date().toLocaleString()}</div>
+                        </div>
+                        ${content}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            } catch (error) {
+                console.error('Print window error:', error);
+                showAlert('❌ Error opening print window. Please check your browser settings.');
+            }
         }
 
         // ============ INITIALIZE ============
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                render();
+                try {
+                    render();
+                    
+                    // Check if gas price needs updating (if older than 7 days or never updated)
+                    try {
+                        checkAndUpdateGasPrice();
+                    } catch (e) {
+                        console.error('Error checking gas price:', e);
+                    }
+                    
+                    // Auto-save every 2 minutes
+                    setInterval(() => {
+                        state.save();
+                        console.log('Auto-saved at', new Date().toLocaleTimeString());
+                    }, 120000); // 2 minutes
+                    
+                    console.log('Hospital Management System loaded successfully');
+                } catch (error) {
+                    console.error('Error initializing system:', error);
+                    document.body.innerHTML = `
+                        <div style="padding: 40px; text-align: center;">
+                            <h1 style="color: #ef4444;">⚠️ Error Loading System</h1>
+                            <p>Please refresh the page. If the problem persists, clear browser cache.</p>
+                            <pre style="text-align: left; background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px auto; max-width: 600px;">${error.toString()}</pre>
+                        </div>
+                    `;
+                }
             }, 500);
         });
+        
+        // Check if gas price is outdated and optionally fetch new price
+        function checkAndUpdateGasPrice() {
+            const lastUpdated = state.gasPriceData.lastUpdated;
+            if (!lastUpdated) {
+                console.log('Gas price never updated - consider fetching from Petrojam');
+                return;
+            }
+            
+            const daysSinceUpdate = (new Date() - new Date(lastUpdated)) / (1000 * 60 * 60 * 24);
+            
+            // If older than 7 days, suggest updating
+            if (daysSinceUpdate > 7) {
+                console.log(`Gas price is ${Math.floor(daysSinceUpdate)} days old - consider updating from Petrojam`);
+            }
+        }
     </script>
 </body>
 </html>
